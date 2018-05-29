@@ -1,0 +1,7 @@
+class Card
+{
+	public Card()
+	{
+		
+	}
+}
