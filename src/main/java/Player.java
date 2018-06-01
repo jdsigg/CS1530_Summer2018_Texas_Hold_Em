@@ -7,11 +7,13 @@ class Player
   String name;
   double money;
   Card [] currentHand = new Card[2];
+  private int currentHandIndex;
 
   public Player()
 	{
     //Init Constructor for Player
     this.money = 1000.00;
+    currentHandIndex = 0;
 	}
 
 	public Player(String name)
@@ -19,6 +21,7 @@ class Player
     //Constructor for Player
     this.name = name;
     this.money = 1000.00;
+    currentHandIndex = 0;
 	}
 
   /*
@@ -52,6 +55,26 @@ class Player
   public void setName(String name)
   {
     this.name = name;
+  }
+
+  /*
+    Method to deal player a Card
+    You can add ONE card at a time
+  */
+  public void addCard(Card card)
+  {
+    assert(currentHandIndex < 2); //Make sure player only has two cards
+    this.currentHand[currentHandIndex] = card;
+    currentHandIndex++;
+  }
+
+  /*
+    Method to get player's current hand
+    returns a array of type Card
+  */
+  public Card [] getCurrentHand()
+  {
+    return this.currentHand;
   }
 
 }
