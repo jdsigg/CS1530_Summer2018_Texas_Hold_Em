@@ -10,13 +10,14 @@ Variable Naming:
 First letter of first word in variable name is lowercase. All subsequent words are uppercase. (i.e. texasHoldEm)
 
 Commenting:
-In line comments are acceptable. Block comments above methods to describe their purpose
+In line comments are acceptable. Block comments above methods to describe their purpose. Block comments
+will be in line with the blocks, not indented. 
 
 Indents:
 Tabs on each indent 
 
 Brackets:
-In-line with method declaration
+Opening bracket below method declaration
 
 Lines:
 Lines should not be over 140 lines

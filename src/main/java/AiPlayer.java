@@ -1,15 +1,15 @@
 public class AiPlayer extends Player
 {
 
-  //Constructors
-  public AiPlayer()
-  {
-    super();
-  }
+	//Constructors
+	public AiPlayer()
+	{
+		super();
+	}
 
-  public AiPlayer(String name)
-  {
-    super(name);
-  }
+	public AiPlayer(String name)
+	{
+		super(name);
+	}
 
 }
