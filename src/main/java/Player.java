@@ -8,6 +8,12 @@ class Player
   double money;
   Card [] currentHand = new Card[2];
 
+  public Player()
+	{
+    //Init Constructor for Player
+    this.money = 1000.00;
+	}
+
 	public Player(String name)
 	{
     //Constructor for Player
@@ -38,4 +44,14 @@ class Player
   {
     this.money = money;
   }
+
+  /*
+    Method to set player's name
+    NOTE: you can set the player's name in the constructor
+  */
+  public void setName(String name)
+  {
+    this.name = name;
+  }
+
 }
