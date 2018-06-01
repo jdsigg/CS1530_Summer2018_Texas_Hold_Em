@@ -4,9 +4,9 @@ class Player
   /*
     Initilize Variables
   */
-  String name;
-  double money;
-  Card [] currentHand = new Card[2];
+  private String name;
+  private double money;
+  private Card [] currentHand = new Card[2];
   private int currentHandIndex;
 
   public Player()
