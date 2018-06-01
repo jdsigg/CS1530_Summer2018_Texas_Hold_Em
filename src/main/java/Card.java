@@ -2,6 +2,6 @@ class Card
 {
 	public Card()
 	{
-		
+
 	}
 }
