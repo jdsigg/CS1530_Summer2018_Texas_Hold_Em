@@ -1,3 +1,6 @@
+import java.util.Collections;
+import java.util.ArrayList;
+
 class Dealer
 {
 	/*
@@ -20,7 +23,7 @@ class Dealer
 	*/
 	public void shuffleDeck()
 	{
-		dealerDeck
+		Collections.shuffle(dealerDeck);
 	}
 	
 	/*
@@ -39,6 +42,12 @@ class Dealer
 		this.pot = pot;
 	}
 	
-	
+	/*
+	Method to deal the community cards
+	public void dealCommunityCards()
+	{
+		
+	}
+	*/
 	
 }
