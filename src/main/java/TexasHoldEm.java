@@ -1,16 +1,19 @@
+import java.util.ArrayList;
+
 public class TexasHoldEm
 {
 	public static void main(String[] args)
 	{
-		//Initialize the gameboard and deck
+		//Initialize the gameboard, deck, and dealer
 		GameBoard table = new GameBoard();
-		//Deck dealerDeck = new Deck();
+		Deck dealerDeck = new Deck();
+		Dealer bob = new Dealer(dealerDeck);
 		
 		//Get needed info from GUI class to set up the gameboard
 		int numOfOpponents = table.getNumberOfComputers;
-		String humanName = table.getHumanName;
+		String humanName = new String(table.getHumanName);
 		
 		//Initialize an ArrayList with the number of opponents
-		ArrayList<AiPlayer> opponents = new ArrayList<>(numOfOpponents);
+		ArrayList<Player> opponents = new ArrayList<>(numOfOpponents);
 	}
 }
