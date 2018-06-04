@@ -1,15 +1,15 @@
 public class HumanPlayer extends Player
 {
 
-  //Constructors
-  public HumanPlayer()
-  {
-    super();
-  }
+	//Constructors
+	public HumanPlayer()
+	{
+		super();
+	}
 
-  public HumanPlayer(String name)
-  {
-    super(name);
-  }
+	public HumanPlayer(String name)
+	{
+		super(name);
+	}
 
 }
