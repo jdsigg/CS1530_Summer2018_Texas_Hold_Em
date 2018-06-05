@@ -19,14 +19,6 @@ class Dealer
 	}
 	
 	/*
-	Method to shuffle the deck
-	*/
-	public void shuffleDeck()
-	{
-		Collections.shuffle(dealerDeck);
-	}
-	
-	/*
 	Method to get pot
 	*/
 	public double getPot()
@@ -42,6 +34,14 @@ class Dealer
 		this.pot = pot;
 	}
 	
+        /*
+        Method to deal an individual card to a given player
+        */
+        public void dealCard(Player p)
+        {
+         p.addCard(Deck.removeCard());
+        }
+        
 	/*
 	Method to deal the community cards
 	public void dealCommunityCards()
