@@ -1,10 +1,17 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Arrays;
+package main.java;
+
 public class TexasHoldEm
 {
 	public static void main(String[] args)
 	{
+		//Initialize the gameboard, deck, and dealer
+		GameBoard table = new GameBoard();
+		Deck dealerDeck = new Deck();
+		Dealer bob = new Dealer(dealerDeck);
 		
-<<<<<<< Updated upstream
-=======
 		ArrayList<String> names = new ArrayList<>(Arrays.asList("Jacques Strap", 
 		"Seymour Butz", "Mike Rotch", "Ollie Tabooger", "Al Coholic", 
 		"Oliver Clothesoff", "Libby Doe", "Sarah Nader", "Robin Banks", "Hugh Jeffencock"));
@@ -32,9 +39,6 @@ public class TexasHoldEm
 			System.out.println(x.getName());
 		}
 		*/
-		
-		
-		
->>>>>>> Stashed changes
+
 	}
 }

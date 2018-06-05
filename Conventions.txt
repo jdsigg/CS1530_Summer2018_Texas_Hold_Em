@@ -1,0 +1,30 @@
+Conventions
+
+Class Naming:
+Capital letter for each word's start in class. Letters after the first letter in any abbreviations will be lowercase (i.e. SCUBA would be named Scuba)
+
+Method Naming:
+Capital letter for each word's start in method. Same convention as class naming
+
+Variable Naming:
+First letter of first word in variable name is lowercase. All subsequent words are uppercase. (i.e. texasHoldEm)
+
+Commenting:
+In line comments are acceptable. Block comments above methods to describe their purpose. Block comments
+will be in line with the blocks, not indented. 
+
+Indents:
+Tabs on each indent 
+
+Brackets:
+Opening bracket below method declaration
+
+Lines:
+Lines should not be over 140 lines
+
+Whitespace:
+Use appropriate whitespace as needed
+
+Methods:
+Methods used more than twice shall be combined and placed into a class reachable to classes that need its access
+Common/re-used/repeated chunks of code shall be combined as to avoid having reused
