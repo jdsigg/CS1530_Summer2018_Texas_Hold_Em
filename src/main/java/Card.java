@@ -1,9 +1,5 @@
-import javafx.scene.image.*;
 import javax.swing.*;
-import java.util.*;
-import java.io.*;
 import java.awt.*;
-import java.awt.image.*;
 
 public class Card
 {
@@ -36,6 +32,21 @@ public class Card
 	{
 		return this.rank.compareTo(card2.rank); //returns 0 if equal, pos if c1 > c2, neg if c1 < c2
 	}
+        
+        public Image getImage()
+        {
+            return img.getImage();
+        }
+        
+        public String getSuit()
+        {
+            return this.suit.toString();
+        }
+        
+        public String getRank()
+        {
+            return this.rank.toString();
+        }
 	
 }
 

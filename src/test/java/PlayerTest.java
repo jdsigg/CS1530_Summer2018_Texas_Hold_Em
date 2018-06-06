@@ -13,6 +13,7 @@ public class PlayerTest
     assertTrue(p.getMoney() == 1000.00);
   }
 
+  /*
   @Test
   public void testPlayerCardHand()
   {
@@ -23,5 +24,6 @@ public class PlayerTest
     Card [] arrayC = {c,c};
     assertEquals(p.getCurrentHand(),arrayC);
   }
+  */
 
 }

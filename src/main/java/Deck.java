@@ -23,7 +23,8 @@ public class Deck
 	
 	public Card removeCard() 
 	{
-		return deck.remove(0);
+                Card toSend = deck.remove(0);    
+		return toSend;
 	}
 	
 }
