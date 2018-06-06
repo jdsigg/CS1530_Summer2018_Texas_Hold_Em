@@ -31,7 +31,7 @@ class Dealer
 	*/
 	public void updatePot(double pot)
 	{
-		this.pot = pot;
+            this.pot = pot;
 	}
 	
         /*
@@ -39,7 +39,7 @@ class Dealer
         */
         public void dealCard(Player p)
         {
-         p.addCard(Deck.removeCard());
+            p.addCard(dealerDeck.removeCard());
         }
         
 	/*
