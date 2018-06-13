@@ -41,6 +41,11 @@ class Dealer
         {
             p.addCard(dealerDeck.removeCard());
         }
+		
+	public void shuffle()
+	{
+		Collections.shuffle(dealerDeck.getDeck());
+	}
         
 	/*
 	Method to deal the community cards
