@@ -23,8 +23,13 @@ public class Deck
 	
 	public Card removeCard() 
 	{
-                Card toSend = deck.remove(0);    
+        Card toSend = deck.remove(0);    
 		return toSend;
+	}
+	
+	public ArrayList<Card> getDeck()
+	{
+		return deck;
 	}
 	
 }
