@@ -8,6 +8,7 @@ class Dealer
 	*/
 	private double pot;
 	private Deck dealerDeck;
+	private Card [] commCards = new Card[5];
 	
 	/*
 	Initializing constructor
@@ -31,28 +32,58 @@ class Dealer
 	*/
 	public void updatePot(double pot)
 	{
-            this.pot = pot;
+		this.pot = pot;
 	}
 	
-        /*
-        Method to deal an individual card to a given player
-        */
-        public void dealCard(Player p)
-        {
-            p.addCard(dealerDeck.removeCard());
-        }
+	/*
+	Method to deal an individual card to a given player
+	*/
+	public void dealCard(Player p)
+	{
+		p.addCard(dealerDeck.removeCard());
+	}
+	
+	/*
+	Method to deal the cards to the community "hand"
+	*/
+	public void dealCommCards()
+	{
+		for (int i=0; i<commCards.length; i++)
+		{
+			commCards[i] = deck.removeCard();
+		}
+	}
+	
+	/*
+	Method to return the community cards
+	*/
+	public Card [] getCommCards()
+	{
+		return commCards;
+	}
 		
 	public void shuffle()
 	{
-		Collections.shuffle(dealerDeck.getDeck());
+		Collections.shuffle(dealerDeck.shuffle());
 	}
-        
-	/*
-	Method to deal the community cards
-	public void dealCommunityCards()
+	
+	public void returnCard(Card card)
 	{
-		
+		dealerDeck.addCard(card);
 	}
-	*/
+	
+	public void returnCommCards()
+	{
+		for(int i =0; i<commCards.length; i++)
+		{
+			dealerDeck.addCard(commCards[i]);
+		}
+	}
+	
+	public void wipeCommCards()
+	{
+		commCards = new Card[5];
+	}
+	
 	
 }

@@ -32,4 +32,8 @@ public class Deck
 		return deck;
 	}
 	
+	public void addCard(Card card)
+	{
+		deck.add(card);
+	}
 }
