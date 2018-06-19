@@ -14,6 +14,8 @@ class GameBoard extends JFrame
 	private int numberOfOpponents;
 	private ArrayList<Player> opponents;
 	private Dealer dealer;
+	private DealerContainer dealerBox;
+	private Game game;
 	
 	public GameBoard(String title)
 	{
@@ -26,8 +28,9 @@ class GameBoard extends JFrame
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
-	public void createPlayerFrames(String playerName, int numberOfOpponents)
+	public void createPlayerFrames(String playerName, int numberOfOpponents, Game game)
 	{
+		this.game = game;
 		this.numberOfOpponents = numberOfOpponents;
 		players = new PlayerContainer[numberOfOpponents+1];
 		
@@ -36,11 +39,13 @@ class GameBoard extends JFrame
 		{
 			PlayerContainer temp = new PlayerContainer();
 			players[i] = temp;
+			if(i != 0)
+				temp.hideButtons();
 			this.add(temp);
 		}
 		
 		//create dealer container to display
-		DealerContainer dealerBox = new DealerContainer();
+		dealerBox = new DealerContainer(dealer);
 		
 		this.add(dealerBox);
 		this.setVisible(true);
@@ -85,14 +90,47 @@ class GameBoard extends JFrame
 			
 			container.updateName();
 			container.updateMoney();
+	
+			//dealer.dealCard(player);
+			//dealer.dealCard(player);
 			
-			dealer.dealCard(player);
-			dealer.dealCard(player);
-			
-			container.setCardOne();
-			container.setCardTwo();
+			//container.setCardOne();
+			//container.setCardTwo();
 			
 		}
+		game.startNewHand();
+	}
+	
+	public void displayCommCard(int state)
+	{
+		switch(state)
+		{
+			case 1:
+				break;
+			case 2:
+				dealerBox.setCardOne();
+				dealerBox.setCardTwo();
+				dealerBox.setCardThree();
+				break;
+			case 3:
+				dealerBox.setCardFour();
+				break;
+			case 4:
+				dealerBox.setCardFive();
+				break;
+			case 5:
+				for(int i = 1; i < players.length; i++)
+					displayPlayerHand(players[i]);
+				break;
+			default:
+				break;
+		}
+	}
+	
+	public void displayPlayerHand(int player)
+	{
+		containers[player].setCardOne();
+		containers[player].setCardTwo();
 	}
 }
 

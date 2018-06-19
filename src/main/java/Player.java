@@ -2,18 +2,20 @@ class Player
 {
 
 	/*
-    Initilize Variables
+    Initialize Variables
 	*/
 	private String name;
 	private double money;
 	private Card [] currentHand = new Card[2];
 	private int currentHandIndex;
+	private int bet;
 
 	public Player()
 	{
 		//Init Constructor for Player
 		this.money = 1000.00;
 		currentHandIndex = 0;
+		this.bet = 0;
 	}
 
 	public Player(String name)
@@ -22,6 +24,7 @@ class Player
 		this.name = name;
 		this.money = 1000.00;
 		currentHandIndex = 0;
+		this.bet = 0;
 	}
 
 	/*
@@ -75,6 +78,28 @@ class Player
 	public Card [] getCurrentHand()
 	{
 		return this.currentHand;
+	}
+	
+	public void wipeHand()
+	{
+		currentHandIndex = 0;
+		this.currentHand = new Card[2];
+	}
+	
+	/*
+	Method to set the players bet
+	*/
+	public void setBet(int newBet)
+	{
+		this.bet = newBet;
+	}
+	
+	/*
+	Method to get the players bet
+	*/
+	public int getBet()
+	{
+		return bet;
 	}
 
 }

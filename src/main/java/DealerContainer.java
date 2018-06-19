@@ -20,6 +20,8 @@ class DealerContainer extends JPanel
 	private JLabel potLabel;
 	private JLabel pot;
 	
+	private Dealer dealer;
+	
 	public DealerContainer()
 	{
 		this.setLayout(new FlowLayout());
@@ -61,6 +63,8 @@ class DealerContainer extends JPanel
 		
 		pot = new JLabel("Not pot.");
 		this.add(pot);
+		
+		this.dealer = dealer;
 	}
 	
 	public void setPot(String newPot)
@@ -71,6 +75,56 @@ class DealerContainer extends JPanel
 	public void setMinBet(String newBet)
 	{
 		minBet.setText(newBet);
+	}
+	
+	public void setCardOne()
+	{
+		cardOnePanel.removeAll();
+		
+		Image cardOne = dealer.getCommCards[0].getImage().getImage();
+		Image scaledCardOne = cardOne.getScaledInstance(120, 150, Image.SCALE_SMOOTH);
+		
+		cardOnePanel.add(new JLabel(new ImageIcon(scaledCardOne)));
+	}
+	
+	public void setCardTwo()
+	{
+		cardTwoPanel.removeAll();
+		
+		Image cardOne = dealer.getCommCards[1].getImage().getImage();
+		Image scaledCardOne = cardOne.getScaledInstance(120, 150, Image.SCALE_SMOOTH);
+		
+		cardOnePanel.add(new JLabel(new ImageIcon(scaledCardOne)));
+	}
+	
+	public void setCardThree()
+	{
+		cardThreePanel.removeAll();
+		
+		Image cardOne = dealer.getCommCards[2].getImage().getImage();
+		Image scaledCardOne = cardOne.getScaledInstance(120, 150, Image.SCALE_SMOOTH);
+		
+		cardOnePanel.add(new JLabel(new ImageIcon(scaledCardOne)));
+	}
+	
+	public void setCardFour()
+	{
+		cardFourPanel.removeAll();
+		
+		Image cardOne = dealer.getCommCards[3].getImage().getImage();
+		Image scaledCardOne = cardOne.getScaledInstance(120, 150, Image.SCALE_SMOOTH);
+		
+		cardOnePanel.add(new JLabel(new ImageIcon(scaledCardOne)));
+	}
+	
+	public void setCardFive()
+	{
+		cardFivePanel.removeAll();
+		
+		Image cardOne = dealer.getCommCards[4].getImage().getImage();
+		Image scaledCardOne = cardOne.getScaledInstance(120, 150, Image.SCALE_SMOOTH);
+		
+		cardOnePanel.add(new JLabel(new ImageIcon(scaledCardOne)));
 	}
 	
 	/*
