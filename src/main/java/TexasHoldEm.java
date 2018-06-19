@@ -14,8 +14,11 @@ class TexasHoldEm
 		
 		GameBoard runMe = new GameBoard("Test GUI");
 		
+		Game game = new Game(runMe, dealer);
+		game.setPlayerContainers(players);
+		
 		runMe.assignSharedVariables(dealer, players);
 		
-		InitialPlayerDialog dialog = new InitialPlayerDialog(runMe, "Test Dialog");
+		InitialPlayerDialog dialog = new InitialPlayerDialog(runMe, game, "Test Dialog");
 	}
 }

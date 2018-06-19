@@ -15,11 +15,13 @@ class InitialPlayerDialog extends JDialog
 	private JTextField nameField;
 	private JComboBox<Integer> opponents;
 	private GameBoard parent;
+	private Game game;
 	
-	public InitialPlayerDialog(GameBoard parent, String title)
+	public InitialPlayerDialog(GameBoard parent, Game game, String title)
 	{
 		super(parent, title, true);
 		this.parent = parent;
+		this.game = game;
 		
 		setSize(340, 160);
 		setLayout(new FlowLayout());
@@ -72,6 +74,8 @@ class InitialPlayerDialog extends JDialog
 		Integer numberOfOpponents = (Integer)opponents.getSelectedItem();
 		int opponentNumber = numberOfOpponents.intValue();
 		
+		game.setNumberOfOpponents(opponentNumber);
+		
 		//grab players name
 		String playerName = nameField.getText();
 		
@@ -80,7 +84,7 @@ class InitialPlayerDialog extends JDialog
 		System.out.println("You have opponents: "+opponentNumber);
 		*/
 		this.setVisible(false);
-		parent.createPlayerFrames(playerName, opponentNumber);
+		parent.createPlayerFrames(playerName, opponentNumber, game);
 	}
 	
 	private void cancelButtonActionPerformed()

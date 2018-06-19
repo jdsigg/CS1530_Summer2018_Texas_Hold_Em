@@ -6,6 +6,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.event.ActionEvent;
+
 
 //import javax.swing.JFrame;
 
@@ -16,6 +19,8 @@ class PlayerContainer extends JPanel
 	private JPanel cardTwoPanel;
 	private JLabel playerName;
 	private JLabel playerMoney;
+	private JButton betButton;
+	private JButton callButton;
 	
 	private Player player;
 	
@@ -41,6 +46,14 @@ class PlayerContainer extends JPanel
 		
 		playerMoney = new JLabel("Default Money");
 		this.add(playerMoney);
+		
+		betButton = new JButton("Bet $20");
+		betButton.addActionListener(e -> betButtonActionPerformed(e));
+		this.add(betButton);
+		
+		callButton = new JButton("Call");
+		callButton.addActionListener(e -> callButtonActionPerformed(e));
+		this.add(callButton);
 	}
 	
 	public void setPlayer(Player player)
@@ -65,6 +78,8 @@ class PlayerContainer extends JPanel
 	
 	public void setCardOne()
 	{
+		cardOnePanel.removeAll();
+		
 		Image cardOne = player.getCurrentHand()[0].getImage().getImage();
 		Image scaledCardOne = cardOne.getScaledInstance(120, 150, Image.SCALE_SMOOTH);
 		
@@ -73,9 +88,34 @@ class PlayerContainer extends JPanel
 	
 	public void setCardTwo()
 	{
+		cardTwoPanel.removeAll();
+		
 		Image cardTwo = player.getCurrentHand()[1].getImage().getImage();
 		Image scaledCardTwo = cardTwo.getScaledInstance(120, 150, Image.SCALE_SMOOTH);
 		cardTwoPanel.add(new JLabel(new ImageIcon(scaledCardTwo)));
+	}
+	
+	public void betButtonActionPerformed(ActionEvent e)
+	{
+		int defaultBet = 20;
+		player.setBet(defaultBet);
+		
+		//call a method that folds everybody else
+			
+		game.foldEveryone();
+	}
+	
+	public void callButtonActionPerformed(ActionEvent e)
+	{
+		//call a method that calls everybody else
+			
+		game.nextState();
+	}
+	
+	public void hideButtons()
+	{
+		this.betButton.setVisible(false);
+		this.callButton.setVisible(false);		
 	}
 	
 	/*
