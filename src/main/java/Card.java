@@ -33,19 +33,19 @@ public class Card
 		return this.rank.compareTo(card2.rank); //returns 0 if equal, pos if c1 > c2, neg if c1 < c2
 	}
 
-        public ImageIcon getImage()
-        {
-            return img;
-        }
+	public ImageIcon getImage()
+	{
+		return img;
+	}
 
-        public String getSuit()
-        {
-            return this.suit.toString();
-        }
+	public String getSuit()
+	{
+		return this.suit.toString();
+	}
 
-        public String getRank()
-        {
-            return this.rank.toString();
-        }
+	public String getRank()
+	{
+		return this.rank.toString();
+	}
 
 }

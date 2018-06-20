@@ -50,21 +50,21 @@ class Dealer
 	{
 		for (int i=0; i<commCards.length; i++)
 		{
-			commCards[i] = deck.removeCard();
+			commCards[i] = dealerDeck.removeCard();
 		}
 	}
 	
 	/*
 	Method to return the community cards
 	*/
-	public Card [] getCommCards()
+	public Card[] getCommCards()
 	{
 		return commCards;
 	}
 		
 	public void shuffle()
 	{
-		Collections.shuffle(dealerDeck.shuffle());
+		dealerDeck.shuffle();
 	}
 	
 	public void returnCard(Card card)

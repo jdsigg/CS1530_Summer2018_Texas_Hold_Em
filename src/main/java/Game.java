@@ -46,13 +46,19 @@ class Game
 	
 	public void foldEveryone()
 	{
-		activePlayers = new Players[1];
+		activePlayers = new Player[1];
 		activePlayers[0] = players[0].getPlayer();
 		checkWinner(activePlayers);
+		resetGame();
 	}
 	
 	public void nextState()
 	{
+		if(state==1)
+		{
+			startNewHand();
+		}
+		gameBoard.displayCommCard(state);
 		if (state == 5)
 		{
 			activePlayers = new Player[numberOfOpponents+1];
@@ -60,20 +66,17 @@ class Game
 			{
 				activePlayers[i] = players[i].getPlayer();
 			}
-			checkWinner(activePlayers);
-			//TODO: Display winner and show all cards
+			//checkWinner(activePlayers);
 			//TODO: Give winner pot
 			resetGame();
-			startNewHand();
 		}
 		else
 		{
-			gameBoard.displayCommCard(state);
 			state++;
 		}
 	}
 	
-	private void resetGame()
+	public void resetGame()
 	{
 		for (int i=0; i<players.length; i++)
 		{
@@ -84,12 +87,13 @@ class Game
 			temp.wipeHand();
 			temp.setBet(0);
 		}
+		
 		dealer.returnCommCards();
 		dealer.wipeCommCards();
-		state = 1;
+		state = 0;
 	}
 	
-	private void startNewHand()
+	public void startNewHand()
 	{
 		dealer.shuffle();
 		for (int i=0; i<players.length; i++)
@@ -126,28 +130,6 @@ class Game
     }
 
     /*
-	method to display flop, turn, and river
-	Accepts an integer 3, 4, or 5 that is the
-	type of deal turn. 3 = Flop, 4 = Turn,
-	5 = River
-    */
-    private void dealFlops(int type)
-    {
-        if(type == 3)
-        {
-            //Display Flop
-        }
-        else if(type == 4)
-        {
-            //Display Turn
-        }
-        else
-        {
-            //Display River
-        }
-    }
-
-    /*
 	Method to check, after the round is over, who won.
 	It accepts an array of all of the players.
     */
@@ -155,4 +137,9 @@ class Game
     {
 		
     }
+	
+	public int getState()
+	{
+		return state;
+	}
 }
