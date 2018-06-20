@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 class Game
 {
 	private int numberOfOpponents;
@@ -66,7 +68,7 @@ class Game
 			{
 				activePlayers[i] = players[i].getPlayer();
 			}
-			//checkWinner(activePlayers);
+			checkWinner(activePlayers);
 			//TODO: Give winner pot
 			resetGame();
 		}
@@ -133,10 +135,84 @@ class Game
 	Method to check, after the round is over, who won.
 	It accepts an array of all of the players.
     */
-    private void checkWinner(Player [] players)
+    private void checkWinner(Player[] players)
     {
+		Card[] currHand = new Card[7];
+		HashMap<String, Integer> scores = new HashMap<String, Integer>();
+		int score = 0;
 		
-    }
+		for (int i =0; i<5; i++)
+		{
+			currHand[i] = dealer.getCommCards()[i];
+		}
+
+		for(int i=0; i<players.length; i++) {
+			
+			currHand[5] = players[i].getCurrentHand()[0];
+			currHand[6] = players[i].getCurrentHand()[1];
+			score = 0;
+			
+			System.out.println(players[i].getName());
+			
+			//loop to make seven cards here into currHand
+			
+			if(Hands.royalFlush(currHand)) {
+				System.out.println("Player somehow has a royal flush");
+				scores.put(players[i].getName(), 10); //give player a score
+			}
+			else if(Hands.straightFlush(currHand)) {
+				System.out.println("Player has straight flush");
+				scores.put(players[i].getName(), 9); //give player a score
+			}
+			else if(Hands.fourOfAKind(currHand)) {
+				System.out.println("Player has four of a kind");
+				scores.put(players[i].getName(), 8); //give player a score
+			}
+			else if(Hands.fullHouse(currHand)) {
+				System.out.println("Player has full house");
+				scores.put(players[i].getName(), 7); //give player a score
+			}
+			else if(Hands.flush(currHand)) {
+				System.out.println("Player has a flush");
+				scores.put(players[i].getName(), 6); //give player a score
+			}
+			else if(Hands.straight(currHand)) {
+				System.out.println("Player has straight");
+				scores.put(players[i].getName(), 5); //give player a score
+			}
+			else if(Hands.threeOfAKind(currHand)) {
+				System.out.println("Player has three of a kind");
+				 scores.put(players[i].getName(), 4); //give player a score
+			}
+			else if(Hands.twoPair(currHand)) {
+				System.out.println("Player has two pair");
+				scores.put(players[i].getName(), 3); //give player a score
+			}
+			else if(Hands.onePair(currHand)) {
+				System.out.println("Player has a pair");
+				scores.put(players[i].getName(), 2); //give player a score
+			}
+			else if(Hands.highCard(currHand)) {
+				System.out.println("Player only has high card");
+				scores.put(players[i].getName(), 1); //give player a score
+			}
+		}
+		
+		int max = 0;
+		String winner = "";
+		
+		for(int i = 0; i < players.length; i++)
+		{
+			if(scores.get(players[i].getName()) > max)
+			{
+				max = scores.get(players[i].getName());
+				winner = players[i].getName();
+			}	
+		}
+		
+		System.out.println(winner + " won the hand!");
+		
+	}
 	
 	public int getState()
 	{
