@@ -146,7 +146,7 @@ class Game
 		{
 			currHand[i] = dealer.getCommCards()[i];
 		}
-
+		
 		for(int i=0; i<players.length; i++) {
 			
 			currHand[5] = players[i].getCurrentHand()[0];
@@ -154,8 +154,6 @@ class Game
 			score = 0;
 			
 			System.out.println(players[i].getName());
-			
-			//loop to make seven cards here into currHand
 			
 			if(Hands.royalFlush(currHand)) {
 				System.out.println("Player somehow has a royal flush");

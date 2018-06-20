@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Arrays;
 
 public class Hands {
@@ -149,34 +150,41 @@ public class Hands {
 	*/
 	public static boolean fullHouse(Card[] cards) 
 	{
+		HashMap<String, Integer> tallies = new HashMap<String, Integer>();
 		int count = 0;
 		boolean foundPair = false;
 		boolean foundTrio = false;
 		
+		tallies.put("Two", 0);
+		tallies.put("Three", 0);
+		tallies.put("Four", 0);
+		tallies.put("Five", 0);
+		tallies.put("Six", 0);
+		tallies.put("Seven", 0);
+		tallies.put("Eight", 0);
+		tallies.put("Nine", 0);
+		tallies.put("Ten", 0);
+		tallies.put("Jack", 0);
+		tallies.put("Queen", 0);
+		tallies.put("King", 0);
+		tallies.put("Ace", 0);
+		
 		for( int j = 0; j < cards.length; j++ ) 
 		{
-			count = 1;
-			
-			for( int i = j+1; i < cards.length; i++ ) 
-			{
-				if( cards[j].getRank() == cards[i].getRank() ) 
-				{
-					//System.out.println(cards[i].getRank());
-					//System.out.println(cards[j].getRank());
-					count++;						
-				}
-				
-			}
-			
-			if(count == 3) 
-			{
-				foundTrio = true;
-			}
-			else if(count == 2) 
+			String cardRank = cards[j].getRank();
+			tallies.put( cardRank, (tallies.get(cardRank)+1) );
+		}
+		
+		for( Map.Entry<String, Integer> entry : tallies.entrySet() ) 
+		{
+			if(entry.getValue() == 2) 
 			{
 				foundPair = true;
 			}
-			
+			if(entry.getValue() == 3) 
+			{
+				foundTrio = true;
+			}
 		}
 		
 		if(foundPair && foundTrio) 
@@ -349,38 +357,43 @@ public class Hands {
 	*/
 	public static boolean twoPair(Card[] cards) {
 		
-		boolean foundOne = false;
-		int pairCount = 0;
+		HashMap<String, Integer> tallies = new HashMap<String, Integer>();
 		int count = 0;
+		
+		tallies.put("Two", 0);
+		tallies.put("Three", 0);
+		tallies.put("Four", 0);
+		tallies.put("Five", 0);
+		tallies.put("Six", 0);
+		tallies.put("Seven", 0);
+		tallies.put("Eight", 0);
+		tallies.put("Nine", 0);
+		tallies.put("Ten", 0);
+		tallies.put("Jack", 0);
+		tallies.put("Queen", 0);
+		tallies.put("King", 0);
+		tallies.put("Ace", 0);
 		
 		for( int j = 0; j < cards.length; j++ ) 
 		{
-			count = 1;
-			
-			for( int i = j+1; i < cards.length; i++ ) 
-			{
-				if( cards[j].getRank() == cards[i].getRank() ) 
-				{
-					//System.out.println(cards[i].getRank());
-					//System.out.println(cards[j].getRank());
-					count++;						
-				}	
-
-				if(count == 2) 
-				{
-					if(pairCount == 2) 
-					{
-						return true;
-					}
-					else
-					{
-						pairCount++;
-					}
-				}
-				
-			}
+			String cardRank = cards[j].getRank();
+			tallies.put( cardRank, (tallies.get(cardRank)+1) );
 		}
 		
+		for( Map.Entry<String, Integer> entry : tallies.entrySet() ) 
+		{
+			if(entry.getValue() == 2) 
+			{
+				count++;
+			}
+			
+			if(count == 2) 
+			{
+				return true;
+			}
+			
+		}
+
 		return false;
 	}
 	
