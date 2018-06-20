@@ -129,8 +129,8 @@ public class Hands {
 			for( int i = j+1; i < cards.length; i++ ) {
 				
 				if( cards[j].getRank() == cards[i].getRank() ) {
-					System.out.println(cards[i].getRank());
-					System.out.println(cards[j].getRank());
+					//System.out.println(cards[i].getRank());
+					//System.out.println(cards[j].getRank());
 					count++;						
 				}	
 
@@ -161,8 +161,8 @@ public class Hands {
 			{
 				if( cards[j].getRank() == cards[i].getRank() ) 
 				{
-					System.out.println(cards[i].getRank());
-					System.out.println(cards[j].getRank());
+					//System.out.println(cards[i].getRank());
+					//System.out.println(cards[j].getRank());
 					count++;						
 				}
 				
@@ -208,8 +208,8 @@ public class Hands {
 				
 				if( cards[j].getSuit() == cards[i].getSuit() ) 
 				{
-					System.out.println(cards[i].getSuit());
-					System.out.println(cards[j].getSuit());
+					//System.out.println(cards[i].getSuit());
+					//System.out.println(cards[j].getSuit());
 					count++;						
 				}	
 
@@ -308,8 +308,8 @@ public class Hands {
 			{
 				if( cards[j].getRank() == cards[i].getRank() ) 
 				{
-					System.out.println(cards[i].getRank());
-					System.out.println(cards[j].getRank());
+					//System.out.println(cards[i].getRank());
+					//System.out.println(cards[j].getRank());
 					count++;						
 				}	
 
@@ -361,8 +361,8 @@ public class Hands {
 			{
 				if( cards[j].getRank() == cards[i].getRank() ) 
 				{
-					System.out.println(cards[i].getRank());
-					System.out.println(cards[j].getRank());
+					//System.out.println(cards[i].getRank());
+					//System.out.println(cards[j].getRank());
 					count++;						
 				}	
 
@@ -402,8 +402,8 @@ public class Hands {
 			{
 				if( cards[j].getRank() == cards[i].getRank() ) 
 				{
-					System.out.println(cards[i].getRank());
-					System.out.println(cards[j].getRank());
+					//System.out.println(cards[i].getRank());
+					//System.out.println(cards[j].getRank());
 					count++;						
 				}	
 

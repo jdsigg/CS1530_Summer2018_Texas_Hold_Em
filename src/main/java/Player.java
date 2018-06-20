@@ -75,7 +75,7 @@ class Player
     Method to get player's current hand
     returns a array of type Card
 	*/
-	public Card [] getCurrentHand()
+	public Card[] getCurrentHand()
 	{
 		return this.currentHand;
 	}
