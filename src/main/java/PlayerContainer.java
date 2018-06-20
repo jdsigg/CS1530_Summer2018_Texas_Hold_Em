@@ -23,8 +23,9 @@ class PlayerContainer extends JPanel
 	private JButton callButton;
 	
 	private Player player;
+	private Game game;
 	
-	public PlayerContainer()
+	public PlayerContainer(Game game)
 	{
 		this.setLayout(new FlowLayout());
 		this.setPreferredSize(new Dimension(260,300));
@@ -54,6 +55,7 @@ class PlayerContainer extends JPanel
 		callButton = new JButton("Call");
 		callButton.addActionListener(e -> callButtonActionPerformed(e));
 		this.add(callButton);
+		this.game = game;
 	}
 	
 	public void setPlayer(Player player)
@@ -84,6 +86,8 @@ class PlayerContainer extends JPanel
 		Image scaledCardOne = cardOne.getScaledInstance(120, 150, Image.SCALE_SMOOTH);
 		
 		cardOnePanel.add(new JLabel(new ImageIcon(scaledCardOne)));
+		cardOnePanel.repaint();
+		cardOnePanel.revalidate();
 	}
 	
 	public void setCardTwo()
@@ -93,10 +97,25 @@ class PlayerContainer extends JPanel
 		Image cardTwo = player.getCurrentHand()[1].getImage().getImage();
 		Image scaledCardTwo = cardTwo.getScaledInstance(120, 150, Image.SCALE_SMOOTH);
 		cardTwoPanel.add(new JLabel(new ImageIcon(scaledCardTwo)));
+		cardTwoPanel.repaint();
+		cardTwoPanel.revalidate();
+	}
+	
+	public void setBlanks()
+	{
+		cardOnePanel.removeAll();
+		cardTwoPanel.removeAll();
+		cardOnePanel.add(new JLabel());
+		cardTwoPanel.add(new JLabel());
+		cardOnePanel.repaint();
+		cardOnePanel.revalidate();
+		cardTwoPanel.repaint();
+		cardTwoPanel.revalidate();
 	}
 	
 	public void betButtonActionPerformed(ActionEvent e)
 	{
+		System.out.println("State: "+ game.getState());
 		int defaultBet = 20;
 		player.setBet(defaultBet);
 		

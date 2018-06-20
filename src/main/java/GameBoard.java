@@ -16,6 +16,7 @@ class GameBoard extends JFrame
 	private Dealer dealer;
 	private DealerContainer dealerBox;
 	private Game game;
+	private boolean isFirstHand = true;
 	
 	public GameBoard(String title)
 	{
@@ -37,12 +38,14 @@ class GameBoard extends JFrame
 		//create player containers to display
 		for(int i = 0; i < numberOfOpponents+1; i++)
 		{
-			PlayerContainer temp = new PlayerContainer();
+			PlayerContainer temp = new PlayerContainer(game);
 			players[i] = temp;
 			if(i != 0)
 				temp.hideButtons();
 			this.add(temp);
 		}
+		game.setPlayerContainers(players);
+		this.players = players;
 		
 		//create dealer container to display
 		dealerBox = new DealerContainer(dealer);
@@ -54,9 +57,8 @@ class GameBoard extends JFrame
 		assignPlayers(playerName);
 	}
 	
-	public void assignSharedVariables(Dealer dealer, PlayerContainer[] players)
+	public void assignSharedVariables(Dealer dealer)
 	{
-		this.players = players;
 		this.dealer = dealer;
 	}
 	
@@ -90,21 +92,20 @@ class GameBoard extends JFrame
 			
 			container.updateName();
 			container.updateMoney();
-	
-			//dealer.dealCard(player);
-			//dealer.dealCard(player);
-			
-			//container.setCardOne();
-			//container.setCardTwo();
-			
 		}
-		game.startNewHand();
 	}
 	
 	public void displayCommCard(int state)
 	{
 		switch(state)
 		{
+			case 0:
+				for (int i =0; i<players.length; i++)
+				{
+					displayBlanks(i);
+				}
+				displayDealerBlanks();
+				break;
 			case 1:
 				break;
 			case 2:
@@ -120,7 +121,7 @@ class GameBoard extends JFrame
 				break;
 			case 5:
 				for(int i = 1; i < players.length; i++)
-					displayPlayerHand(players[i]);
+					displayPlayerHand(i);
 				break;
 			default:
 				break;
@@ -129,8 +130,18 @@ class GameBoard extends JFrame
 	
 	public void displayPlayerHand(int player)
 	{
-		containers[player].setCardOne();
-		containers[player].setCardTwo();
+		players[player].setCardOne();
+		players[player].setCardTwo();
+	}
+	
+	public void displayBlanks(int player)
+	{
+		players[player].setBlanks();
+	}
+	
+	public void displayDealerBlanks()
+	{
+		dealerBox.setBlanks();
 	}
 }
 
