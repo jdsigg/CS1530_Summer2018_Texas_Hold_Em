@@ -50,6 +50,7 @@ class PlayerContainer extends JPanel
 		
 		betButton = new JButton("Bet $20");
 		betButton.addActionListener(e -> betButtonActionPerformed(e));
+		betButton.setEnabled(false);
 		this.add(betButton);
 		
 		callButton = new JButton("Call");
@@ -135,6 +136,11 @@ class PlayerContainer extends JPanel
 	{
 		this.betButton.setVisible(false);
 		this.callButton.setVisible(false);		
+	}
+	
+	public void setBetButton(boolean state)
+	{
+		betButton.setEnabled(state);
 	}
 	
 	/*
