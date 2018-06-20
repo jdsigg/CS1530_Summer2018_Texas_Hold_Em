@@ -30,7 +30,7 @@ class Game
     */
     private void dealCommCards()
     {
-		
+
     }
 
     /*
@@ -41,9 +41,9 @@ class Game
     */
     private void playerFold(Player player)
     {
-	
+
     }
-	
+
 	public void foldEveryone()
 	{
 		activePlayers = new Player[1];
@@ -51,7 +51,7 @@ class Game
 		checkWinner(activePlayers);
 		resetGame();
 	}
-	
+
 	public void nextState()
 	{
 		if(state==1)
@@ -75,7 +75,7 @@ class Game
 			state++;
 		}
 	}
-	
+
 	public void resetGame()
 	{
 		for (int i=0; i<players.length; i++)
@@ -87,12 +87,12 @@ class Game
 			temp.wipeHand();
 			temp.setBet(0);
 		}
-		
+
 		dealer.returnCommCards();
 		dealer.wipeCommCards();
 		state = 0;
 	}
-	
+
 	public void startNewHand()
 	{
 		dealer.shuffle();
@@ -107,12 +107,12 @@ class Game
 		}
 		dealer.dealCommCards();
 	}
-	
+
 	public void setNumberOfOpponents(int num)
 	{
 		this.numberOfOpponents = num;
 	}
-	
+
 	public void setPlayerContainers(PlayerContainer[] players)
 	{
 		this.players = players;
@@ -135,9 +135,9 @@ class Game
     */
     private void checkWinner(Player [] players)
     {
-		
+
     }
-	
+
 	public int getState()
 	{
 		return state;
