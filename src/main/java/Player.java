@@ -92,6 +92,7 @@ class Player
 	public void setBet(int newBet)
 	{
 		this.bet = newBet;
+		this.updateMoney(this.getMoney()-newBet);
 	}
 	
 	/*

@@ -68,22 +68,31 @@ class DealerContainer extends JPanel
 		potLabel = new JLabel("Pot:");
 		this.add(potLabel);
 		
-		pot = new JLabel("Not pot.");
+		pot = new JLabel("No pot.");
 		this.add(pot);
 		
 		this.dealer = dealer;
 	}
 	
+	/*
+	Update the pot display
+	*/
 	public void setPot(String newPot)
 	{
 		pot.setText(newPot);
 	}
 	
+	/*
+	Update the min bet display
+	*/
 	public void setMinBet(String newBet)
 	{
 		minBet.setText(newBet);
 	}
 	
+	/*
+	Display card one
+	*/
 	public void setCardOne()
 	{
 		cardOnePanel.removeAll();
@@ -97,6 +106,9 @@ class DealerContainer extends JPanel
 		cardOnePanel.revalidate();
 	}
 	
+	/*
+	Display card two
+	*/
 	public void setCardTwo()
 	{
 		cardTwoPanel.removeAll();
@@ -110,6 +122,9 @@ class DealerContainer extends JPanel
 		cardTwoPanel.revalidate();
 	}
 	
+	/*
+	Display card three
+	*/
 	public void setCardThree()
 	{
 		cardThreePanel.removeAll();
@@ -123,6 +138,9 @@ class DealerContainer extends JPanel
 		cardThreePanel.revalidate();
 	}
 	
+	/*
+	Display card four
+	*/
 	public void setCardFour()
 	{
 		cardFourPanel.removeAll();
@@ -136,6 +154,9 @@ class DealerContainer extends JPanel
 		cardFourPanel.revalidate();
 	}
 	
+	/*
+	Display card five
+	*/
 	public void setCardFive()
 	{
 		cardFivePanel.removeAll();
@@ -149,6 +170,9 @@ class DealerContainer extends JPanel
 		cardFivePanel.revalidate();
 	}
 	
+	/*
+	Display all cards as blank
+	*/
 	public void setBlanks()
 	{
 		cardOnePanel.removeAll();
@@ -165,6 +189,14 @@ class DealerContainer extends JPanel
 		
 		this.repaint();
 		this.revalidate();
+	}
+	
+	/*
+	return the dealer contained within the container
+	*/
+	public Dealer getDealer()
+	{
+		return dealer;
 	}
 	
 	/*
