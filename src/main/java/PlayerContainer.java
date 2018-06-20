@@ -116,9 +116,9 @@ class PlayerContainer extends JPanel
 	
 	public void betButtonActionPerformed(ActionEvent e)
 	{
-		System.out.println("State: "+ game.getState());
 		int defaultBet = 20;
 		player.setBet(defaultBet);
+		betButton.setEnabled(false);
 		
 		//call a method that folds everybody else
 			
@@ -138,6 +138,10 @@ class PlayerContainer extends JPanel
 		this.callButton.setVisible(false);		
 	}
 	
+	/*
+	Enable bet button. At points, betting is inappropriate.
+	Make button uneditable when that happens
+	*/
 	public void setBetButton(boolean state)
 	{
 		betButton.setEnabled(state);

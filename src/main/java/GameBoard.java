@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import java.io.IOException;
+
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 class GameBoard extends JFrame
 {
 	private PlayerContainer[] players;
@@ -26,7 +31,15 @@ class GameBoard extends JFrame
 		
 		this.setSize(1300, 900);
 		this.setResizable(false);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		
+		this.addWindowListener(new WindowAdapter()
+		{
+			public void windowClosing(WindowEvent e)
+			{
+				exitGame();
+			}
+		});
 	}
 	
 	public void createPlayerFrames(String playerName, int numberOfOpponents, Game game)
@@ -93,9 +106,13 @@ class GameBoard extends JFrame
 			container.updateName();
 			container.updateMoney();
 		}
+		game.startLogger();
 	}
 	
-	public void displayCommCard(int state)
+	/*
+	Function that displays cards based on order of state machine
+	*/
+	public void displayCommCard(int state, Logger logger)
 	{
 		switch(state)
 		{
@@ -105,19 +122,25 @@ class GameBoard extends JFrame
 					displayBlanks(i);
 				}
 				displayDealerBlanks();
+				updateBet();
+				updatePot();
 				break;
 			case 1:
 				players[0].setBetButton(true);
 				break;
 			case 2:
+				logString("Flop: "+dealer.getCommCards()[0].toString()+", "+dealer.getCommCards()[1].toString()+", "
+										+dealer.getCommCards()[2].toString(), logger);
 				dealerBox.setCardOne();
 				dealerBox.setCardTwo();
 				dealerBox.setCardThree();
 				break;
 			case 3:
+				logString("Turn: "+dealer.getCommCards()[3].toString(), logger);
 				dealerBox.setCardFour();
 				break;
 			case 4:
+				logString("River: "+dealer.getCommCards()[4].toString(), logger);
 				dealerBox.setCardFive();
 				break;
 			case 5:
@@ -144,6 +167,34 @@ class GameBoard extends JFrame
 	public void displayDealerBlanks()
 	{
 		dealerBox.setBlanks();
+	}
+	
+	public void updatePot()
+	{
+		dealerBox.setPot(Double.toString(dealerBox.getDealer().getPot()));
+	}
+	
+	public void updateBet()
+	{
+		//for now, bet can only be $20, and is always same as the pot
+		dealerBox.setMinBet(Double.toString(dealerBox.getDealer().getPot()));
+	}
+	
+	public void logString(String message, Logger logger)
+	{
+		try
+		{
+			logger.log(message);
+		}
+		catch(IOException e)
+		{
+			System.out.println("Failed logging message: "+message);
+		}
+	}
+	
+	public void exitGame()
+	{
+		game.exit();
 	}
 }
 

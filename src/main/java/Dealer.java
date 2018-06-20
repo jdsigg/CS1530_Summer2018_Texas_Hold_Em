@@ -62,16 +62,27 @@ class Dealer
 		return commCards;
 	}
 		
+	/*
+	Shuffle the deck
+	*/
 	public void shuffle()
 	{
 		dealerDeck.shuffle();
 	}
 	
+	/*
+	Give a card back to the dealer, and therefore
+	place it back in the deck
+	*/
 	public void returnCard(Card card)
 	{
 		dealerDeck.addCard(card);
 	}
 	
+	/*
+	After a round is over, return all cards in the
+	community pile back into the deck
+	*/
 	public void returnCommCards()
 	{
 		for(int i =0; i<commCards.length; i++)
@@ -80,6 +91,10 @@ class Dealer
 		}
 	}
 	
+	/*
+	Create a new instance of community cards, 
+	losing reference to any previous instance
+	*/
 	public void wipeCommCards()
 	{
 		commCards = new Card[5];

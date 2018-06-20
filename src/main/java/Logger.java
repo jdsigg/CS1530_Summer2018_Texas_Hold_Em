@@ -50,7 +50,7 @@ class Logger
     /*
 	method to log game play to text file
     */
-    public void logGamePlay(String text) throws IOException
+    public void log(String text) throws IOException
     {
         this.printWriter.append(text);
         this.printWriter.append("\n");
