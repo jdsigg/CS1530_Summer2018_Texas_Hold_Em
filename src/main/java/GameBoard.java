@@ -107,6 +107,7 @@ class GameBoard extends JFrame
 				displayDealerBlanks();
 				break;
 			case 1:
+				players[0].setBetButton(true);
 				break;
 			case 2:
 				dealerBox.setCardOne();
@@ -122,6 +123,7 @@ class GameBoard extends JFrame
 			case 5:
 				for(int i = 1; i < players.length; i++)
 					displayPlayerHand(i);
+				players[0].setBetButton(false);
 				break;
 			default:
 				break;
