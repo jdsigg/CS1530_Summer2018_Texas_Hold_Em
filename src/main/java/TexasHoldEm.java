@@ -7,16 +7,6 @@ class TexasHoldEm
 {
 	public static void main(String []args) throws IOException
 	{
-		/*Player [] p = new Player[3];
-        for(int x = 0;x<p.length;x++)
-        {
-            p[x] = new Player("Antonino " + x);
-        }
-        Logger l = new Logger("test.txt",p);
-		l.logGamePlay("GAme PLay 1");
-		l.logGamePlay("GAme PLay 2");
-        l.closeLogger();*/
-
 		Deck deck = new Deck();
 		PlayerContainer[] players = new PlayerContainer[8];
 		Dealer dealer = new Dealer(deck);

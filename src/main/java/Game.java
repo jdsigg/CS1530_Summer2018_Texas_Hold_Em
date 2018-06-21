@@ -10,6 +10,7 @@ class Game
 	private GameBoard gameBoard;
 	private Dealer dealer;
 	private Logger logger;
+	
     /*
 	Constructor for Game Class
     */
@@ -45,9 +46,9 @@ class Game
 	}
 
     /*
-	method to deal the players
+	Method to deal the players
 	
-	did not use in this implementation. Leaving for future.
+	Did not use in this implementation. Leaving for future.
     */
     private void dealToPlayer()
     {
@@ -55,9 +56,9 @@ class Game
     }
 
     /*
-    method to deal five commcards[5]
+    Method to deal five commcards[5]
 	
-	did not use in this implementation. Leaving for future.
+	Did not use in this implementation. Leaving for future.
     */
     private void dealCommCards()
     {
@@ -65,12 +66,12 @@ class Game
     }
 
     /*
-	method to call when a player, human or AI is
+	Method to call when a player, human or AI is
 	going to fold. Method must accept a player. The
 	player passed in is the player that is going to
 	fold.
 	
-	did not use in this implementation. Leaving for future.
+	Did not use in this implementation. Leaving for future.
     */
     private void playerFold(Player player)
     {
@@ -111,15 +112,16 @@ class Game
 			startNewHand();
 		}
 		gameBoard.displayCommCard(state, logger);
+		
 		if (state == 5)
 		{
 			activePlayers = new Player[numberOfOpponents+1];
+			
 			for (int i=0; i<activePlayers.length; i++)
 			{
 				activePlayers[i] = players[i].getPlayer();
 			}
 			checkWinner(activePlayers);
-			//TODO: Give winner pot
 			resetGame();
 		}
 		else
@@ -142,7 +144,6 @@ class Game
 			temp.wipeHand();
 			temp.setBet(0);
 		}
-
 		dealer.returnCommCards();
 		dealer.wipeCommCards();
 		state = 0;
@@ -192,12 +193,12 @@ class Game
 	}
 
     /*
-	method to call when a player, human or AI is
+	Method to call when a player, human or AI is
 	going to check. Method must accept a player.
 	The player passed in is the player that is
 	going to check.
 	
-	did not use in this implementation. Will leave for further design
+	Did not use in this implementation. Will leave for further design
     */
     private void playerCheck(Player player)
     {
@@ -221,7 +222,8 @@ class Game
 			currHand[i] = dealer.getCommCards()[i];
 		}
 		
-		for(int i=0; i<players.length; i++) {
+		for(int i=0; i<players.length; i++)
+		{
 			
 			currHand[5] = players[i].getCurrentHand()[0];
 			currHand[6] = players[i].getCurrentHand()[1];
@@ -236,43 +238,43 @@ class Game
 			
 			if(Hands.royalFlush(currHand)) {
 				logString("->Player somehow has a royal flush");
-				scores.put(players[i].getName(), 10); //give player a score
+				scores.put(players[i].getName(), 10); 	//Give player a score
 			}
 			else if(Hands.straightFlush(currHand)) {
 				logString("->Player has straight flush");
-				scores.put(players[i].getName(), 9); //give player a score
+				scores.put(players[i].getName(), 9); 	//Give player a score
 			}
 			else if(Hands.fourOfAKind(currHand)) {
 				logString("->Player has four of a kind");
-				scores.put(players[i].getName(), 8); //give player a score
+				scores.put(players[i].getName(), 8); 	//Give player a score
 			}
 			else if(Hands.fullHouse(currHand)) {
 				logString("->Player has full house");
-				scores.put(players[i].getName(), 7); //give player a score
+				scores.put(players[i].getName(), 7); 	//Give player a score
 			}
 			else if(Hands.flush(currHand)) {
 				logString("->Player has a flush");
-				scores.put(players[i].getName(), 6); //give player a score
+				scores.put(players[i].getName(), 6); 	//Give player a score
 			}
 			else if(Hands.straight(currHand)) {
 				logString("->Player has straight");
-				scores.put(players[i].getName(), 5); //give player a score
+				scores.put(players[i].getName(), 5); 	//Give player a score
 			}
 			else if(Hands.threeOfAKind(currHand)) {
 				 logString("->Player has three of a kind");
-				 scores.put(players[i].getName(), 4); //give player a score
+				 scores.put(players[i].getName(), 4); 	//Give player a score
 			}
 			else if(Hands.twoPair(currHand)) {
 				logString("->Player has two pair");
-				scores.put(players[i].getName(), 3); //give player a score
+				scores.put(players[i].getName(), 3); 	//Give player a score
 			}
 			else if(Hands.onePair(currHand)) {
 				logString("->Player has a pair");
-				scores.put(players[i].getName(), 2); //give player a score
+				scores.put(players[i].getName(), 2); 	//Give player a score
 			}
 			else if(Hands.highCard(currHand)) {
 				logString("->Player only has high card");
-				scores.put(players[i].getName(), 1); //give player a score
+				scores.put(players[i].getName(), 1); 	//Give player a score
 			}
 		}
 		
@@ -280,8 +282,8 @@ class Game
 		String winner = "";
 		Player winningPlayer = null;
 		
-		//best score wins
-		//future deliverable will require a tie breaking method for tied hands
+		//Best score wins
+		//Future deliverable will require a tie breaking method for tied hands
 		for(int i = 0; i < players.length; i++)
 		{
 			if(scores.get(players[i].getName()) > max)
@@ -291,27 +293,26 @@ class Game
 				winningPlayer = players[i];
 			}	
 		}
-		
-		//show the pot
+		//Show the pot
 		gameBoard.updatePot();
-		//show the min bet
+		
+		//Show the min bet
 		gameBoard.updateBet();
 		
-		//log who won and the money they receive
+		//Log who won and the money they receive
 		logString(winner + " won the hand!");
 		logString(winner + "gets money from pot: $"+dealer.getPot());
 		
-		//add that money to their pot
+		//Add that money to their pot
 		winningPlayer.updateMoney(dealer.getPot() + winningPlayer.getMoney());
 		
 		logString(winner+ "'s money is now: $"+winningPlayer.getMoney());
 		
-		//clear the pot
+		//Clear the pot
 		dealer.updatePot(0);
 		
-		//clear winner's bet (for now, only human player can change their bet. This should be replaced with a clear all player bets)
+		//Clear winner's bet (for now, only human player can change their bet. This should be replaced with a clear all player bets)
 		winningPlayer.setBet(0);
-		
 	}
 	
 	/*
@@ -350,7 +351,6 @@ class Game
 		{
 			System.out.println("Failed closing logger.");
 		}
-
 		System.exit(0);
 	}
 }

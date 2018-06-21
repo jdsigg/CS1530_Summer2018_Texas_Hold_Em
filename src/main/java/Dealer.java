@@ -99,6 +99,4 @@ class Dealer
 	{
 		commCards = new Card[5];
 	}
-	
-	
 }

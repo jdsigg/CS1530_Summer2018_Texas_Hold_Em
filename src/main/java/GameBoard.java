@@ -48,7 +48,7 @@ class GameBoard extends JFrame
 		this.numberOfOpponents = numberOfOpponents;
 		players = new PlayerContainer[numberOfOpponents+1];
 		
-		//create player containers to display
+		//Create player containers to display
 		for(int i = 0; i < numberOfOpponents+1; i++)
 		{
 			PlayerContainer temp = new PlayerContainer(game);
@@ -60,13 +60,13 @@ class GameBoard extends JFrame
 		game.setPlayerContainers(players);
 		this.players = players;
 		
-		//create dealer container to display
+		//Create dealer container to display
 		dealerBox = new DealerContainer(dealer);
 		
 		this.add(dealerBox);
 		this.setVisible(true);
 		
-		//call function to assign players to each container
+		//Call function to assign players to each container
 		assignPlayers(playerName);
 	}
 	
@@ -83,13 +83,13 @@ class GameBoard extends JFrame
 		
 		Collections.shuffle(names);
 		
-		//create ArrayList of opponents
+		//Create ArrayList of opponents
 		opponents = new ArrayList(numberOfOpponents);
 		
-		//set 0th player to be human
+		//Set 0th player to be human
 		players[0].setPlayer(new Player(playerName));
 		
-		//set remaining players to be AI
+		//Set remaining players to be AI
 		for(int i = 1; i < numberOfOpponents+1; i++)
 		{
 			Player temp = new Player(names.get(i));
@@ -97,7 +97,7 @@ class GameBoard extends JFrame
 			opponents.add(temp);
 		}
 		
-		//iterate over players, showing their respective information
+		//Iterate over players, showing their respective information
 		for(int i = 0; i < players.length; i++)
 		{
 			PlayerContainer container = players[i];
@@ -153,33 +153,52 @@ class GameBoard extends JFrame
 		}
 	}
 	
+	/*
+	Method to display the player's hand
+	*/
 	public void displayPlayerHand(int player)
 	{
 		players[player].setCardOne();
 		players[player].setCardTwo();
 	}
 	
+	/*
+	Method to display blanks for the AI opponents.
+	This will be done each hand after the reveal.
+	*/
 	public void displayBlanks(int player)
 	{
 		players[player].setBlanks();
 	}
 	
+	/*
+	Method to display blanks for the community cards
+	*/
 	public void displayDealerBlanks()
 	{
 		dealerBox.setBlanks();
 	}
 	
+	/*
+	Method to update the pot on the GUI
+	*/
 	public void updatePot()
 	{
 		dealerBox.setPot(Double.toString(dealerBox.getDealer().getPot()));
 	}
 	
+	/*
+	Method to update the current bet on the GUI
+	*/
 	public void updateBet()
 	{
-		//for now, bet can only be $20, and is always same as the pot
+		//For now, bet can only be $20, and is always same as the pot
 		dealerBox.setMinBet(Double.toString(dealerBox.getDealer().getPot()));
 	}
 	
+	/*
+	Method to send a string to the logger
+	*/
 	public void logString(String message, Logger logger)
 	{
 		try
@@ -192,6 +211,9 @@ class GameBoard extends JFrame
 		}
 	}
 	
+	/*
+	Method to exit the game
+	*/
 	public void exitGame()
 	{
 		game.exit();

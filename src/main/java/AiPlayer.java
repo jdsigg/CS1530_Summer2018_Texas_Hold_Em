@@ -11,5 +11,4 @@ public class AiPlayer extends Player
 	{
 		super(name);
 	}
-
 }

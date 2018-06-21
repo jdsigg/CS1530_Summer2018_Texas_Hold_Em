@@ -70,19 +70,15 @@ class InitialPlayerDialog extends JDialog
 	
 	private void startButtonActionPerformed()
 	{
-		//grab number of opponents
+		//Grab number of opponents
 		Integer numberOfOpponents = (Integer)opponents.getSelectedItem();
 		int opponentNumber = numberOfOpponents.intValue();
 		
 		game.setNumberOfOpponents(opponentNumber);
 		
-		//grab players name
+		//Grab players name
 		String playerName = nameField.getText();
 		
-		/*
-		System.out.println("Your name is: "+playerName);
-		System.out.println("You have opponents: "+opponentNumber);
-		*/
 		this.setVisible(false);
 		parent.createPlayerFrames(playerName, opponentNumber, game);
 	}

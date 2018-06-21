@@ -5,8 +5,8 @@ import java.util.Arrays;
 public class Hands {
 	
 	/*
-		Check if cards passed in yield a royal flush
-		10 through Ace rank, all same suit
+	Check if cards passed in yield a royal flush
+	10 through Ace rank, all same suit
 	*/
 	public static boolean royalFlush(Card[] cards) {
 		
@@ -52,7 +52,6 @@ public class Hands {
 				ace = true;
 				index++;
 			}
-			
 		}
 		
 		if(ten && jack && queen && king && ace) 
@@ -62,13 +61,12 @@ public class Hands {
 				return true;
 			}
 		}
-		
 		return false;
 	}
 	
 	/*
-		Check if cards passed in yield a straight flush
-		Any five consecutive card ranks, all same suit
+	Check if cards passed in yield a straight flush
+	Any five consecutive card ranks, all same suit
 	*/
 	public static boolean straightFlush(Card[] cards) 
 	{
@@ -97,7 +95,7 @@ public class Hands {
 			}
 		}
 		
-		for( int i = 0; i < cards.length; i++ ) 
+		for(int i = 0; i < cards.length; i++) 
 		{
 			if(suit == cards[i].getSuit())
 			{
@@ -110,37 +108,35 @@ public class Hands {
 		{
 			return true;
 		}
-		
-		
 		return false;
 	}
 	
 	/*
-		Check if cards passed in yield a four of a kind
-		Four cards of same rank, suit does not matter
+	Check if cards passed in yield a four of a kind
+	Four cards of same rank, suit does not matter
 	*/
 	public static boolean fourOfAKind(Card[] cards) {
 		
 		int count = 0;
 		
-		for( int j = 0; j < cards.length; j++ ) {
-			
+		for( int j = 0; j < cards.length; j++ )
+		{
 			count = 1;
 			
-			for( int i = j+1; i < cards.length; i++ ) {
+			for( int i = j+1; i < cards.length; i++ )
+			{
 				
-				if( cards[j].getRank() == cards[i].getRank() ) {
-					//System.out.println(cards[i].getRank());
-					//System.out.println(cards[j].getRank());
+				if(cards[j].getRank() == cards[i].getRank())
+				{
 					count++;						
 				}	
 
-				if(count == 4) {
+				if(count == 4)
+				{
 					return true;				
 				}	
 			}
 		}
-		
 		return false;
 	}
 	
@@ -169,13 +165,13 @@ public class Hands {
 		tallies.put("King", 0);
 		tallies.put("Ace", 0);
 		
-		for( int j = 0; j < cards.length; j++ ) 
+		for(int j = 0; j < cards.length; j++) 
 		{
 			String cardRank = cards[j].getRank();
 			tallies.put( cardRank, (tallies.get(cardRank)+1) );
 		}
 		
-		for( Map.Entry<String, Integer> entry : tallies.entrySet() ) 
+		for(Map.Entry<String, Integer> entry : tallies.entrySet()) 
 		{
 			if(entry.getValue() == 2) 
 			{
@@ -196,18 +192,18 @@ public class Hands {
 	}
 	
 	/*
-		Check if cards passed in yield a flush
-		Five cards with the same suit, rank irrelevant
+	Check if cards passed in yield a flush
+	Five cards with the same suit, rank irrelevant
 	*/
 	public static boolean flush(Card[] cards) 
 	{
 		int count = 0;
 		
-		for( int j = 0; j < cards.length; j++ ) 
+		for(int j = 0; j < cards.length; j++) 
 		{
 			count = 1;
 			
-			for( int i = j+1; i < cards.length; i++ ) 
+			for(int i = j+1; i < cards.length; i++) 
 			{
 				if(cards[j] == null || cards[i] == null) 
 				{
@@ -216,8 +212,6 @@ public class Hands {
 				
 				if( cards[j].getSuit() == cards[i].getSuit() ) 
 				{
-					//System.out.println(cards[i].getSuit());
-					//System.out.println(cards[j].getSuit());
 					count++;						
 				}	
 
@@ -227,13 +221,12 @@ public class Hands {
 				}
 			}
 		}
-		
 		return false;
 	}
 	
 	/*
-		Check if cards passed in yield a straight
-		Five consectuve ranks, suit irrelevant
+	Check if cards passed in yield a straight
+	Five consectuve ranks, suit irrelevant
 	*/
 	public static boolean straight(Card[] cards) {
 		
@@ -263,7 +256,6 @@ public class Hands {
 				cardVals[index] = possCards.get(cards[i].getRank());
 				index++;
 			}
-		
 		}
 		
 		Arrays.sort(cardVals);
@@ -278,10 +270,6 @@ public class Hands {
 				{
 					count++;
 				}
-				else if( (cardVals[j] - cardVals[j-1]) == 0 )
-				{
-					//continue;
-				}
 				else
 				{
 					break;
@@ -293,13 +281,12 @@ public class Hands {
 				return true;
 			}
 		}
-		
 		return false;
 	}
 	
 	/*
-		Check if cards passed in yield a three of a kind
-		Three cards of same rank, suit irrelevant
+	Check if cards passed in yield a three of a kind
+	Three cards of same rank, suit irrelevant
 	*/
 	public static boolean threeOfAKind(Card[] cards) 
 	{
@@ -308,16 +295,14 @@ public class Hands {
 		boolean foundOne = false;
 		int count = 0;
 		
-		for( int j = 0; j < cards.length; j++ ) 
+		for(int j = 0; j < cards.length; j++) 
 		{
 			count = 1;
 			
-			for( int i = j+1; i < cards.length; i++ ) 
+			for(int i = j+1; i < cards.length; i++) 
 			{
-				if( cards[j].getRank() == cards[i].getRank() ) 
+				if(cards[j].getRank() == cards[i].getRank()) 
 				{
-					//System.out.println(cards[i].getRank());
-					//System.out.println(cards[j].getRank());
 					count++;						
 				}	
 
@@ -341,19 +326,17 @@ public class Hands {
 						}
 					}*/
 					
-					//but for now...
+					//But for now...
 					return true;				
 				}
-				
 			}
 		}
-		
 		return false;
 	}
 	
 	/*
-		Check if cards passed in yield two pair
-		Two pairs, essentially two independent one pairs
+	Check if cards passed in yield two pair
+	Two pairs, essentially two independent one pairs
 	*/
 	public static boolean twoPair(Card[] cards) {
 		
@@ -374,13 +357,13 @@ public class Hands {
 		tallies.put("King", 0);
 		tallies.put("Ace", 0);
 		
-		for( int j = 0; j < cards.length; j++ ) 
+		for(int j = 0; j < cards.length; j++) 
 		{
 			String cardRank = cards[j].getRank();
-			tallies.put( cardRank, (tallies.get(cardRank)+1) );
+			tallies.put(cardRank,(tallies.get(cardRank)+1));
 		}
 		
-		for( Map.Entry<String, Integer> entry : tallies.entrySet() ) 
+		for(Map.Entry<String, Integer> entry : tallies.entrySet()) 
 		{
 			if(entry.getValue() == 2) 
 			{
@@ -390,16 +373,14 @@ public class Hands {
 			if(count == 2) 
 			{
 				return true;
-			}
-			
+			}	
 		}
-
 		return false;
 	}
 	
 	/*
-		Check if cards passed in yield a pair
-		Two cards that are equal in rank
+	Check if cards passed in yield a pair
+	Two cards that are equal in rank
 	*/
 	public static boolean onePair(Card[] cards) {
 		
@@ -407,16 +388,14 @@ public class Hands {
 		boolean foundOne = false;
 		int count = 0;
 		
-		for( int j = 0; j < cards.length; j++ ) 
+		for(int j = 0; j < cards.length; j++) 
 		{
 			count = 1;
 			
-			for( int i = j+1; i < cards.length; i++ ) 
+			for(int i = j+1; i < cards.length; i++) 
 			{
-				if( cards[j].getRank() == cards[i].getRank() ) 
+				if(cards[j].getRank() == cards[i].getRank()) 
 				{
-					//System.out.println(cards[i].getRank());
-					//System.out.println(cards[j].getRank());
 					count++;						
 				}	
 
@@ -439,23 +418,20 @@ public class Hands {
 							
 						}
 					}*/
-					
-					//but for now...
+					//But for now...
 					return true;				
 				}
-				
 			}
 		}
-		
 		return false;
 	}
 	
 	/*
-		Check if cards passed in yield a high card
-		Highest card rank in all of the cards
+	Check if cards passed in yield a high card
+	Highest card rank in all of the cards
 	*/
 	public static boolean highCard(Card[] cards) {
-		//identify highest rank like in pair, kinds, etc
+		//Identify highest rank like in pair, kinds, etc
 		return true;
 	}
 	

@@ -20,10 +20,14 @@ class Logger
     	}
 		this.fileName =  fileName;
         this.fw = new FileWriter(file,true);
+		
     	BufferedWriter bw = new BufferedWriter(fw);
+		
         this.printWriter = new PrintWriter(bw);
+		
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 	    LocalDateTime now = LocalDateTime.now();
+		
         this.printWriter.append("Game started - " + dtf.format(now));
         this.printWriter.append("\n");
         this.printWriter.append("Player: " + players[0].getName());
@@ -48,7 +52,7 @@ class Logger
     }
 
     /*
-	method to log game play to text file
+	Method to log game play to text file
     */
     public void log(String text) throws IOException
     {
@@ -64,5 +68,4 @@ class Logger
         this.printWriter.append("\n");
         this.printWriter.close();
     }
-
 }
