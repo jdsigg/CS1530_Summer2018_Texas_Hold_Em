@@ -192,7 +192,7 @@ class DealerContainer extends JPanel
 	}
 	
 	/*
-	return the dealer contained within the container
+	Return the dealer contained within the container
 	*/
 	public Dealer getDealer()
 	{

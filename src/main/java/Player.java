@@ -79,7 +79,10 @@ class Player
 	{
 		return this.currentHand;
 	}
-	
+
+	/*
+	Method to return the players cards to the deck
+	*/
 	public void wipeHand()
 	{
 		currentHandIndex = 0;
@@ -102,5 +105,4 @@ class Player
 	{
 		return bet;
 	}
-
 }

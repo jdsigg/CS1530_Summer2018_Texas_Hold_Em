@@ -10,8 +10,6 @@ import javax.swing.JButton;
 import java.awt.event.ActionEvent;
 
 
-//import javax.swing.JFrame;
-
 class PlayerContainer extends JPanel
 {
 	private JPanel mainPanel;
@@ -79,6 +77,9 @@ class PlayerContainer extends JPanel
 		playerMoney.setText(Double.toString(player.getMoney()));
 	}
 	
+	/*
+	Method to update the first card in the players hand
+	*/
 	public void setCardOne()
 	{
 		cardOnePanel.removeAll();
@@ -91,17 +92,24 @@ class PlayerContainer extends JPanel
 		cardOnePanel.revalidate();
 	}
 	
+	/*
+	Method to update the second card in the players hand
+	*/
 	public void setCardTwo()
 	{
 		cardTwoPanel.removeAll();
 		
 		Image cardTwo = player.getCurrentHand()[1].getImage().getImage();
 		Image scaledCardTwo = cardTwo.getScaledInstance(120, 150, Image.SCALE_SMOOTH);
+		
 		cardTwoPanel.add(new JLabel(new ImageIcon(scaledCardTwo)));
 		cardTwoPanel.repaint();
 		cardTwoPanel.revalidate();
 	}
 	
+	/*
+	Method to show blanks for a new hand
+	*/
 	public void setBlanks()
 	{
 		cardOnePanel.removeAll();
@@ -120,15 +128,13 @@ class PlayerContainer extends JPanel
 		player.setBet(defaultBet);
 		betButton.setEnabled(false);
 		
-		//call a method that folds everybody else
-			
+		//Call a method that folds everybody else	
 		game.foldEveryone();
 	}
 	
 	public void callButtonActionPerformed(ActionEvent e)
 	{
-		//call a method that calls everybody else
-			
+		//Call a method that calls everybody else
 		game.nextState();
 	}
 	
