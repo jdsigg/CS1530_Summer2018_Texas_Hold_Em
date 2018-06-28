@@ -14,14 +14,12 @@ class InitialPlayerDialog extends JDialog
 {
 	private JTextField nameField;
 	private JComboBox<Integer> opponents;
-	private GameBoard parent;
-	private Game game;
+	private TexasHoldEm caller;
 	
-	public InitialPlayerDialog(GameBoard parent, Game game, String title)
+	public InitialPlayerDialog(TexasHoldEm caller, String title)
 	{
-		super(parent, title, true);
-		this.parent = parent;
-		this.game = game;
+		super(new JDialog(), title);
+		this.caller = caller;
 		
 		setSize(340, 160);
 		setLayout(new FlowLayout());
@@ -74,13 +72,11 @@ class InitialPlayerDialog extends JDialog
 		Integer numberOfOpponents = (Integer)opponents.getSelectedItem();
 		int opponentNumber = numberOfOpponents.intValue();
 		
-		game.setNumberOfOpponents(opponentNumber);
-		
 		//Grab players name
 		String playerName = nameField.getText();
 		
 		this.setVisible(false);
-		parent.createPlayerFrames(playerName, opponentNumber, game);
+		caller.gameSetup(playerName, opponentNumber);		
 	}
 	
 	private void cancelButtonActionPerformed()

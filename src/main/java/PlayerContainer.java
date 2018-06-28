@@ -9,7 +9,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionEvent;
 
-
 class PlayerContainer extends JPanel
 {
 	private JPanel mainPanel;
@@ -23,7 +22,7 @@ class PlayerContainer extends JPanel
 	private Player player;
 	private Game game;
 	
-	public PlayerContainer(Game game)
+	public PlayerContainer(Player player, Game game)
 	{
 		this.setLayout(new FlowLayout());
 		this.setPreferredSize(new Dimension(260,300));
@@ -54,17 +53,9 @@ class PlayerContainer extends JPanel
 		callButton = new JButton("Call");
 		callButton.addActionListener(e -> callButtonActionPerformed(e));
 		this.add(callButton);
-		this.game = game;
-	}
-	
-	public void setPlayer(Player player)
-	{
+		
 		this.player = player;
-	}
-	
-	public Player getPlayer()
-	{
-		return player;
+		this.game = game;
 	}
 	
 	public void updateName()
@@ -152,17 +143,4 @@ class PlayerContainer extends JPanel
 	{
 		betButton.setEnabled(state);
 	}
-	
-	/*
-	public static void main(String[] args)
-	{
-		JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(500, 500);
-		
-		frame.add(new PlayerContainer());
-		
-		frame.setVisible(true);
-	}
-	*/
 }
