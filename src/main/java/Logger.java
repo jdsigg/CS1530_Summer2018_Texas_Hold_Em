@@ -5,8 +5,8 @@ import java.time.format.DateTimeFormatter;
 class Logger
 {
     private String fileName;
-    FileWriter fw;
-    PrintWriter printWriter;
+    private FileWriter fw;
+    private PrintWriter printWriter;
 
     /*
 	Constructor for Logger Class

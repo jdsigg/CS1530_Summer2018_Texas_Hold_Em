@@ -7,8 +7,6 @@ import java.awt.Dimension;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
-//import javax.swing.JFrame;
-
 class DealerContainer extends JPanel
 {
 	private JPanel cardOnePanel;
@@ -77,17 +75,17 @@ class DealerContainer extends JPanel
 	/*
 	Update the pot display
 	*/
-	public void setPot(String newPot)
+	public void setPot()
 	{
-		pot.setText(newPot);
+		pot.setText(Double.toString(dealer.getPot()));
 	}
 	
 	/*
 	Update the min bet display
 	*/
-	public void setMinBet(String newBet)
+	public void setMinBet()
 	{
-		minBet.setText(newBet);
+		//minBet.setText(Double.toString(dealer.);
 	}
 	
 	/*
@@ -190,25 +188,4 @@ class DealerContainer extends JPanel
 		this.repaint();
 		this.revalidate();
 	}
-	
-	/*
-	Return the dealer contained within the container
-	*/
-	public Dealer getDealer()
-	{
-		return dealer;
-	}
-	
-	/*
-	public static void main(String[] args)
-	{
-		JFrame frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(700, 300);
-		
-		frame.add(new DealerContainer());
-		
-		frame.setVisible(true);
-	}
-	*/
 }

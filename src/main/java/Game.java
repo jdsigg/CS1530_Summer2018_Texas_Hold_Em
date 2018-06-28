@@ -3,9 +3,9 @@ import java.io.IOException;
 
 class Game
 {
-	private int numberOfOpponents;
-	private PlayerContainer[] players;
+	private int numberOfPlayers;
 	private Player[] activePlayers;
+	private Player[] realPlayers;
 	private int state;
 	private GameBoard gameBoard;
 	private Dealer dealer;
@@ -14,37 +14,16 @@ class Game
     /*
 	Constructor for Game Class
     */
-    public Game(GameBoard gameBoard, Dealer dealer)
+    public Game(GameBoard gameBoard, Logger logger, Player[] players, Dealer dealer)
     {
-		this.numberOfOpponents = 0;
+		this.numberOfPlayers = players.length;
 		this.state = 1;
 		this.gameBoard = gameBoard;
+		this.realPlayers = players;
+		this.logger = logger;
 		this.dealer = dealer;
     }
 	
-	/*
-	Function called when logging is appropriate to begin.
-	If the logger doesn't start, all attempts to log will fail
-	from here on out.
-	*/
-	public void startLogger()
-	{
-		Player[] logPlayers = new Player[numberOfOpponents+1];
-		for(int i = 0; i < logPlayers.length; i++)
-		{
-			logPlayers[i] = players[i].getPlayer();
-		}
-		
-		try
-		{
-			logger = new Logger("output.txt", logPlayers);
-		}
-		catch (IOException e)
-		{
-			System.out.println("Logger failed to start.");
-		}
-	}
-
     /*
 	Method to deal the players
 	
@@ -84,7 +63,7 @@ class Game
 	public void foldEveryone()
 	{
 		activePlayers = new Player[1];
-		activePlayers[0] = players[0].getPlayer();
+		activePlayers[0] = realPlayers[0];
 		
 		dealer.updatePot(activePlayers[0].getBet());
 		
@@ -100,9 +79,9 @@ class Game
 	{
 		if(state != 1 && state!= 0)
 		{
-			for(int i = 0; i < players.length; i++)
+			for(int i = 0; i < realPlayers.length; i++)
 			{
-				Player temp = players[i].getPlayer();
+				Player temp = realPlayers[i];
 				logString(temp.getName()+" calls.");
 			}
 		}
@@ -111,15 +90,15 @@ class Game
 		{
 			startNewHand();
 		}
-		gameBoard.displayCommCard(state, logger);
+		gameBoard.displayCommCard(state);
 		
 		if (state == 5)
 		{
-			activePlayers = new Player[numberOfOpponents+1];
+			activePlayers = new Player[numberOfPlayers];
 			
 			for (int i=0; i<activePlayers.length; i++)
 			{
-				activePlayers[i] = players[i].getPlayer();
+				activePlayers[i] = realPlayers[i];
 			}
 			checkWinner(activePlayers);
 			resetGame();
@@ -135,9 +114,9 @@ class Game
 	*/
 	public void resetGame()
 	{
-		for (int i=0; i<players.length; i++)
+		for (int i=0; i<realPlayers.length; i++)
 		{
-			Player temp = players[i].getPlayer();
+			Player temp = realPlayers[i];
 			Card[] tempCards = temp.getCurrentHand();
 			dealer.returnCard(tempCards[0]);
 			dealer.returnCard(tempCards[1]);
@@ -160,9 +139,9 @@ class Game
 		logString("Dealing...");
 		
 		
-		for (int i=0; i<players.length; i++)
+		for (int i=0; i<realPlayers.length; i++)
 		{
-			Player temp = players[i].getPlayer();
+			Player temp = realPlayers[i];
 			dealer.dealCard(temp);
 			dealer.dealCard(temp);
 			
@@ -174,22 +153,6 @@ class Game
 			}
 		}
 		dealer.dealCommCards();
-	}
-
-	/*
-	Sets global used for multiple functions
-	*/
-	public void setNumberOfOpponents(int num)
-	{
-		this.numberOfOpponents = num;
-	}
-
-	/*
-	Gets access to GUI containers
-	*/
-	public void setPlayerContainers(PlayerContainer[] players)
-	{
-		this.players = players;
 	}
 
     /*
@@ -301,7 +264,7 @@ class Game
 		
 		//Log who won and the money they receive
 		logString(winner + " won the hand!");
-		logString(winner + "gets money from pot: $"+dealer.getPot());
+		logString(winner + " gets money from pot: $"+dealer.getPot());
 		
 		//Add that money to their pot
 		winningPlayer.updateMoney(dealer.getPot() + winningPlayer.getMoney());
@@ -332,25 +295,10 @@ class Game
 		{
 			logger.log(message);
 		}
-		catch(IOException e)
+		catch(IOException | NullPointerException e)
 		{
-			System.out.println("Failed logging message: "+message);
+			System.err.println("Failed logging message: "+message);
+			System.err.println("Error: "+e.toString());
 		}
-	}
-	
-	/*
-	Clean up exit by closing logger
-	*/
-	public void exit()
-	{
-		try
-		{
-			logger.closeLogger();
-		}
-		catch(IOException e)
-		{
-			System.out.println("Failed closing logger.");
-		}
-		System.exit(0);
 	}
 }
