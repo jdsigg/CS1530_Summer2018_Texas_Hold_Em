@@ -9,6 +9,8 @@ class Player
 	private Card [] currentHand = new Card[2];
 	private int currentHandIndex;
 	private int bet;
+	private int status;
+	private int playerType;
 
 	public Player()
 	{
@@ -16,6 +18,8 @@ class Player
 		this.money = 1000.00;
 		currentHandIndex = 0;
 		this.bet = 0;
+		this.status = 0;
+		this.playerType = 0;
 	}
 
 	public Player(String name)
@@ -25,6 +29,8 @@ class Player
 		this.money = 1000.00;
 		currentHandIndex = 0;
 		this.bet = 0;
+		this.status = 0;
+		this.playerType = 0;
 	}
 
 	/*
@@ -88,7 +94,7 @@ class Player
 		currentHandIndex = 0;
 		this.currentHand = new Card[2];
 	}
-	
+
 	/*
 	Method to set the players bet
 	*/
@@ -97,12 +103,47 @@ class Player
 		this.bet = newBet;
 		this.updateMoney(this.getMoney()-newBet);
 	}
-	
+
 	/*
 	Method to get the players bet
 	*/
 	public int getBet()
 	{
 		return bet;
+	}
+
+	/*
+	Method that sets that players current status.
+	0 = In the game.
+	1 = Out for the round.
+	2 = Out of the game for good.
+	*/
+	public void setStatus(int newStatus)
+	{
+		this.status = newStatus;
+	}
+
+	/*
+	Method that gets the player's current status.
+	*/
+	public int getStatus()
+	{
+		return this.status;
+	}
+
+	/*
+	Method to set the player type, human or AI.
+	*/
+	public void setPlayerType(int newPlayerType)
+	{
+		this.playerType = newPlayerType;
+	}
+
+	/*
+	Method to get player type.
+	*/
+	public int getPlayerType()
+	{
+		return this.playerType;
 	}
 }
