@@ -35,10 +35,14 @@ class TexasHoldEm
 		Collections.shuffle(names);
 
 		players[0] = new Player(playerName);
+		players[0].setPlayerType(0);
 		//set identifiers
 
 		for(int i = 1; i < numberOfPlayers; i++)
+		{
 			players[i] = new Player(names.get(i));
+			players[i].setPlayerType(1);
+		}
 		//set identifiers
 
 		try
@@ -55,15 +59,17 @@ class TexasHoldEm
 		Game game = new Game(gameBoard, logger, players, zhlata);
 
 		for(int i = 0; i < numberOfPlayers; i++)
-		{
-			PlayerContainer temp = new PlayerContainer(players[i], game);
-			playerContainers[i] = temp;
-
-			if(i != 0)
-				temp.hideButtons();
+		{ 
+			playerContainers[i] = new PlayerContainer(players[i], game);
 		}
-
+		
 		gameBoard.showPlayers();
+		game.initializeBlinds();
+		
+		Thread gameThread = new Thread(() -> {
+			game.runMe();
+		});
+		gameThread.start();
 	}
 
 	public void exit()

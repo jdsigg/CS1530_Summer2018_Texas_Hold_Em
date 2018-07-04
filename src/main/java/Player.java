@@ -1,3 +1,9 @@
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JOptionPane;
+
 class Player
 {
 
@@ -5,17 +11,23 @@ class Player
     Initialize Variables
 	*/
 	private String name;
-	private double money;
+	private int money;
 	private Card [] currentHand = new Card[2];
 	private int currentHandIndex;
 	private int bet;
 	private int status;
 	private int playerType;
+	private Random gen;
+	private boolean hasBet;
+	
+	private boolean dealer;
+	private boolean smallBlind;
+	private boolean bigBlind;
 
 	public Player()
 	{
 		//Init Constructor for Player
-		this.money = 1000.00;
+		this.money = 1000;
 		currentHandIndex = 0;
 		this.bet = 0;
 		this.status = 0;
@@ -26,17 +38,18 @@ class Player
 	{
 		//Constructor for Player
 		this.name = name;
-		this.money = 1000.00;
+		this.money = 1000;
 		currentHandIndex = 0;
 		this.bet = 0;
 		this.status = 0;
 		this.playerType = 0;
+		gen = new Random();
 	}
 
 	/*
 	Method to get player's stack (Money)
 	*/
-	public double getMoney()
+	public int getMoney()
 	{
 		return this.money;
 	}
@@ -52,7 +65,7 @@ class Player
 	/*
     Method to update player's stack (Money)
 	*/
-	public void updateMoney(double money)
+	public void updateMoney(int money)
 	{
 		this.money = money;
 	}
@@ -100,8 +113,7 @@ class Player
 	*/
 	public void setBet(int newBet)
 	{
-		this.bet = newBet;
-		this.updateMoney(this.getMoney()-newBet);
+		this.bet += newBet;
 	}
 
 	/*
@@ -133,6 +145,8 @@ class Player
 
 	/*
 	Method to set the player type, human or AI.
+	Human = 0
+	AI = 1
 	*/
 	public void setPlayerType(int newPlayerType)
 	{
@@ -146,4 +160,139 @@ class Player
 	{
 		return this.playerType;
 	}
+	
+	/*
+	Returns true if player is in for the round
+	*/
+	public boolean isIn()
+	{
+		return (this.status == 0);
+	}
+	
+	public int bet(int previousBet, int numberOfRaises)
+	{
+		int betPercent = 1;
+		int actualBet = 0;
+		
+		switch(this.playerType)
+		{
+			case 0: //human player
+				String[] buttons = null;
+				
+				if(previousBet == 0 && numberOfRaises < 3) //check case
+				{
+					buttons = new String[3];
+					buttons[0] = "Fold";
+					buttons[1] = "Check";
+					buttons[2] = "Raise $20";
+				}
+				
+				if(previousBet > 0 && numberOfRaises < 3) //check case
+				{
+					buttons = new String[3];
+					buttons[0] = "Fold";
+					buttons[1] = "Call";
+					buttons[2] = "Raise $20";
+				}
+				
+				if(numberOfRaises == 3)
+				{
+					buttons = new String[2];
+					buttons[0] = "Fold";
+					buttons[1] = "Call";
+				}
+				
+				
+				int returnValue = JOptionPane.showOptionDialog(null, "It is your turn to bet!", "Player Turn",
+				JOptionPane.WARNING_MESSAGE, 0, null, buttons, null);
+				
+				
+				if(returnValue == 0)
+				{
+					actualBet = -1;
+				}
+				else if(returnValue == 1)
+				{
+					actualBet = previousBet - this.getBet();
+				}
+				else if(returnValue == 2)
+				{
+					actualBet = previousBet - this.getBet();
+					actualBet += 20;
+				}
+					
+				break;
+			case 1: //AI player
+			
+				/*
+				int foldOrBet = gen.nextInt(2);
+				if(foldOrBet == 0)
+				{
+					actualBet = -1;
+				}
+				else
+				{*/
+					if(numberOfRaises < 3)
+					{
+						betPercent = gen.nextInt(100) + 1; //forces computer to bet between 1 and 100 percent of their pot
+						actualBet = (this.money * betPercent) / 1000; //calculates bet off of betPercent
+						//actualBet = 20;
+					}
+					else
+						actualBet = previousBet;	
+				//}
+				
+				try
+				{
+					TimeUnit.SECONDS.sleep(2);
+				}
+				catch (InterruptedException ex)
+				{
+					
+				}
+				break;
+		}
+		
+		return actualBet;
+	}
+	
+	public void setHasBet(boolean value)
+	{
+		this.hasBet = value;
+	}
+	
+	public void subtractFromMoney(int toThePot)
+	{
+		this.money -= toThePot;
+	}
+	
+	public void setDealerStatus(boolean status)
+	{
+		this.dealer = status;
+	}
+	
+	public void setSmallBlindStatus(boolean status)
+	{
+		this.smallBlind = status;
+	}
+	
+	public void setBigBlindStatus(boolean status)
+	{
+		this.bigBlind = status;
+	}
+	
+	public boolean isDealer()
+	{
+		return this.dealer;
+	}
+	
+	public boolean isSmallBlind()
+	{
+		return this.smallBlind;
+	}
+	
+	public boolean isBigBlind()
+	{
+		return this.bigBlind;
+	}	
 }
