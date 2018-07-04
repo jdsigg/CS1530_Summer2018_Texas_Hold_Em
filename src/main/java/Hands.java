@@ -4,12 +4,15 @@ import java.util.Arrays;
 
 public class Hands {
 	
+	private static HashMap<String, Integer> possCards = new HashMap<String,Integer>();
+	
 	/*
 	Check if cards passed in yield a royal flush
 	10 through Ace rank, all same suit
 	*/
-	public static boolean royalFlush(Card[] cards) {
-		
+	public static int[] royalFlush(Card[] cards) 
+	{
+		int winningHand[] = new int[6];
 		Card[] tempHand = new Card[7];
 		boolean ten = false;
 		boolean jack = false;
@@ -56,20 +59,22 @@ public class Hands {
 		
 		if(ten && jack && queen && king && ace) 
 		{
-			if(flush(tempHand))
+			if(flush(tempHand)[0] == 6)
 			{
-				return true;
+				winningHand[0] = 10;
+				return winningHand;
 			}
 		}
-		return false;
+		return winningHand;
 	}
 	
 	/*
 	Check if cards passed in yield a straight flush
 	Any five consecutive card ranks, all same suit
 	*/
-	public static boolean straightFlush(Card[] cards) 
+	public static int[] straightFlush(Card[] cards) 
 	{
+		int winningHand[] = new int[6];
 		int count = 0;
 		int suitCount = 0;
 		int index = 0;
@@ -79,7 +84,7 @@ public class Hands {
 		
 		for( int j = 0; j < cards.length; j++ ) 
 		{
-			count = 0;
+			suitCount = 1;
 			
 			for( int i = j+1; i < cards.length; i++ ) 
 			{
@@ -91,65 +96,123 @@ public class Hands {
 				if(suitCount == 5)
 				{
 					suit = cards[j].getSuit();
+					break;
 				}
 			}
 		}
 		
 		for(int i = 0; i < cards.length; i++) 
 		{
-			if(suit == cards[i].getSuit())
+			if(suit.equals(cards[i].getSuit()))
 			{
 				tempCards[index] = cards[i];
 				index++;
 			}
 		}
 		
-		if(straight(tempCards))
+		if(Hands.straight(tempCards)[0] == 5)
 		{
-			return true;
+			for(int i = 1; i < winningHand.length; i++)
+			{
+				winningHand[i] = Hands.straight(tempCards)[i];
+			}
+			winningHand[0] = 9;
+			return winningHand;
 		}
-		return false;
+		return winningHand;
 	}
 	
 	/*
 	Check if cards passed in yield a four of a kind
 	Four cards of same rank, suit does not matter
 	*/
-	public static boolean fourOfAKind(Card[] cards) {
+	public static int[] fourOfAKind(Card[] cards) 
+	{
+		possCards.put("Two", 2);
+		possCards.put("Three", 3);
+		possCards.put("Four", 4);
+		possCards.put("Five", 5);
+		possCards.put("Six", 6);
+		possCards.put("Seven", 7);
+		possCards.put("Eight", 8);
+		possCards.put("Nine", 9);
+		possCards.put("Ten", 10);
+		possCards.put("Jack", 11);
+		possCards.put("Queen", 12);
+		possCards.put("King", 13);
+		possCards.put("Ace", 14);
 		
+		int winningHand[] = new int[6];
+		int temp[] = new int[7];
 		int count = 0;
+		
+		//sort all cards
+		for(int x = 0; x < cards.length; x++)
+		{
+			temp[x] = possCards.get(cards[x].getRank());
+		}
+		
+		Arrays.sort(temp);
 		
 		for( int j = 0; j < cards.length; j++ )
 		{
 			count = 1;
+			winningHand[count+1] = possCards.get(cards[j].getRank());
 			
 			for( int i = j+1; i < cards.length; i++ )
 			{
 				
 				if(cards[j].getRank() == cards[i].getRank())
 				{
-					count++;						
+					count++;					
 				}	
-
+				
 				if(count == 4)
 				{
-					return true;				
+					winningHand[1] = possCards.get(cards[j].getRank());	
+					for(int x = 0; x < cards.length; x++)
+					{
+						if(temp[x] != winningHand[2])
+						{
+							winningHand[2] = temp[x];
+							break;
+						}
+					}
+		
+					winningHand[0] = 8;
+					return winningHand;				
 				}	
 			}
 		}
-		return false;
+		return winningHand;
 	}
 	
 	/*
 		Check if cards passed in yield a full house
 		One pair and one three of a kind in the same hand
 	*/
-	public static boolean fullHouse(Card[] cards) 
+	public static int[] fullHouse(Card[] cards) 
 	{
+		possCards.put("Two", 2);
+		possCards.put("Three", 3);
+		possCards.put("Four", 4);
+		possCards.put("Five", 5);
+		possCards.put("Six", 6);
+		possCards.put("Seven", 7);
+		possCards.put("Eight", 8);
+		possCards.put("Nine", 9);
+		possCards.put("Ten", 10);
+		possCards.put("Jack", 11);
+		possCards.put("Queen", 12);
+		possCards.put("King", 13);
+		possCards.put("Ace", 14);
+		
 		HashMap<String, Integer> tallies = new HashMap<String, Integer>();
+		int winningHand[] = new int[6];
 		int count = 0;
 		boolean foundPair = false;
 		boolean foundTrio = false;
+		int tieValue = 0;
 		
 		tallies.put("Two", 0);
 		tallies.put("Three", 0);
@@ -169,6 +232,10 @@ public class Hands {
 		{
 			String cardRank = cards[j].getRank();
 			tallies.put( cardRank, (tallies.get(cardRank)+1) );
+			if(tallies.get(cardRank) == 3)
+			{
+				tieValue = possCards.get(cardRank);
+			}
 		}
 		
 		for(Map.Entry<String, Integer> entry : tallies.entrySet()) 
@@ -178,59 +245,27 @@ public class Hands {
 				foundPair = true;
 			}
 			if(entry.getValue() == 3) 
-			{
+			{ 
 				foundTrio = true;
 			}
 		}
 		
 		if(foundPair && foundTrio) 
 		{
-			return true;
+			winningHand[0] = 7;
+			winningHand[1] = tieValue;
+			return winningHand;
 		}
 		
-		return false;
+		return winningHand;
 	}
 	
 	/*
 	Check if cards passed in yield a flush
 	Five cards with the same suit, rank irrelevant
 	*/
-	public static boolean flush(Card[] cards) 
+	public static int[] flush(Card[] cards) 
 	{
-		int count = 0;
-		
-		for(int j = 0; j < cards.length; j++) 
-		{
-			count = 1;
-			
-			for(int i = j+1; i < cards.length; i++) 
-			{
-				if(cards[j] == null || cards[i] == null) 
-				{
-					break;
-				}
-				
-				if( cards[j].getSuit() == cards[i].getSuit() ) 
-				{
-					count++;						
-				}	
-
-				if(count == 5) 
-				{
-					return true;				
-				}
-			}
-		}
-		return false;
-	}
-	
-	/*
-	Check if cards passed in yield a straight
-	Five consectuve ranks, suit irrelevant
-	*/
-	public static boolean straight(Card[] cards) {
-		
-		HashMap<String, Integer> possCards = new HashMap<String,Integer>();
 		possCards.put("Two", 2);
 		possCards.put("Three", 3);
 		possCards.put("Four", 4);
@@ -245,6 +280,66 @@ public class Hands {
 		possCards.put("King", 13);
 		possCards.put("Ace", 14);
 		
+		int winningHand[] = new int[6];
+		int[] sameSuit = new int[7];
+		int count = 0;
+		
+		for(int j = 0; j < cards.length; j++) 
+		{
+			count = 1;
+			sameSuit[count-1] = possCards.get(cards[j].getRank());
+			
+			for(int i = j+1; i < cards.length; i++) 
+			{
+				if(cards[j] == null || cards[i] == null) 
+				{
+					break;
+				}
+				
+				if( cards[j].getSuit() == cards[i].getSuit() ) 
+				{
+					count++;	
+					sameSuit[count-1] = possCards.get(cards[i].getRank());
+				}	
+			}
+			
+			Arrays.sort(sameSuit);
+			if(count >= 5) 
+			{
+				winningHand[1] = sameSuit[sameSuit.length - 1];
+				winningHand[2] = sameSuit[sameSuit.length - 2];
+				winningHand[3] = sameSuit[sameSuit.length - 3];
+				winningHand[4] = sameSuit[sameSuit.length - 4];
+				winningHand[5] = sameSuit[sameSuit.length - 5];
+				winningHand[0] = 6;
+				return winningHand;				
+			}
+			
+		}
+		return winningHand;
+	}
+	
+	/*
+	Check if cards passed in yield a straight
+	Five consectuve ranks, suit irrelevant
+	*/
+	public static int[] straight(Card[] cards) 
+	{
+		possCards.put("Two", 2);
+		possCards.put("Three", 3);
+		possCards.put("Four", 4);
+		possCards.put("Five", 5);
+		possCards.put("Six", 6);
+		possCards.put("Seven", 7);
+		possCards.put("Eight", 8);
+		possCards.put("Nine", 9);
+		possCards.put("Ten", 10);
+		possCards.put("Jack", 11);
+		possCards.put("Queen", 12);
+		possCards.put("King", 13);
+		possCards.put("Ace", 14);
+		
+		int winningHand[] = new int[6];
 		int[] cardVals = new int[7];
 		int count = 0;
 		int index = 0;
@@ -257,17 +352,24 @@ public class Hands {
 				index++;
 			}
 		}
-		
-		Arrays.sort(cardVals);
+		Arrays.sort(cardVals);		
 		
 		for(int i = 1; i <= 3; i++) 
 		{
 			count = 1;
+			index = 1;
 			
 			for(int j = (cardVals.length - i); j > 0 ; j--) 
 			{
 				if( (cardVals[j] - cardVals[j-1]) == 1 )
 				{
+					winningHand[index] = cardVals[j];
+
+					if(count == 4)
+					{
+						winningHand[index + 1] = cardVals[j-1];
+					}
+					index++;
 					count++;
 				}
 				else
@@ -278,22 +380,45 @@ public class Hands {
 
 			if(count == 5)
 			{
-				return true;
+				winningHand[0] = 5;
+				return winningHand;
 			}
 		}
-		return false;
+		return winningHand;
 	}
 	
 	/*
 	Check if cards passed in yield a three of a kind
 	Three cards of same rank, suit irrelevant
 	*/
-	public static boolean threeOfAKind(Card[] cards) 
+	public static int[] threeOfAKind(Card[] cards) 
 	{
+		possCards.put("Two", 2);
+		possCards.put("Three", 3);
+		possCards.put("Four", 4);
+		possCards.put("Five", 5);
+		possCards.put("Six", 6);
+		possCards.put("Seven", 7);
+		possCards.put("Eight", 8);
+		possCards.put("Nine", 9);
+		possCards.put("Ten", 10);
+		possCards.put("Jack", 11);
+		possCards.put("Queen", 12);
+		possCards.put("King", 13);
+		possCards.put("Ace", 14);
 		
+		int winningHand[] = new int[6];
 		Card holder = new Card(Card.Suit.Clubs, Card.Rank.Two);
+		int temp[] = new int[7];
 		boolean foundOne = false;
 		int count = 0;
+		
+		//sort all cards
+		for(int x = 0; x < cards.length; x++)
+		{
+			temp[x] = possCards.get(cards[x].getRank());
+		}
+		Arrays.sort(temp);
 		
 		for(int j = 0; j < cards.length; j++) 
 		{
@@ -303,7 +428,7 @@ public class Hands {
 			{
 				if(cards[j].getRank() == cards[i].getRank()) 
 				{
-					count++;						
+					count++;
 				}	
 
 				if(count == 3) 
@@ -325,21 +450,53 @@ public class Hands {
 							
 						}
 					}*/
+					int spot = 2;
+					for(int x = 0; x < 5; x++)
+					{
+						if(temp[x] != winningHand[2])
+						{
+							winningHand[spot] = temp[x];
+							spot++;
+							if (spot == 4)
+							{
+								break;
+							}
+						}
+					}
 					
 					//But for now...
-					return true;				
+					winningHand[1] = possCards.get(cards[j].getRank());
+					winningHand[0] = 4;
+					return winningHand;				
 				}
 			}
 		}
-		return false;
+		return winningHand;
 	}
 	
 	/*
 	Check if cards passed in yield two pair
 	Two pairs, essentially two independent one pairs
 	*/
-	public static boolean twoPair(Card[] cards) {
+	public static int[] twoPair(Card[] cards) 
+	{
+		possCards.put("Two", 2);
+		possCards.put("Three", 3);
+		possCards.put("Four", 4);
+		possCards.put("Five", 5);
+		possCards.put("Six", 6);
+		possCards.put("Seven", 7);
+		possCards.put("Eight", 8);
+		possCards.put("Nine", 9);
+		possCards.put("Ten", 10);
+		possCards.put("Jack", 11);
+		possCards.put("Queen", 12);
+		possCards.put("King", 13);
+		possCards.put("Ace", 14);
 		
+		int winningHand[] = new int[6];
+		int pairValues[] = new int[2];
+		int spot = 1;
 		HashMap<String, Integer> tallies = new HashMap<String, Integer>();
 		int count = 0;
 		
@@ -361,6 +518,11 @@ public class Hands {
 		{
 			String cardRank = cards[j].getRank();
 			tallies.put(cardRank,(tallies.get(cardRank)+1));
+			if(tallies.get(cardRank) == 2)
+			{
+				winningHand[spot] = possCards.get(cardRank);
+				spot++;
+			}
 		}
 		
 		for(Map.Entry<String, Integer> entry : tallies.entrySet()) 
@@ -372,18 +534,61 @@ public class Hands {
 			
 			if(count == 2) 
 			{
-				return true;
+				if(winningHand[1] < winningHand[2])
+				{
+					//get the greater of the pairs first
+					int t = winningHand[1];
+					winningHand[1] = winningHand[2];
+					winningHand[2] = t;
+				}
+				
+				int temp[] = new int[7];
+		
+				//sort all cards
+				for(int x = 0; x < cards.length; x++)
+				{
+					temp[x] = possCards.get(cards[x].getRank());
+				}
+				Arrays.sort(temp);
+				
+				for(int x = 1; x < 7; x++)
+				{
+					if(temp[temp.length - x] != winningHand[1] && temp[temp.length - x] != winningHand[2])
+					{
+						winningHand[3] = temp[temp.length-x];
+						System.out.println(winningHand[3]);
+						break;
+					}
+				}
+					
+				winningHand[0] = 3;
+				return winningHand;
 			}	
 		}
-		return false;
+		return winningHand;
 	}
 	
 	/*
 	Check if cards passed in yield a pair
 	Two cards that are equal in rank
 	*/
-	public static boolean onePair(Card[] cards) {
+	public static int[] onePair(Card[] cards) 
+	{
+		possCards.put("Two", 2);
+		possCards.put("Three", 3);
+		possCards.put("Four", 4);
+		possCards.put("Five", 5);
+		possCards.put("Six", 6);
+		possCards.put("Seven", 7);
+		possCards.put("Eight", 8);
+		possCards.put("Nine", 9);
+		possCards.put("Ten", 10);
+		possCards.put("Jack", 11);
+		possCards.put("Queen", 12);
+		possCards.put("King", 13);
+		possCards.put("Ace", 14);
 		
+		int winningHand[] = new int[6];
 		Card holder = new Card(Card.Suit.Clubs, Card.Rank.Two);
 		boolean foundOne = false;
 		int count = 0;
@@ -419,20 +624,78 @@ public class Hands {
 						}
 					}*/
 					//But for now...
-					return true;				
+					winningHand[1] = possCards.get(cards[j].getRank());
+					
+					int temp[] = new int[7];
+		
+					//sort all cards
+					for(int x = 0; x < cards.length; x++)
+					{
+						temp[x] = possCards.get(cards[x].getRank());
+					}
+					Arrays.sort(temp);
+					
+					int index = 2;
+					for(int x = 0; x < 7; x++)
+					{
+						if(temp[x] != winningHand[1])
+						{
+							winningHand[index] = temp[x];
+							index++;
+							if(index == 5)
+							{
+								break;
+							}
+						}
+					}
+					
+					winningHand[0] = 2;
+					return winningHand;				
 				}
 			}
 		}
-		return false;
+		return winningHand;
 	}
 	
 	/*
 	Check if cards passed in yield a high card
 	Highest card rank in all of the cards
 	*/
-	public static boolean highCard(Card[] cards) {
-		//Identify highest rank like in pair, kinds, etc
-		return true;
+	public static int[] highCard(Card[] cards) 
+	{
+		possCards.put("Two", 2);
+		possCards.put("Three", 3);
+		possCards.put("Four", 4);
+		possCards.put("Five", 5);
+		possCards.put("Six", 6);
+		possCards.put("Seven", 7);
+		possCards.put("Eight", 8);
+		possCards.put("Nine", 9);
+		possCards.put("Ten", 10);
+		possCards.put("Jack", 11);
+		possCards.put("Queen", 12);
+		possCards.put("King", 13);
+		possCards.put("Ace", 14);
+		
+		int temp[] = new int[7];
+		
+		//sort all cards
+		for(int x = 0; x < cards.length; x++)
+		{
+			temp[x] = possCards.get(cards[x].getRank());
+		}
+
+		Arrays.sort(temp);
+		
+		int winningHand[] = new int[6];
+		
+		for(int x = 1; x < 6; x++)
+		{
+			winningHand[x] = temp[temp.length - x];
+		}
+		
+		winningHand[0] = 1;
+		return winningHand;
 	}
 	
 }
