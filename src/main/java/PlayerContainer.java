@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import java.awt.event.ActionEvent;
 
 class PlayerContainer extends JPanel
@@ -16,8 +15,10 @@ class PlayerContainer extends JPanel
 	private JPanel cardTwoPanel;
 	private JLabel playerName;
 	private JLabel playerMoney;
-	private JButton betButton;
-	private JButton callButton;
+	
+	private JLabel dealerLabel;
+	private JLabel smallBlindLabel;
+	private JLabel bigBlindLabel;
 	
 	private Player player;
 	private Game game;
@@ -45,14 +46,17 @@ class PlayerContainer extends JPanel
 		playerMoney = new JLabel("Default Money");
 		this.add(playerMoney);
 		
-		betButton = new JButton("Bet $20");
-		betButton.addActionListener(e -> betButtonActionPerformed(e));
-		betButton.setEnabled(false);
-		this.add(betButton);
+		dealerLabel = new JLabel("");
+		dealerLabel.setForeground(Color.DARK_GRAY);
+		this.add(dealerLabel);
 		
-		callButton = new JButton("Call");
-		callButton.addActionListener(e -> callButtonActionPerformed(e));
-		this.add(callButton);
+		smallBlindLabel = new JLabel("");
+		smallBlindLabel.setForeground(Color.RED);
+		this.add(smallBlindLabel);
+		
+		bigBlindLabel = new JLabel("");
+		bigBlindLabel.setForeground(Color.BLUE);
+		this.add(bigBlindLabel);
 		
 		this.player = player;
 		this.game = game;
@@ -65,7 +69,7 @@ class PlayerContainer extends JPanel
 	
 	public void updateMoney()
 	{
-		playerMoney.setText(Double.toString(player.getMoney()));
+		playerMoney.setText(Integer.toString(player.getMoney()));
 	}
 	
 	/*
@@ -113,34 +117,66 @@ class PlayerContainer extends JPanel
 		cardTwoPanel.revalidate();
 	}
 	
-	public void betButtonActionPerformed(ActionEvent e)
+	public void blackBorder()
 	{
-		int defaultBet = 20;
-		player.setBet(defaultBet);
-		betButton.setEnabled(false);
+		this.setBorder(BorderFactory.createLineBorder(Color.black));
+		this.repaint();
+		this.revalidate();
+	}
+	
+	public void redBorder()
+	{
+		this.setBorder(BorderFactory.createLineBorder(Color.red));
+		this.repaint();
+		this.revalidate();
+	}
+	
+	public void clearBorder()
+	{
+		this.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+		this.repaint();
+		this.revalidate();
+	}
+	
+	public void displayDealer()
+	{
+		boolean status = player.isDealer();
 		
-		//Call a method that folds everybody else	
-		game.foldEveryone();
+		if(status)
+		{
+			dealerLabel.setText("Dealer");
+		}
+		else
+		{
+			dealerLabel.setText("");
+		}
 	}
 	
-	public void callButtonActionPerformed(ActionEvent e)
+	public void displaySmallBlind()
 	{
-		//Call a method that calls everybody else
-		game.nextState();
+		boolean status = player.isSmallBlind();
+		
+		if(status)
+		{
+			smallBlindLabel.setText("Small Blind");
+		}
+		else
+		{
+			smallBlindLabel.setText("");
+		}
 	}
 	
-	public void hideButtons()
+	public void displayBigBlind()
 	{
-		this.betButton.setVisible(false);
-		this.callButton.setVisible(false);		
-	}
-	
-	/*
-	Enable bet button. At points, betting is inappropriate.
-	Make button uneditable when that happens
-	*/
-	public void setBetButton(boolean state)
-	{
-		betButton.setEnabled(state);
+		boolean status = player.isBigBlind();
+		
+		if(status)
+		{
+			bigBlindLabel.setText("Big Blind");
+		}
+		else
+		{
+			bigBlindLabel.setText("");
+		}
 	}
 }
