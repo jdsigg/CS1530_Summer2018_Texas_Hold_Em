@@ -77,15 +77,15 @@ class DealerContainer extends JPanel
 	*/
 	public void setPot()
 	{
-		pot.setText(Double.toString(dealer.getPot()));
+		pot.setText(Integer.toString(dealer.getPot()));
 	}
 	
 	/*
 	Update the min bet display
 	*/
-	public void setMinBet()
+	public void setMinBet(int minRoundBet)
 	{
-		//minBet.setText(Double.toString(dealer.);
+		minBet.setText(Integer.toString(minRoundBet));
 	}
 	
 	/*

@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.io.IOException;
+import java.util.Random;
 
 class Game
 {
@@ -10,6 +11,13 @@ class Game
 	private GameBoard gameBoard;
 	private Dealer dealer;
 	private Logger logger;
+	private int playersStillInGame;
+	
+	private int dealerChip;
+	private int smallBlind;
+	private int bigBlind;
+	
+	private Random gen;
 	
     /*
 	Constructor for Game Class
@@ -22,7 +30,109 @@ class Game
 		this.realPlayers = players;
 		this.logger = logger;
 		this.dealer = dealer;
+		this.playersStillInGame = this.numberOfPlayers;
+		
+		gen = new Random();
     }
+	
+	public void initializeBlinds()
+	{
+		//if number of players == 2 --> assign only small and big blind, dealer also being the small blind
+		
+		if(playersStillInGame == 2)
+		{
+			this.dealerChip = gen.nextInt(numberOfPlayers);
+			this.smallBlind = this.dealerChip;
+			this.bigBlind = (this.dealerChip + 1) % this.numberOfPlayers;
+		}
+		else
+		{
+			this.dealerChip = gen.nextInt(numberOfPlayers); //set the dealer
+			this.smallBlind = (this.dealerChip + 1) % this.numberOfPlayers; //put small blind left of dealer
+			this.bigBlind = (this.dealerChip + 2) % this.numberOfPlayers; //put small blind two left of dealer
+		}
+		
+		realPlayers[dealerChip].setDealerStatus(true);
+		realPlayers[smallBlind].setSmallBlindStatus(true);
+		realPlayers[bigBlind].setBigBlindStatus(true);
+		
+		gameBoard.displayDealerStatus(dealerChip);
+		gameBoard.displaySmallBlindStatus(smallBlind);
+		gameBoard.displayBigBlindStatus(bigBlind);
+	}
+	
+	public void moveBlinds()
+	{
+		int count = 0;
+		
+		realPlayers[dealerChip].setDealerStatus(false);
+		gameBoard.displayDealerStatus(dealerChip);
+		
+		dealerChip = (dealerChip+1) % numberOfPlayers;
+		
+		while(count < numberOfPlayers) //go over every player, assigning new dealer and breaking when found
+		{
+			if(realPlayers[dealerChip].isIn())
+			{
+				realPlayers[dealerChip].setDealerStatus(true);
+				break;
+			}
+			dealerChip = (dealerChip + 1) % numberOfPlayers;
+			count++;
+		}
+		
+		if(playersStillInGame == 2)
+		{
+			realPlayers[smallBlind].setSmallBlindStatus(false);
+			gameBoard.displaySmallBlindStatus(smallBlind);
+			smallBlind = dealerChip;
+			
+			realPlayers[smallBlind].setSmallBlindStatus(true);
+			realPlayers[bigBlind].setBigBlindStatus(false);
+			gameBoard.displayBigBlindStatus(bigBlind);
+			
+			bigBlind = (smallBlind + 1) % numberOfPlayers;
+			realPlayers[bigBlind].setBigBlindStatus(true);
+		}
+		else
+		{
+			count = 0;
+			realPlayers[smallBlind].setSmallBlindStatus(false);
+			gameBoard.displaySmallBlindStatus(smallBlind);
+			smallBlind = (dealerChip+1) % numberOfPlayers;
+			
+			while(count < numberOfPlayers)
+			{
+				if(realPlayers[smallBlind].isIn())
+				{
+					realPlayers[smallBlind].setSmallBlindStatus(true);
+					break;
+				}
+				smallBlind = (smallBlind + 1) % numberOfPlayers;
+				count++;
+			}
+			
+			count = 0;
+			realPlayers[bigBlind].setBigBlindStatus(false);
+			gameBoard.displayBigBlindStatus(bigBlind);
+			bigBlind = (smallBlind + 1) % numberOfPlayers;
+			
+			while(count < numberOfPlayers)
+			{
+				if(realPlayers[bigBlind].isIn())
+				{
+					realPlayers[bigBlind].setBigBlindStatus(true);
+					break;
+				}
+				bigBlind = (bigBlind + 1) % numberOfPlayers;
+				count++;
+			}
+		}
+		
+		gameBoard.displayDealerStatus(dealerChip);
+		gameBoard.displaySmallBlindStatus(smallBlind);
+		gameBoard.displayBigBlindStatus(bigBlind);
+	}
 	
     /*
 	Method to deal the players
@@ -94,17 +204,34 @@ class Game
 		
 		if (state == 5)
 		{
-			activePlayers = new Player[numberOfPlayers];
+			betRound();
 			
-			for (int i=0; i<activePlayers.length; i++)
+			int numberIn = 0;
+			for(int i = 0; i < realPlayers.length; i++)
 			{
-				activePlayers[i] = realPlayers[i];
+				if(realPlayers[i].isIn())
+					numberIn++;
+			}
+			
+			activePlayers = new Player[numberIn];
+			
+			int j = 0;
+			for (int i=0; i<realPlayers.length; i++)
+			{
+				if(realPlayers[i].isIn())
+				{
+					activePlayers[j] = realPlayers[i];
+					j++;
+				}
 			}
 			checkWinner(activePlayers);
 			resetGame();
+			moveBlinds();
 		}
 		else
 		{
+			System.out.println(state);
+			betRound();
 			state++;
 		}		
 	}
@@ -260,7 +387,7 @@ class Game
 		gameBoard.updatePot();
 		
 		//Show the min bet
-		gameBoard.updateBet();
+		//gameBoard.updateBet();
 		
 		//Log who won and the money they receive
 		logString(winner + " won the hand!");
@@ -276,6 +403,147 @@ class Game
 		
 		//Clear winner's bet (for now, only human player can change their bet. This should be replaced with a clear all player bets)
 		winningPlayer.setBet(0);
+		
+		
+		//clear all player bets in player classes
+		//split the pot amongst winners
+		//clear the pot
+		//show the winner
+		//shift pointers and re-assign new dealer chip, small blind, and big blind
+		//update gui to show new values
+	}
+	
+	public void betRound()
+	{
+		System.out.println("Dealer is: "+dealerChip);
+		System.out.println("Small Blind is: "+smallBlind);
+		System.out.println("Big Blind is : "+bigBlind);
+		
+		int numberOfRaises = 0;
+		int minRoundBet = 20;
+		int currentLead = bigBlind;
+		int nextPlayer = (bigBlind + 1) % numberOfPlayers;
+		int currentPlayer = nextPlayer;
+		int previousBet = 0;
+		int toThePot = 0;
+		
+		if(state == 1)
+		{
+			realPlayers[smallBlind].setBet(10);
+			realPlayers[smallBlind].subtractFromMoney(10);
+			realPlayers[bigBlind].setBet(20);
+			realPlayers[bigBlind].subtractFromMoney(20);
+			dealer.updatePot(dealer.getPot() + 30);
+			
+			gameBoard.changePlayerPot(smallBlind);
+			gameBoard.changePlayerPot(bigBlind);
+			gameBoard.updatePot();
+		}
+		
+		gameBoard.updateMinBet(minRoundBet);
+		
+		while(currentPlayer != currentLead)
+		{
+			if(numberOfRaises == 3)
+			{
+				break;
+			}
+			System.out.println("Current Player is: "+currentPlayer);
+			System.out.println("Current Lead is: "+currentLead);
+			if(realPlayers[currentPlayer].isIn())
+			{
+				gameBoard.highlightCurrentBetter(currentPlayer);
+				
+				toThePot = realPlayers[currentPlayer].bet(previousBet, numberOfRaises);
+				
+				if(toThePot == -1)
+				{
+					realPlayers[currentPlayer].setStatus(1);
+					gameBoard.cancelCurrentBetter(currentPlayer);
+				}
+				else
+				{
+					gameBoard.clearCurrentBetter(currentPlayer);
+					
+					if(realPlayers[currentPlayer].getBet() + toThePot <= minRoundBet)
+					{
+						toThePot += minRoundBet - realPlayers[currentPlayer].getBet() - toThePot;
+					}
+					else
+					{
+						numberOfRaises++;
+						currentLead = currentPlayer;
+						
+						minRoundBet = realPlayers[currentPlayer].getBet() + toThePot;
+					}
+					
+					previousBet = realPlayers[currentPlayer].getBet() + toThePot;
+					
+					realPlayers[currentPlayer].setBet(toThePot); //update the current player's bet
+					realPlayers[currentPlayer].subtractFromMoney(toThePot);
+					
+					dealer.updatePot(dealer.getPot() + toThePot);
+					
+					System.out.println("Current Player bet: "+(realPlayers[currentPlayer].getBet()));
+					
+					gameBoard.changePlayerPot(currentPlayer);
+					gameBoard.updatePot();
+					gameBoard.updateMinBet(minRoundBet);
+				}
+			}
+			nextPlayer = (nextPlayer + 1) % numberOfPlayers;
+			currentPlayer = nextPlayer;
+		}
+		
+		if(numberOfRaises == 3) //if we have three raises left, finish betting for the round
+		{
+			while(currentPlayer != currentLead)
+			{
+				if(realPlayers[currentPlayer].isIn())
+				{
+					gameBoard.highlightCurrentBetter(currentPlayer);
+				
+					toThePot = realPlayers[currentPlayer].bet(previousBet, numberOfRaises);
+				
+					if(toThePot == -1) //give players chance to fold
+					{
+						realPlayers[currentPlayer].setStatus(1);
+						gameBoard.cancelCurrentBetter(currentPlayer);
+					}
+					else //if they don't fold, force them to call
+					{
+						gameBoard.clearCurrentBetter(currentPlayer);
+						
+						toThePot += minRoundBet - realPlayers[currentPlayer].getBet() - toThePot;
+						
+						previousBet = realPlayers[currentPlayer].getBet() + toThePot;
+					
+						realPlayers[currentPlayer].setBet(toThePot); //update the current player's bet
+						realPlayers[currentPlayer].subtractFromMoney(toThePot);
+						
+						dealer.updatePot(dealer.getPot() + toThePot);
+						
+						System.out.println("Current Player bet: "+(realPlayers[currentPlayer].getBet()));
+						
+						gameBoard.changePlayerPot(currentPlayer);
+						gameBoard.updatePot();
+						gameBoard.updateMinBet(minRoundBet);
+					}
+				}
+				currentPlayer = (currentPlayer+1) % numberOfPlayers;
+			}
+		}
+		
+		for(int i = 0; i < realPlayers.length; i++)
+			realPlayers[i].setBet(0);
+	}
+	
+	public void runMe()
+	{
+		while(true)
+		{
+			nextState();
+		}
 	}
 	
 	/*

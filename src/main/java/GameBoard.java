@@ -53,11 +53,10 @@ class GameBoard extends JFrame
 					displayBlanks(i);
 				}
 				displayDealerBlanks();
-				updateBet();
+				//updateBet();
 				updatePot();
 				break;
 			case 1:
-				playerContainers[0].setBetButton(true);
 				break;
 			case 2:
 			/*
@@ -79,7 +78,6 @@ class GameBoard extends JFrame
 			case 5:
 				for(int i = 1; i < playerContainers.length; i++)
 					displayPlayerHand(i);
-				playerContainers[0].setBetButton(false);
 				break;
 			default:
 				break;
@@ -123,10 +121,10 @@ class GameBoard extends JFrame
 	/*
 	Method to update the current bet on the GUI
 	*/
-	public void updateBet()
+	public void updateBet(int minBet)
 	{
 		//For now, bet can only be $20, and is always same as the pot
-		dealerContainer.setMinBet();
+		dealerContainer.setMinBet(minBet);
 	}
 	
 	/*
@@ -152,6 +150,48 @@ class GameBoard extends JFrame
 		
 		this.add(dealerContainer);
 		dealerContainer.setVisible(true);
+		this.repaint();
+		this.revalidate();
+	}
+	
+	public void highlightCurrentBetter(int currentBetter)
+	{
+		playerContainers[currentBetter].blackBorder();
+	}
+	
+	public void cancelCurrentBetter(int currentBetter)
+	{
+		playerContainers[currentBetter].redBorder();
+	}
+	
+	public void clearCurrentBetter(int currentBetter)
+	{
+		playerContainers[currentBetter].clearBorder();
+	}
+	
+	public void changePlayerPot(int player)
+	{
+		playerContainers[player].updateMoney();
+	}
+	
+	public void updateMinBet(int minBet)
+	{
+		dealerContainer.setMinBet(minBet);
+	}
+	
+	public void displayDealerStatus(int dealer)
+	{
+		playerContainers[dealer].displayDealer();
+	}
+	
+	public void displaySmallBlindStatus(int smallBlind)
+	{
+		playerContainers[smallBlind].displaySmallBlind();
+	}
+	
+	public void displayBigBlindStatus(int bigBlind)
+	{
+		playerContainers[bigBlind].displayBigBlind();
 	}
 }
 

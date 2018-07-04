@@ -6,7 +6,7 @@ class Dealer
 	/*
 	Initialize Variables
 	*/
-	private double pot;
+	private int pot;
 	private Deck dealerDeck;
 	private Card [] commCards = new Card[5];
 	
@@ -15,14 +15,14 @@ class Dealer
 	*/
 	public Dealer(Deck deck)
 	{
-		this.pot = 0.00;
+		this.pot = 0;
 		this.dealerDeck = deck;
 	}
 	
 	/*
 	Method to get pot
 	*/
-	public double getPot()
+	public int getPot()
 	{
 		return this.pot;
 	}
@@ -30,7 +30,7 @@ class Dealer
 	/*
 	Method to update pot
 	*/
-	public void updatePot(double pot)
+	public void updatePot(int pot)
 	{
 		this.pot = pot;
 	}
