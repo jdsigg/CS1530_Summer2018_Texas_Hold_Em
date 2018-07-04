@@ -19,7 +19,7 @@ class Player
 	private int playerType;
 	private Random gen;
 	private boolean hasBet;
-	
+
 	private boolean dealer;
 	private boolean smallBlind;
 	private boolean bigBlind;
@@ -115,7 +115,7 @@ class Player
 	{
 		this.bet += newBet;
 	}
-	
+
 	public void resetBet()
 	{
 		this.bet = 0;
@@ -165,7 +165,7 @@ class Player
 	{
 		return this.playerType;
 	}
-	
+
 	/*
 	Returns true if player is in for the round
 	*/
@@ -173,17 +173,17 @@ class Player
 	{
 		return (this.status == 0);
 	}
-	
-	public int bet(int previousBet, int numberOfRaises)
+
+	public int bet(int previousBet, int numberOfRaises, int state)
 	{
 		int betPercent = 1;
 		int actualBet = 0;
-		
+
 		switch(this.playerType)
 		{
 			case 0: //human player
 				String[] buttons = null;
-				
+
 				if(previousBet == 0 && numberOfRaises < 3) //check case
 				{
 					buttons = new String[3];
@@ -191,7 +191,7 @@ class Player
 					buttons[1] = "Check";
 					buttons[2] = "Raise $20";
 				}
-				
+
 				if(previousBet > 0 && numberOfRaises < 3) //check case
 				{
 					buttons = new String[3];
@@ -199,19 +199,19 @@ class Player
 					buttons[1] = "Call";
 					buttons[2] = "Raise $20";
 				}
-				
+
 				if(numberOfRaises == 3)
 				{
 					buttons = new String[2];
 					buttons[0] = "Fold";
 					buttons[1] = "Call";
 				}
-				
-				
+
+
 				int returnValue = JOptionPane.showOptionDialog(null, "It is your turn to bet!", "Player Turn",
 				JOptionPane.WARNING_MESSAGE, 0, null, buttons, null);
-				
-				
+
+
 				if(returnValue == 0)
 				{
 					actualBet = -1;
@@ -225,18 +225,18 @@ class Player
 					actualBet = previousBet - this.getBet();
 					actualBet += 20;
 				}
-					
+
 				break;
 			case 1: //AI player
-			
-				/*
-				int foldOrBet = gen.nextInt(2);
-				if(foldOrBet == 0)
+
+
+				int foldOrBet = gen.nextInt(100);
+				if(foldOrBet <= 50 && numberOfRaises < 3 && state == 2)
 				{
 					actualBet = -1;
 				}
 				else
-				{*/
+				{
 					if(numberOfRaises < 3)
 					{
 						betPercent = gen.nextInt(100) + 1; //forces computer to bet between 1 and 100 percent of their pot
@@ -244,60 +244,60 @@ class Player
 						//actualBet = 20;
 					}
 					else
-						actualBet = previousBet;	
-				//}
-				
+						actualBet = previousBet;
+				}
+
 				try
 				{
 					TimeUnit.SECONDS.sleep(1);
 				}
 				catch (InterruptedException ex)
 				{
-					
+
 				}
 				break;
 		}
-		
+
 		return actualBet;
 	}
-	
+
 	public void setHasBet(boolean value)
 	{
 		this.hasBet = value;
 	}
-	
+
 	public void subtractFromMoney(int toThePot)
 	{
 		this.money -= toThePot;
 	}
-	
+
 	public void setDealerStatus(boolean status)
 	{
 		this.dealer = status;
 	}
-	
+
 	public void setSmallBlindStatus(boolean status)
 	{
 		this.smallBlind = status;
 	}
-	
+
 	public void setBigBlindStatus(boolean status)
 	{
 		this.bigBlind = status;
 	}
-	
+
 	public boolean isDealer()
 	{
 		return this.dealer;
 	}
-	
+
 	public boolean isSmallBlind()
 	{
 		return this.smallBlind;
 	}
-	
+
 	public boolean isBigBlind()
 	{
 		return this.bigBlind;
-	}	
+	}
 }
