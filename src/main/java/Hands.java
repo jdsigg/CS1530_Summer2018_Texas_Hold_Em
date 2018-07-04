@@ -371,17 +371,18 @@ public class Hands {
 					}
 					index++;
 					count++;
+					
+					if(count == 5)
+					{
+						winningHand[0] = 5;
+						return winningHand;
+					}
+					
 				}
 				else
 				{
 					break;
 				}
-			}
-
-			if(count == 5)
-			{
-				winningHand[0] = 5;
-				return winningHand;
 			}
 		}
 		return winningHand;
@@ -534,6 +535,20 @@ public class Hands {
 			
 			if(count == 2) 
 			{
+				if(winningHand[1] < winningHand[2])
+				{
+					//get the greater of the pairs first
+					int t = winningHand[1];
+					winningHand[1] = winningHand[2];
+					winningHand[2] = t;
+				}
+				if(winningHand[2] < winningHand[3])
+				{
+					//get the greater of the pairs first
+					int t = winningHand[2];
+					winningHand[2] = winningHand[3];
+					winningHand[3] = t;
+				}
 				if(winningHand[1] < winningHand[2])
 				{
 					//get the greater of the pairs first

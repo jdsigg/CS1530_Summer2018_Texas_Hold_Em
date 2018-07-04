@@ -5,6 +5,9 @@
 output.txt
 test_output.txt
 
+#Ignore all class files
+*.class
+
 # Ignore Gradle GUI config
 gradle-app.setting
 

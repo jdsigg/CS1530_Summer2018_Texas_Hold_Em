@@ -143,7 +143,7 @@ public class TestTexasHoldEm
         hand[2] = new Card(Card.Suit.Hearts,Card.Rank.Queen);
         hand[3] = new Card(Card.Suit.Hearts,Card.Rank.King);
         hand[4] = new Card(Card.Suit.Hearts,Card.Rank.Ace);
-        assert(Hands.royalFlush(hand));
+        assertEquals(10, Hands.royalFlush(hand)[0]);
     }
 
     //Test for straight flush hand.
@@ -156,7 +156,7 @@ public class TestTexasHoldEm
         hand[2] = new Card(Card.Suit.Hearts,Card.Rank.Seven);
         hand[3] = new Card(Card.Suit.Hearts,Card.Rank.Nine);
         hand[4] = new Card(Card.Suit.Hearts,Card.Rank.Six);
-        assert(Hands.straightFlush(hand));
+        assertEquals(9, Hands.straightFlush(hand)[0]);
     }
 
     //Test for four of a kind hand.
@@ -169,7 +169,7 @@ public class TestTexasHoldEm
         hand[2] = new Card(Card.Suit.Clubs,Card.Rank.Ten);
         hand[3] = new Card(Card.Suit.Hearts,Card.Rank.Nine);
         hand[4] = new Card(Card.Suit.Diamonds,Card.Rank.Ten);
-        assert(Hands.fourOfAKind(hand));
+        assertEquals(8, Hands.fourOfAKind(hand)[0]);
     }
 
     //Test for full house hand.
@@ -182,7 +182,7 @@ public class TestTexasHoldEm
         hand[2] = new Card(Card.Suit.Clubs,Card.Rank.Ten);
         hand[3] = new Card(Card.Suit.Hearts,Card.Rank.Nine);
         hand[4] = new Card(Card.Suit.Diamonds,Card.Rank.Nine);
-        assert(Hands.fullHouse(hand));
+        assertEquals(7, Hands.fullHouse(hand)[0]);
     }
 
     //Test for flush hand.
@@ -195,20 +195,22 @@ public class TestTexasHoldEm
         hand[2] = new Card(Card.Suit.Diamonds,Card.Rank.Four);
         hand[3] = new Card(Card.Suit.Diamonds,Card.Rank.Ace);
         hand[4] = new Card(Card.Suit.Diamonds,Card.Rank.King);
-        assert(Hands.flush(hand));
+        assertEquals(6, Hands.flush(hand)[0]);
     }
 
     //Test for straight hand.
     @Test
     public void testStraightHand()
     {
-        Card [] hand = new Card[5];
-        hand[0] = new Card(Card.Suit.Hearts,Card.Rank.Two);
-        hand[1] = new Card(Card.Suit.Spades,Card.Rank.Four);
-        hand[2] = new Card(Card.Suit.Clubs,Card.Rank.Six);
-        hand[3] = new Card(Card.Suit.Hearts,Card.Rank.Five);
-        hand[4] = new Card(Card.Suit.Diamonds,Card.Rank.Three);
-        assert(Hands.straight(hand));
+        Card [] hand = new Card[7];
+        hand[0] = new Card(Card.Suit.Hearts,Card.Rank.Six);
+        hand[1] = new Card(Card.Suit.Spades,Card.Rank.Seven);
+        hand[2] = new Card(Card.Suit.Clubs,Card.Rank.Eight);
+        hand[3] = new Card(Card.Suit.Hearts,Card.Rank.Nine);
+        hand[4] = new Card(Card.Suit.Diamonds,Card.Rank.Ten);
+		hand[5] = new Card(Card.Suit.Diamonds,Card.Rank.Jack);
+		hand[6] = new Card(Card.Suit.Diamonds,Card.Rank.Queen);
+        assertEquals(5, Hands.straight(hand)[0]);
     }
 
     //Test for three of a kind hand.
@@ -221,7 +223,7 @@ public class TestTexasHoldEm
         hand[2] = new Card(Card.Suit.Clubs,Card.Rank.Two);
         hand[3] = new Card(Card.Suit.Hearts,Card.Rank.Five);
         hand[4] = new Card(Card.Suit.Diamonds,Card.Rank.Two);
-        assert(Hands.threeOfAKind(hand));
+        assertEquals(4, Hands.threeOfAKind(hand)[0]);
     }
 
     //Test for two pair hand.
@@ -234,7 +236,30 @@ public class TestTexasHoldEm
         hand[2] = new Card(Card.Suit.Clubs,Card.Rank.Two);
         hand[3] = new Card(Card.Suit.Hearts,Card.Rank.Five);
         hand[4] = new Card(Card.Suit.Diamonds,Card.Rank.Two);
-        assert(Hands.twoPair(hand));
+        assertEquals(3, Hands.twoPair(hand)[0]);
+    }
+	
+	//Test for two pair hand with three pairs.
+    @Test
+    public void testTwoPairHandThreePairs()
+    {
+        Card [] hand1 = new Card[6];
+        hand1[0] = new Card(Card.Suit.Hearts,Card.Rank.Five);
+        hand1[1] = new Card(Card.Suit.Spades,Card.Rank.Ten);
+        hand1[2] = new Card(Card.Suit.Clubs,Card.Rank.Two);
+        hand1[3] = new Card(Card.Suit.Hearts,Card.Rank.Five);
+        hand1[4] = new Card(Card.Suit.Diamonds,Card.Rank.Two);
+		hand1[5] = new Card(Card.Suit.Diamonds,Card.Rank.Ten);
+		
+		Card [] hand2 = new Card[6];
+        hand2[0] = new Card(Card.Suit.Hearts,Card.Rank.Eight);
+        hand2[1] = new Card(Card.Suit.Spades,Card.Rank.King);
+        hand2[2] = new Card(Card.Suit.Clubs,Card.Rank.Two);
+        hand2[3] = new Card(Card.Suit.Hearts,Card.Rank.Eight);
+        hand2[4] = new Card(Card.Suit.Diamonds,Card.Rank.Two);
+		hand2[5] = new Card(Card.Suit.Diamonds,Card.Rank.King);
+		
+        assertTrue(Hands.twoPair(hand1)[1] < Hands.twoPair(hand2)[1]);
     }
 
     //Test for one pair hand.
@@ -247,7 +272,7 @@ public class TestTexasHoldEm
         hand[2] = new Card(Card.Suit.Clubs,Card.Rank.Six);
         hand[3] = new Card(Card.Suit.Hearts,Card.Rank.Five);
         hand[4] = new Card(Card.Suit.Diamonds,Card.Rank.Seven);
-        assert(Hands.onePair(hand));
+        assertEquals(2, Hands.onePair(hand)[0]);
     }
 
     /*

@@ -1,6 +1,9 @@
 import java.util.HashMap;
 import java.io.IOException;
 import java.util.stream.Stream;
+import java.util.Random;
+import javax.swing.JOptionPane;
+import java.util.Arrays;
 
 class Game
 {
@@ -11,6 +14,14 @@ class Game
 	private GameBoard gameBoard;
 	private Dealer dealer;
 	private Logger logger;
+	
+	private int playersStillInGame;
+	
+	private int dealerChip;
+	private int smallBlind;
+	private int bigBlind;
+	
+	private Random gen;
 
     /*
 	Constructor for Game Class
@@ -23,7 +34,110 @@ class Game
 		this.realPlayers = players;
 		this.logger = logger;
 		this.dealer = dealer;
+		
+		this.playersStillInGame = this.numberOfPlayers;
+		
+		gen = new Random();
     }
+	
+	public void initializeBlinds()
+	{
+		//if number of players == 2 --> assign only small and big blind, dealer also being the small blind
+		
+		if(playersStillInGame == 2)
+		{
+			this.dealerChip = gen.nextInt(numberOfPlayers);
+			this.smallBlind = this.dealerChip;
+			this.bigBlind = (this.dealerChip + 1) % this.numberOfPlayers;
+		}
+		else
+		{
+			this.dealerChip = gen.nextInt(numberOfPlayers); //set the dealer
+			this.smallBlind = (this.dealerChip + 1) % this.numberOfPlayers; //put small blind left of dealer
+			this.bigBlind = (this.dealerChip + 2) % this.numberOfPlayers; //put small blind two left of dealer
+		}
+		
+		realPlayers[dealerChip].setDealerStatus(true);
+		realPlayers[smallBlind].setSmallBlindStatus(true);
+		realPlayers[bigBlind].setBigBlindStatus(true);
+		
+		gameBoard.displayDealerStatus(dealerChip);
+		gameBoard.displaySmallBlindStatus(smallBlind);
+		gameBoard.displayBigBlindStatus(bigBlind);
+	}
+	
+	public void moveBlinds()
+	{
+		int count = 0;
+		
+		realPlayers[dealerChip].setDealerStatus(false);
+		gameBoard.displayDealerStatus(dealerChip);
+		
+		dealerChip = (dealerChip+1) % numberOfPlayers;
+		
+		while(count < numberOfPlayers) //go over every player, assigning new dealer and breaking when found
+		{
+			if(realPlayers[dealerChip].isIn())
+			{
+				realPlayers[dealerChip].setDealerStatus(true);
+				break;
+			}
+			dealerChip = (dealerChip + 1) % numberOfPlayers;
+			count++;
+		}
+		
+		if(playersStillInGame == 2)
+		{
+			realPlayers[smallBlind].setSmallBlindStatus(false);
+			gameBoard.displaySmallBlindStatus(smallBlind);
+			smallBlind = dealerChip;
+			
+			realPlayers[smallBlind].setSmallBlindStatus(true);
+			realPlayers[bigBlind].setBigBlindStatus(false);
+			gameBoard.displayBigBlindStatus(bigBlind);
+			
+			bigBlind = (smallBlind + 1) % numberOfPlayers;
+			realPlayers[bigBlind].setBigBlindStatus(true);
+		}
+		else
+		{
+			count = 0;
+			realPlayers[smallBlind].setSmallBlindStatus(false);
+			gameBoard.displaySmallBlindStatus(smallBlind);
+			smallBlind = (dealerChip+1) % numberOfPlayers;
+			
+			while(count < numberOfPlayers)
+			{
+				if(realPlayers[smallBlind].isIn())
+				{
+					realPlayers[smallBlind].setSmallBlindStatus(true);
+					break;
+				}
+				smallBlind = (smallBlind + 1) % numberOfPlayers;
+				count++;
+			}
+			
+			count = 0;
+			realPlayers[bigBlind].setBigBlindStatus(false);
+			gameBoard.displayBigBlindStatus(bigBlind);
+			bigBlind = (smallBlind + 1) % numberOfPlayers;
+			
+			while(count < numberOfPlayers)
+			{
+				if(realPlayers[bigBlind].isIn())
+				{
+					realPlayers[bigBlind].setBigBlindStatus(true);
+					break;
+				}
+				bigBlind = (bigBlind + 1) % numberOfPlayers;
+				count++;
+			}
+		}
+		
+		gameBoard.displayDealerStatus(dealerChip);
+		gameBoard.displaySmallBlindStatus(smallBlind);
+		gameBoard.displayBigBlindStatus(bigBlind);
+	}
 
     /*
 	Method to deal the players
@@ -59,34 +173,11 @@ class Game
     }
 
 	/*
-	Called when the player bets. In the future, other players will bet instead
-	*/
-	public void foldEveryone()
-	{
-		activePlayers = new Player[1];
-		activePlayers[0] = realPlayers[0];
-
-		dealer.updatePot(activePlayers[0].getBet());
-
-		checkWinner(activePlayers);
-		resetGame();
-	}
-
-	/*
 	State machine controller. Calling moves game from one hand to the next.
 	Betting immediately ends the hand.
 	*/
 	public void nextState()
 	{
-		if(state != 1 && state!= 0)
-		{
-			for(int i = 0; i < realPlayers.length; i++)
-			{
-				Player temp = realPlayers[i];
-				logString(temp.getName()+" calls.");
-			}
-		}
-
 		if(state==1)
 		{
 			startNewHand();
@@ -95,17 +186,13 @@ class Game
 
 		if (state == 5)
 		{
-			activePlayers = new Player[numberOfPlayers];
-
-			for (int i=0; i<activePlayers.length; i++)
-			{
-				activePlayers[i] = realPlayers[i];
-			}
-			checkWinner(activePlayers);
+			checkWinner(realPlayers);
 			resetGame();
+			moveBlinds();
 		}
 		else
 		{
+			betRound();
 			state++;
 		}
 	}
@@ -123,10 +210,13 @@ class Game
 			dealer.returnCard(tempCards[1]);
 			temp.wipeHand();
 			temp.setBet(0);
+			
+			gameBoard.wipePlayer(i);
 		}
 		dealer.returnCommCards();
 		dealer.wipeCommCards();
-		state = 0;
+		gameBoard.wipeDealer();
+		state = 1;
 	}
 
 	/*
@@ -175,7 +265,7 @@ class Game
 	in at the end of the round. Block comments were left
 	for future individual testing purposes
     */
-    private static void checkWinner(Player[] players)
+    private void checkWinner(Player[] players)
     {
 		/*Card[] hand = new Card[2];
 		
@@ -200,6 +290,9 @@ class Game
 		HashMap<String, Integer> ties = new HashMap<String, Integer>();
 		HashMap<Integer, String> handScores = new HashMap<Integer, String>();
 		HashMap<Integer, String> cardScores = new HashMap<Integer, String>();
+		int playerIndex[] = new int[8];
+		Arrays.fill(playerIndex, -1);
+		int maxSpot = 0;
 		
 		int score = 0;
       
@@ -235,67 +328,62 @@ class Game
 
 		for(int i=0; i<players.length; i++)
 		{
+			if(players[i].isIn())
+			{
+				currHand[5] = players[i].getCurrentHand()[0];
+				currHand[6] = players[i].getCurrentHand()[1];
+				score = 0;
 
-			/*hand = players[i].getCurrentHand();
-			currHand[0] = hand[0];
-			currHand[1] = hand[1];
-			currHand[2] = c1;
-			currHand[3] = c2;
-			currHand[4] = c3;
-			currHand[5] = c4;
-			currHand[6] = c5;*/
-			
-			score = 0;
+				String name = players[i].getName();
 
-			String name = players[i].getName();
+				logString("Checking "+name+"'s hand...");;
 
-			logString("Checking "+name+"'s hand...");;
+				//Systematically check hand, starting at best result to worst
 
-			//Systematically check hand, starting at best result to worst
-
-			//If the hand passes the test, assign their name and winning 5 cards to Map
-			//Five cards + their score are held in an array that will then be used
-			//Score is tested against max, and winning five cards determine ties
-			
-			if(Hands.royalFlush(currHand)[0] == 10) {
-				logString("->Player somehow has a royal flush");
-				scores.put(players[i].getName(), Hands.royalFlush(currHand)); 	//Give player a score
-			}
-			else if(Hands.straightFlush(currHand)[0] == 9) {
-				logString("->Player has straight flush");
-				scores.put(players[i].getName(), Hands.straightFlush(currHand)); 	//Give player a score
-			}
-			else if(Hands.fourOfAKind(currHand)[0] == 8) {
-				logString("->Player has four of a kind");
-				scores.put(players[i].getName(), Hands.fourOfAKind(currHand)); 	//Give player a score
-			}
-			else if(Hands.fullHouse(currHand)[0] == 7) {
-				logString("->Player has full house");
-				scores.put(players[i].getName(), Hands.fullHouse(currHand)); 	//Give player a score
-			}
-			else if(Hands.flush(currHand)[0] == 6) {
-				logString("->Player has a flush");
-				scores.put(players[i].getName(), Hands.flush(currHand)); 	//Give player a score
-			}
-			else if(Hands.straight(currHand)[0] == 5) {
-				logString("->Player has straight");
-				scores.put(players[i].getName(), Hands.straight(currHand)); 	//Give player a score
-			}
-			else if(Hands.threeOfAKind(currHand)[0] == 4) {
-				 logString("->Player has three of a kind");
-				 scores.put(players[i].getName(), Hands.threeOfAKind(currHand)); 	//Give player a score
-			}
-			else if(Hands.twoPair(currHand)[0] == 3) {
-				logString("->Player has two pair");
-				scores.put(players[i].getName(), Hands.twoPair(currHand)); 	//Give player a score
-			}
-			else if(Hands.onePair(currHand)[0] == 2) {
-				logString("->Player has a pair");
-				scores.put(players[i].getName(), Hands.onePair(currHand)); 	//Give player a score
-			}
-			else if(Hands.highCard(currHand)[0] == 1) {
-				logString("->Player only has high card");
-				scores.put(players[i].getName(), Hands.highCard(currHand)); 	//Give player a score
+				//If the hand passes the test, assign their name and winning 5 cards to Map
+				//Five cards + their score are held in an array that will then be used
+				//Score is tested against max, and winning five cards determine ties
+				
+				if(Hands.royalFlush(currHand)[0] == 10) {
+					logString("->Player somehow has a royal flush");
+					scores.put(players[i].getName(), Hands.royalFlush(currHand)); 	//Give player a score
+				}
+				else if(Hands.straightFlush(currHand)[0] == 9) {
+					logString("->Player has straight flush");
+					scores.put(players[i].getName(), Hands.straightFlush(currHand)); 	//Give player a score
+				}
+				else if(Hands.fourOfAKind(currHand)[0] == 8) {
+					logString("->Player has four of a kind");
+					scores.put(players[i].getName(), Hands.fourOfAKind(currHand)); 	//Give player a score
+				}
+				else if(Hands.fullHouse(currHand)[0] == 7) {
+					logString("->Player has full house");
+					scores.put(players[i].getName(), Hands.fullHouse(currHand)); 	//Give player a score
+				}
+				else if(Hands.flush(currHand)[0] == 6) {
+					logString("->Player has a flush");
+					scores.put(players[i].getName(), Hands.flush(currHand)); 	//Give player a score
+				}
+				else if(Hands.straight(currHand)[0] == 5) {
+					logString("->Player has straight");
+					scores.put(players[i].getName(), Hands.straight(currHand)); 	//Give player a score
+				}
+				else if(Hands.threeOfAKind(currHand)[0] == 4) {
+					 logString("->Player has three of a kind");
+					 scores.put(players[i].getName(), Hands.threeOfAKind(currHand)); 	//Give player a score
+				}
+				else if(Hands.twoPair(currHand)[0] == 3) {
+					logString("->Player has two pair");
+					scores.put(players[i].getName(), Hands.twoPair(currHand)); 	//Give player a score
+				}
+				else if(Hands.onePair(currHand)[0] == 2) {
+					logString("->Player has a pair");
+					scores.put(players[i].getName(), Hands.onePair(currHand)); 	//Give player a score
+				}
+				else if(Hands.highCard(currHand)[0] == 1) {
+					logString("->Player only has high card");
+					scores.put(players[i].getName(), Hands.highCard(currHand)); 	//Give player a score
+				}
 			}
 		}
 
@@ -311,61 +399,78 @@ class Game
 		
 		//DETERMINING WINNER AND ANY TIES...
 		
+		int winningIndex = 0;
+		
 		for(int i = 0; i < players.length; i++)
 		{
-			if(scores.get(players[i].getName())[0] > max)
-			{			
-				max = scores.get(players[i].getName())[0];
-				winner = players[i].getName();
-				winningPlayer = players[i];
-			}
-			else if(scores.get(players[i].getName())[0] == max)
+			if(players[i].isIn())
 			{
-				//loop through players to find who owns current max
-				//we need their hand to break the tie with the current challenger
-				for(int x = 0; x < players.length; x++)
-				{
-					if(max == scores.get(players[x].getName())[0])
-					{
-						maxPlayer = players[x].getName();
-						maxHand = scores.get(players[x].getName());
-						break;
-					}
+				if(scores.get(players[i].getName())[0] > max)
+				{	
+					Arrays.fill(playerIndex, -1);
+					maxSpot = 0;
+					max = scores.get(players[i].getName())[0];
+					winner = players[i].getName();
+					winningPlayer = players[i];
+					playerIndex[maxSpot] = i;
+					maxSpot++;
 				}
-				
-				challengerPlayer = players[i].getName();
-				challengerHand = scores.get(players[i].getName());
-				boolean addToTies = true;
-				
-				//loop not all the way through (best five card hand??)
-				//potential bug
-				for(int y = 1; y < challengerHand.length; y++)
+				else if(scores.get(players[i].getName())[0] == max)
 				{
-					if(maxHand[y] < challengerHand[y])
+					//loop through players to find who owns current max
+					//we need their hand to break the tie with the current challenger
+					for(int x = 0; x < players.length; x++)
 					{
-						max = scores.get(players[i].getName())[0];
-						winner = players[i].getName();
-						winningPlayer = players[i];
-						addToTies = false;
-						break;
+						if(players[x].isIn())
+						{
+							if(max == scores.get(players[x].getName())[0])
+							{
+								maxPlayer = players[x].getName();
+								maxHand = scores.get(players[x].getName());
+								break;
+							}
+						}
 					}
-					else if(maxHand[y] > challengerHand[y])
+					
+					challengerPlayer = players[i].getName();
+					challengerHand = scores.get(players[i].getName());
+					boolean addToTies = true;
+					int maxIndex = 0;
+					
+					//loop not all the way through (best five card hand??)
+					//potential bug
+					for(int y = 1; y < challengerHand.length; y++)
 					{
-						//max determined prior won against the challenger
-						//no changes needed, max stays. No ties here
-						addToTies = false;
+						if(maxHand[y] < challengerHand[y])
+						{
+							max = scores.get(players[i].getName())[0];
+							winner = players[i].getName();
+							winningPlayer = players[i];
+							winningIndex = i;
+							maxIndex = i;
+							addToTies = false;
+							break;
+						}
+						else if(maxHand[y] > challengerHand[y])
+						{
+							//max determined prior won against the challenger
+							//no changes needed, max stays. No ties here
+							addToTies = false;
+						}
 					}
+					
+					//If we have a true tie, add them to ties hashmap to print later
+					//If anyone else ties, they get added here as well
+					//Max and winner info for future comparison need no updating
+					if(addToTies)
+					{
+						ties.put(maxPlayer, maxHand[0]);
+						ties.put(challengerPlayer, challengerHand[0]);
+						playerIndex[maxSpot] = i;
+						maxSpot++;
+					}
+					
 				}
-				
-				//If we have a true tie, add them to ties hashmap to print later
-				//If anyone else ties, they get added here as well
-				//Max and winner info for future comparison need no updating
-				if(addToTies)
-				{
-					ties.put(maxPlayer, maxHand[0]);
-					ties.put(challengerPlayer, challengerHand[0]);
-				}
-				
 			}
 		}
 		
@@ -373,38 +478,223 @@ class Game
 		{
 			//we found a max greater than the previously found tie (if applicable), so max wins
 			//highCard = cardScores.get(scores.get(winner)[1]);
-			System.out.println(winner + " wins with a " + handScores.get(max) + "!");
+			System.out.println();
+			
+			String[] buttons = {"Continue"};
+			JOptionPane.showOptionDialog(null, winner + " wins with a " + handScores.get(max) + "!", "Winner!",
+				JOptionPane.WARNING_MESSAGE, 0, null, buttons, null);
+			
+			//give pot to true winner
+			int pot = dealer.getPot();
+			
+			winningPlayer.updateMoney(winningPlayer.getMoney() + pot);
+			gameBoard.changePlayerPot(winningIndex);
+			dealer.updatePot(0);
+			
 		}
-		else 
+		else //playerIndex is an int array filled with indexes of winners
 		{
 			//the max hasnt been beat since this tie was found, so the ties split the pot
-			System.out.println("We have a tie! Players that tied:");
-			Stream.of(ties.keySet().toArray())
-                .forEach(System.out::println);	
-			System.out.println("They both won with a " + handScores.get(max) + " and will split the pot.");
+			//System.out.println("We have a tie! Players that tied: ");
+			String winningPlayers = "";
+			
+			Object[] winningPlayersArray = ties.keySet().toArray();
+			
+			for(int i = 0; i < winningPlayersArray.length; i++)
+			{
+				if(i == winningPlayersArray.length-1)
+				{
+					winningPlayers += " and ";
+					winningPlayers += winningPlayersArray[i].toString();
+				}
+				else
+				{
+					winningPlayers += winningPlayersArray[i].toString();
+					winningPlayers += ", ";
+				}
+			}
+			
+			String[] buttons = {"Continue"};
+			JOptionPane.showOptionDialog(null, "We have a tie! Players that tied: "+winningPlayers+ 
+					"\n\nThey won with a " + handScores.get(max) + " and will split the pot.", "Winner!",
+				JOptionPane.WARNING_MESSAGE, 0, null, buttons, null);
+			
+			//System.out.println("They won with a " + handScores.get(max) + " and will split the pot.");
+			
+			int winnerCount = 0;
+			
+			for(int i = 0; i < playerIndex.length; i++)
+			{
+				if(playerIndex[i] == -1)
+					break;
+				winnerCount++;
+			}
+			
+			int pot = dealer.getPot();
+			int moneyPerPlayer = pot/winnerCount;
+			int moneyBackToPot = pot%winnerCount;
+			
+			for(int i = 0; i < playerIndex.length; i++)
+			{
+				if(playerIndex[i] != -1)
+				{
+					realPlayers[i].updateMoney(realPlayers[i].getMoney() + moneyPerPlayer);
+					gameBoard.changePlayerPot(i);
+				}
+			}
+			
+			dealer.updatePot(moneyBackToPot);
 		}
 		
-		//Show the pot
-
-		//gameBoard.updatePot();
 		
-		//Show the min bet
-		//gameBoard.updateBet();
+		//clear all player bets in player classes
+		for(int i = 0; i < realPlayers.length; i++)
+			realPlayers[i].resetBet();
 		
-		//Log who won and the money they receive
-		//logString(winner + " won the hand!");
-		//logString(winner + " gets money from pot: $"+dealer.getPot());
+		for(int i = 0; i < realPlayers.length; i++)
+		{
+			if(realPlayers[i].getStatus() == 1 && realPlayers[i].getMoney() > 0)
+			{
+				gameBoard.clearCurrentBetter(i);
+				realPlayers[i].setStatus(0);
+				playersStillInGame++;
+			}
+		}
+	}
+	
+	public void betRound()
+	{
+		System.out.println("Dealer is: "+dealerChip);
+		System.out.println("Small Blind is: "+smallBlind);
+		System.out.println("Big Blind is : "+bigBlind);
 		
-		//Add that money to their pot
-		//winningPlayer.updateMoney(dealer.getPot() + winningPlayer.getMoney());
+		int numberOfRaises = 0;
+		int minRoundBet = 20;
+		int currentLead = bigBlind;
+		int nextPlayer = (bigBlind + 1) % numberOfPlayers;
+		int currentPlayer = nextPlayer;
+		int previousBet = 0;
+		int toThePot = 0;
 		
-		//logString(winner+ "'s money is now: $"+winningPlayer.getMoney());
+		if(state == 1)
+		{
+			realPlayers[smallBlind].setBet(10);
+			realPlayers[smallBlind].subtractFromMoney(10);
+			realPlayers[bigBlind].setBet(20);
+			realPlayers[bigBlind].subtractFromMoney(20);
+			dealer.updatePot(dealer.getPot() + 30);
+			
+			gameBoard.changePlayerPot(smallBlind);
+			gameBoard.changePlayerPot(bigBlind);
+			gameBoard.updatePot();
+		}
 		
-		//Clear the pot
-		//dealer.updatePot(0);
+		gameBoard.updateMinBet(minRoundBet);
 		
-		//Clear winner's bet (for now, only human player can change their bet. This should be replaced with a clear all player bets)
-		//winningPlayer.setBet(0);
+		while(currentPlayer != currentLead)
+		{
+			if(numberOfRaises == 3)
+			{
+				break;
+			}
+			System.out.println("Current Player is: "+currentPlayer);
+			System.out.println("Current Lead is: "+currentLead);
+			if(realPlayers[currentPlayer].isIn())
+			{
+				gameBoard.highlightCurrentBetter(currentPlayer);
+				
+				toThePot = realPlayers[currentPlayer].bet(previousBet, numberOfRaises);
+				
+				if(toThePot == -1)
+				{
+					realPlayers[currentPlayer].setStatus(1);
+					playersStillInGame--;
+					gameBoard.cancelCurrentBetter(currentPlayer);
+				}
+				else
+				{
+					gameBoard.clearCurrentBetter(currentPlayer);
+					
+					if(realPlayers[currentPlayer].getBet() + toThePot <= minRoundBet)
+					{
+						toThePot += minRoundBet - realPlayers[currentPlayer].getBet() - toThePot;
+					}
+					else
+					{
+						numberOfRaises++;
+						currentLead = currentPlayer;
+						
+						minRoundBet = realPlayers[currentPlayer].getBet() + toThePot;
+					}
+					
+					previousBet = realPlayers[currentPlayer].getBet() + toThePot;
+					
+					realPlayers[currentPlayer].setBet(toThePot); //update the current player's bet
+					realPlayers[currentPlayer].subtractFromMoney(toThePot);
+					
+					dealer.updatePot(dealer.getPot() + toThePot);
+					
+					System.out.println("Current Player bet: "+(realPlayers[currentPlayer].getBet()));
+					
+					gameBoard.changePlayerPot(currentPlayer);
+					gameBoard.updatePot();
+					gameBoard.updateMinBet(minRoundBet);
+				}
+			}
+			nextPlayer = (nextPlayer + 1) % numberOfPlayers;
+			currentPlayer = nextPlayer;
+		}
+		
+		if(numberOfRaises == 3) //if we have three raises left, finish betting for the round
+		{
+			while(currentPlayer != currentLead)
+			{
+				if(realPlayers[currentPlayer].isIn())
+				{
+					gameBoard.highlightCurrentBetter(currentPlayer);
+				
+					toThePot = realPlayers[currentPlayer].bet(previousBet, numberOfRaises);
+				
+					if(toThePot == -1) //give players chance to fold
+					{
+						realPlayers[currentPlayer].setStatus(1);
+						playersStillInGame--;
+						gameBoard.cancelCurrentBetter(currentPlayer);
+					}
+					else //if they don't fold, force them to call
+					{
+						gameBoard.clearCurrentBetter(currentPlayer);
+						
+						toThePot += minRoundBet - realPlayers[currentPlayer].getBet() - toThePot;
+						
+						previousBet = realPlayers[currentPlayer].getBet() + toThePot;
+					
+						realPlayers[currentPlayer].setBet(toThePot); //update the current player's bet
+						realPlayers[currentPlayer].subtractFromMoney(toThePot);
+						
+						dealer.updatePot(dealer.getPot() + toThePot);
+						
+						System.out.println("Current Player bet: "+(realPlayers[currentPlayer].getBet()));
+						
+						gameBoard.changePlayerPot(currentPlayer);
+						gameBoard.updatePot();
+						gameBoard.updateMinBet(minRoundBet);
+					}
+				}
+				currentPlayer = (currentPlayer+1) % numberOfPlayers;
+			}
+		}
+		
+		for(int i = 0; i < realPlayers.length; i++)
+			realPlayers[i].resetBet();
+	}
+	
+	public void runMe()
+	{
+		while(true)
+		{
+			nextState();
+		}
 	}
 
 	/*
@@ -418,7 +708,7 @@ class Game
 	/*
 	Given a message, attempt to log it
 	*/
-	public static void logString(String message)
+	public void logString(String message)
 	{
 		try
 		{
