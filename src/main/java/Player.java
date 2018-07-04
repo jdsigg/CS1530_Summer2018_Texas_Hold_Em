@@ -115,6 +115,11 @@ class Player
 	{
 		this.bet += newBet;
 	}
+	
+	public void resetBet()
+	{
+		this.bet = 0;
+	}
 
 	/*
 	Method to get the players bet
@@ -244,7 +249,7 @@ class Player
 				
 				try
 				{
-					TimeUnit.SECONDS.sleep(2);
+					TimeUnit.SECONDS.sleep(1);
 				}
 				catch (InterruptedException ex)
 				{

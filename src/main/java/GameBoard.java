@@ -193,5 +193,15 @@ class GameBoard extends JFrame
 	{
 		playerContainers[bigBlind].displayBigBlind();
 	}
+	
+	public void wipePlayer(int toWipe)
+	{
+		playerContainers[toWipe].setBlanks();
+	}
+	
+	public void wipeDealer()
+	{
+		dealerContainer.setBlanks();
+	}
 }
 
