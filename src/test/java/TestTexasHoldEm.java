@@ -5,6 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
+import java.io.*;
 
 public class TestTexasHoldEm
 {
@@ -247,6 +248,62 @@ public class TestTexasHoldEm
         hand[3] = new Card(Card.Suit.Hearts,Card.Rank.Five);
         hand[4] = new Card(Card.Suit.Diamonds,Card.Rank.Seven);
         assert(Hands.onePair(hand));
+    }
+
+    /*
+    Tests for Logger class.
+    */
+
+    //Tests instance on Logger class is created.
+    @Test
+    public void testInstanceOfLoggerCreated()
+    {
+        Player [] players = new Player[3];
+        players[0] = new Player("Player 1");
+        players[1] = new Player("Player 2");
+        players[2] = new Player("Player 3");
+        Logger logger = null;
+        try
+        {
+            logger = new Logger("test_output.txt",players);
+        }
+        catch(Exception e){}
+        assertThat(logger, instanceOf(Logger.class));
+    }
+
+    //Tests log method in logger class.
+    @Test
+    public void testLogMethod()
+    {
+        Player [] players = new Player[3];
+        players[0] = new Player("Player 1");
+        players[1] = new Player("Player 2");
+        players[2] = new Player("Player 3");
+        Logger logger = null;
+        try
+        {
+            logger = new Logger("test_output.txt",players);
+        }
+        catch(Exception e){}
+        assertTrue(logger.log("This is a test."));
+    }
+
+    //Tests that logger closes the log file.
+    @Test
+    public void testLoggerFileCloses()
+    {
+        Player [] players = new Player[3];
+        players[0] = new Player("Player 1");
+        players[1] = new Player("Player 2");
+        players[2] = new Player("Player 3");
+        Logger logger = null;
+        try
+        {
+            logger = new Logger("test_output.txt",players);
+            logger.log("This is a test.");
+        }
+        catch(Exception e){}
+        assertTrue(logger.closeLogger());
     }
 
 }

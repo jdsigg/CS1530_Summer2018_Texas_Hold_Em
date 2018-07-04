@@ -10,7 +10,7 @@ class Game
 	private GameBoard gameBoard;
 	private Dealer dealer;
 	private Logger logger;
-	
+
     /*
 	Constructor for Game Class
     */
@@ -23,10 +23,10 @@ class Game
 		this.logger = logger;
 		this.dealer = dealer;
     }
-	
+
     /*
 	Method to deal the players
-	
+
 	Did not use in this implementation. Leaving for future.
     */
     private void dealToPlayer()
@@ -36,7 +36,7 @@ class Game
 
     /*
     Method to deal five commcards[5]
-	
+
 	Did not use in this implementation. Leaving for future.
     */
     private void dealCommCards()
@@ -49,7 +49,7 @@ class Game
 	going to fold. Method must accept a player. The
 	player passed in is the player that is going to
 	fold.
-	
+
 	Did not use in this implementation. Leaving for future.
     */
     private void playerFold(Player player)
@@ -64,9 +64,9 @@ class Game
 	{
 		activePlayers = new Player[1];
 		activePlayers[0] = realPlayers[0];
-		
+
 		dealer.updatePot(activePlayers[0].getBet());
-		
+
 		checkWinner(activePlayers);
 		resetGame();
 	}
@@ -85,17 +85,17 @@ class Game
 				logString(temp.getName()+" calls.");
 			}
 		}
-		
+
 		if(state==1)
 		{
 			startNewHand();
 		}
 		gameBoard.displayCommCard(state);
-		
+
 		if (state == 5)
 		{
 			activePlayers = new Player[numberOfPlayers];
-			
+
 			for (int i=0; i<activePlayers.length; i++)
 			{
 				activePlayers[i] = realPlayers[i];
@@ -106,7 +106,7 @@ class Game
 		else
 		{
 			state++;
-		}		
+		}
 	}
 
 	/*
@@ -135,19 +135,19 @@ class Game
 	{
 		logString("Shuffling deck...");
 		dealer.shuffle();
-		
+
 		logString("Dealing...");
-		
-		
+
+
 		for (int i=0; i<realPlayers.length; i++)
 		{
 			Player temp = realPlayers[i];
 			dealer.dealCard(temp);
 			dealer.dealCard(temp);
-			
+
 			logString(temp.getName()+" dealt: "+temp.getCurrentHand()[0].toString()+" and "
 														+temp.getCurrentHand()[1].toString());
-			
+
 			if(i==0){
 				gameBoard.displayPlayerHand(i);
 			}
@@ -160,7 +160,7 @@ class Game
 	going to check. Method must accept a player.
 	The player passed in is the player that is
 	going to check.
-	
+
 	Did not use in this implementation. Will leave for further design
     */
     private void playerCheck(Player player)
@@ -179,26 +179,26 @@ class Game
 		Card[] currHand = new Card[7];
 		HashMap<String, Integer> scores = new HashMap<String, Integer>();
 		int score = 0;
-		
+
 		for (int i =0; i<5; i++)
 		{
 			currHand[i] = dealer.getCommCards()[i];
 		}
-		
+
 		for(int i=0; i<players.length; i++)
 		{
-			
+
 			currHand[5] = players[i].getCurrentHand()[0];
 			currHand[6] = players[i].getCurrentHand()[1];
 			score = 0;
-			
+
 			String name = players[i].getName();
-			
+
 			logString("Checking "+name+"'s hand...");;
-			
+
 			//Systematically check hand, starting at best result to worst
-			//If the hand passes the test, assign score to player 
-			
+			//If the hand passes the test, assign score to player
+
 			if(Hands.royalFlush(currHand)) {
 				logString("->Player somehow has a royal flush");
 				scores.put(players[i].getName(), 10); 	//Give player a score
@@ -240,11 +240,11 @@ class Game
 				scores.put(players[i].getName(), 1); 	//Give player a score
 			}
 		}
-		
+
 		int max = 0;
 		String winner = "";
 		Player winningPlayer = null;
-		
+
 		//Best score wins
 		//Future deliverable will require a tie breaking method for tied hands
 		for(int i = 0; i < players.length; i++)
@@ -254,30 +254,30 @@ class Game
 				max = scores.get(players[i].getName());
 				winner = players[i].getName();
 				winningPlayer = players[i];
-			}	
+			}
 		}
 		//Show the pot
 		gameBoard.updatePot();
-		
+
 		//Show the min bet
 		gameBoard.updateBet();
-		
+
 		//Log who won and the money they receive
 		logString(winner + " won the hand!");
 		logString(winner + " gets money from pot: $"+dealer.getPot());
-		
+
 		//Add that money to their pot
 		winningPlayer.updateMoney(dealer.getPot() + winningPlayer.getMoney());
-		
+
 		logString(winner+ "'s money is now: $"+winningPlayer.getMoney());
-		
+
 		//Clear the pot
 		dealer.updatePot(0);
-		
+
 		//Clear winner's bet (for now, only human player can change their bet. This should be replaced with a clear all player bets)
 		winningPlayer.setBet(0);
 	}
-	
+
 	/*
 	Used for testing. Leaving for future testing of state machine
 	*/
@@ -285,7 +285,7 @@ class Game
 	{
 		return state;
 	}
-	
+
 	/*
 	Given a message, attempt to log it
 	*/
@@ -295,7 +295,7 @@ class Game
 		{
 			logger.log(message);
 		}
-		catch(IOException | NullPointerException e)
+		catch(Exception e)
 		{
 			System.err.println("Failed logging message: "+message);
 			System.err.println("Error: "+e.toString());

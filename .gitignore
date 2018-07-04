@@ -3,6 +3,7 @@
 
 #Ignore output.txt file created from program run
 output.txt
+test_output.txt
 
 # Ignore Gradle GUI config
 gradle-app.setting
