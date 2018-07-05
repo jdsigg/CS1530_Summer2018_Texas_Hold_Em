@@ -23,6 +23,10 @@ class Game
 
 	private Random gen;
 
+	private boolean sidePotInPlay;
+	private Player playerWhoMadeSidePot;
+	private int playerWhoMadeSidePotIndex;
+
     /*
 	Constructor for Game Class
     */
@@ -141,7 +145,6 @@ class Game
 
     /*
 	Method to deal the players
-
 	Did not use in this implementation. Leaving for future.
     */
     private void dealToPlayer()
@@ -151,7 +154,6 @@ class Game
 
     /*
     Method to deal five commcards[5]
-
 	Did not use in this implementation. Leaving for future.
     */
     private void dealCommCards()
@@ -164,7 +166,6 @@ class Game
 	going to fold. Method must accept a player. The
 	player passed in is the player that is going to
 	fold.
-
 	Did not use in this implementation. Leaving for future.
     */
     private void playerFold(Player player)
@@ -254,7 +255,6 @@ class Game
 	going to check. Method must accept a player.
 	The player passed in is the player that is
 	going to check.
-
 	Did not use in this implementation. Will leave for further design
     */
     private void playerCheck(Player player)
@@ -323,6 +323,11 @@ class Game
 		cardScores.put(12, "Queen");
 		cardScores.put(13, "King");
 		cardScores.put(14, "Ace");
+
+		if(!sidePotInPlay)
+		{
+			players[playerWhoMadeSidePotIndex].setStatus(0);
+		}
 
 		for (int i =0; i<5; i++)
 		{
@@ -489,18 +494,27 @@ class Game
 
 			logString(winner + " wins with a " + handScores.get(max) + "!");
 
-			//give pot to true winner
-			int pot = dealer.getPot();
+			int pot = 0;
+
+			if(sidePotInPlay && winningIndex == playerWhoMadeSidePotIndex)
+			{
+				pot = dealer.getPot();
+			}
+			else
+			{
+				pot = dealer.getPot() + dealer.getSidePot();
+				realPlayers[playerWhoMadeSidePotIndex].setStatus(2);
+			}
 
 			winningPlayer.updateMoney(winningPlayer.getMoney() + pot);
 			gameBoard.changePlayerPot(winningIndex);
 			dealer.updatePot(0);
-
+			//gameBoard.changePlayerPot(winningIndex);
 		}
 		else //playerIndex is an int array filled with indexes of winners
 		{
 			//the max hasnt been beat since this tie was found, so the ties split the pot
-			//logString("We have a tie! Players that tied: ");
+			logString("We have a tie! Players that tied: ");
 			String winningPlayers = "";
 
 			Object[] winningPlayersArray = ties.keySet().toArray();
@@ -524,9 +538,8 @@ class Game
 					"\n\nThey won with a " + handScores.get(max) + " and will split the pot.", "Winner!",
 				JOptionPane.WARNING_MESSAGE, 0, null, buttons, null);
 
-			logString("We have a tie! Players that tied: "+winningPlayers+
+			logString(winningPlayers+
 					"\n\nThey won with a " + handScores.get(max) + " and will split the pot.");
-			logString("They won with a " + handScores.get(max) + " and will split the pot.");
 
 			int winnerCount = 0;
 
@@ -567,6 +580,19 @@ class Game
 				playersStillInGame++;
 			}
 		}
+
+
+		if(playerWhoMadeSidePotIndex >= 0)
+		{
+			if(realPlayers[playerWhoMadeSidePotIndex].getMoney() == 0)
+				realPlayers[playerWhoMadeSidePotIndex].setStatus(2);
+		}
+
+		playerWhoMadeSidePotIndex = -1;
+		sidePotInPlay = false;
+		playerWhoMadeSidePot = null;
+
+		gameBoard.resetSidePot();
 		
 		//check for one player left
 		int numberOfPlayersRemaining = 0;
@@ -635,7 +661,7 @@ class Game
 			{
 				gameBoard.highlightCurrentBetter(currentPlayer);
 
-				toThePot = realPlayers[currentPlayer].bet(previousBet, numberOfRaises,this.state);
+				toThePot = realPlayers[currentPlayer].bet(previousBet, numberOfRaises,state);
 
 				if(toThePot == -1)
 				{
@@ -646,32 +672,101 @@ class Game
 				}
 				else
 				{
-					gameBoard.clearCurrentBetter(currentPlayer);
-
-					if(realPlayers[currentPlayer].getBet() + toThePot <= minRoundBet)
+					if(realPlayers[currentPlayer].getMoney() >= minRoundBet)
 					{
-						toThePot += minRoundBet - realPlayers[currentPlayer].getBet() - toThePot;
+						gameBoard.clearCurrentBetter(currentPlayer);
+
+						if(realPlayers[currentPlayer].getBet() + toThePot <= minRoundBet)
+						{
+							toThePot += minRoundBet - realPlayers[currentPlayer].getBet() - toThePot;
+						}
+						else
+						{
+							numberOfRaises++;
+							currentLead = currentPlayer;
+
+							minRoundBet = realPlayers[currentPlayer].getBet() + toThePot;
+						}
+
+						previousBet = realPlayers[currentPlayer].getBet() + toThePot;
+
+						realPlayers[currentPlayer].setBet(toThePot); //update the current player's bet
+						realPlayers[currentPlayer].subtractFromMoney(toThePot);
+
+						if(!sidePotInPlay)
+						{
+							dealer.updatePot(dealer.getPot() + toThePot);
+						}
+						else
+						{
+							dealer.updateSidePot(dealer.getSidePot() + toThePot);
+							gameBoard.updateSidePot();
+						}
+
+						logString(realPlayers[currentPlayer].getName() + " bet "+(realPlayers[currentPlayer].getBet()));
+
+						gameBoard.changePlayerPot(currentPlayer);
+						gameBoard.updatePot();
+						gameBoard.updateMinBet(minRoundBet);
 					}
 					else
 					{
-						numberOfRaises++;
-						currentLead = currentPlayer;
+						//Set up side pot here
+						if(!sidePotInPlay)
+						{
+							int tempSidePot = realPlayers[currentPlayer].getMoney();
+							tempSidePot = tempSidePot * numberOfRaises + tempSidePot;
+							realPlayers[currentPlayer].updateMoney(0);
 
-						minRoundBet = realPlayers[currentPlayer].getBet() + toThePot;
+							dealer.updateSidePot(dealer.getPot() - tempSidePot);
+							dealer.updatePot(tempSidePot);
+
+							//dealer.updateSidePot(tempSidePot);
+							/*for(int i = 0; i < realPlayers.length; i++)
+							{
+								if(realPlayers[i].getStatus() == 0 && i != currentPlayer) //still in
+								{
+									//update
+									realPlayers[i].updateMoney(realPlayers[i].getMoney() - realPlayers[currentPlayer].getMoney());
+								}
+							}*/
+
+							sidePotInPlay = true;
+							playerWhoMadeSidePot = realPlayers[currentPlayer];
+							playerWhoMadeSidePotIndex = currentPlayer;
+							gameBoard.changePlayerPot(currentPlayer);
+							gameBoard.updatePot();
+							gameBoard.updateSidePot();
+						}
+						else
+						{
+							//Do nothing
+							gameBoard.clearCurrentBetter(currentPlayer);
+
+							toThePot += minRoundBet - realPlayers[currentPlayer].getBet() - toThePot;
+
+							previousBet = realPlayers[currentPlayer].getBet() + toThePot;
+
+							realPlayers[currentPlayer].setBet(toThePot); //update the current player's bet
+							realPlayers[currentPlayer].subtractFromMoney(toThePot);
+
+							if(!sidePotInPlay)
+							{
+								dealer.updatePot(dealer.getPot() + toThePot);
+							}
+							else
+							{
+								dealer.updateSidePot(dealer.getSidePot() + toThePot);
+								gameBoard.updateSidePot();
+							}
+
+							logString(realPlayers[currentPlayer].getName() + " bet "+(realPlayers[currentPlayer].getBet()));
+
+							gameBoard.changePlayerPot(currentPlayer);
+							gameBoard.updatePot();
+							gameBoard.updateMinBet(minRoundBet);
+						}
 					}
-
-					previousBet = realPlayers[currentPlayer].getBet() + toThePot;
-
-					realPlayers[currentPlayer].setBet(toThePot); //update the current player's bet
-					realPlayers[currentPlayer].subtractFromMoney(toThePot);
-
-					dealer.updatePot(dealer.getPot() + toThePot);
-
-					logString(realPlayers[currentPlayer].getName()+" bet: "+(realPlayers[currentPlayer].getBet()));
-
-					gameBoard.changePlayerPot(currentPlayer);
-					gameBoard.updatePot();
-					gameBoard.updateMinBet(minRoundBet);
 				}
 			}
 			nextPlayer = (nextPlayer + 1) % numberOfPlayers;
@@ -686,7 +781,7 @@ class Game
 				{
 					gameBoard.highlightCurrentBetter(currentPlayer);
 
-					toThePot = realPlayers[currentPlayer].bet(previousBet, numberOfRaises,this.state);
+					toThePot = realPlayers[currentPlayer].bet(previousBet, numberOfRaises,state);
 
 					if(toThePot == -1) //give players chance to fold
 					{
@@ -697,22 +792,91 @@ class Game
 					}
 					else //if they don't fold, force them to call
 					{
-						gameBoard.clearCurrentBetter(currentPlayer);
+						if(realPlayers[currentPlayer].getMoney() >= minRoundBet)
+						{
+							gameBoard.clearCurrentBetter(currentPlayer);
 
-						toThePot += minRoundBet - realPlayers[currentPlayer].getBet() - toThePot;
+							toThePot += minRoundBet - realPlayers[currentPlayer].getBet() - toThePot;
 
-						previousBet = realPlayers[currentPlayer].getBet() + toThePot;
+							previousBet = realPlayers[currentPlayer].getBet() + toThePot;
 
-						realPlayers[currentPlayer].setBet(toThePot); //update the current player's bet
-						realPlayers[currentPlayer].subtractFromMoney(toThePot);
+							realPlayers[currentPlayer].setBet(toThePot); //update the current player's bet
+							realPlayers[currentPlayer].subtractFromMoney(toThePot);
 
-						dealer.updatePot(dealer.getPot() + toThePot);
+							if(!sidePotInPlay)
+							{
+								dealer.updatePot(dealer.getPot() + toThePot);
+							}
+							else
+							{
+								dealer.updateSidePot(dealer.getSidePot() + toThePot);
+								gameBoard.updateSidePot();
+							}
 
-						logString(realPlayers[currentPlayer].getName()+" bet: "+(realPlayers[currentPlayer].getBet()));
+							logString(realPlayers[currentPlayer].getName() + " bet "+(realPlayers[currentPlayer].getBet()));
 
-						gameBoard.changePlayerPot(currentPlayer);
-						gameBoard.updatePot();
-						gameBoard.updateMinBet(minRoundBet);
+							gameBoard.changePlayerPot(currentPlayer);
+							gameBoard.updatePot();
+							gameBoard.updateMinBet(minRoundBet);
+						}
+						else
+						{
+							//Set up side pot here
+							if(!sidePotInPlay)
+							{
+								int tempSidePot = realPlayers[currentPlayer].getMoney();
+								tempSidePot = tempSidePot * numberOfRaises + tempSidePot;
+								realPlayers[currentPlayer].updateMoney(0);
+
+								dealer.updateSidePot(dealer.getPot() - tempSidePot);
+								dealer.updatePot(tempSidePot);
+
+								//dealer.updateSidePot(tempSidePot);
+								/*for(int i = 0; i < realPlayers.length; i++)
+								{
+									if(realPlayers[i].getStatus() == 0 && i != currentPlayer) //still in
+									{
+										//update
+										realPlayers[i].updateMoney(realPlayers[i].getMoney() - realPlayers[currentPlayer].getMoney());
+									}
+								}*/
+
+								sidePotInPlay = true;
+								playerWhoMadeSidePot = realPlayers[currentPlayer];
+								playerWhoMadeSidePotIndex = currentPlayer;
+								gameBoard.changePlayerPot(currentPlayer);
+								gameBoard.updatePot();
+								gameBoard.updateSidePot();
+							}
+							else
+							{
+								//Do nothing
+								gameBoard.clearCurrentBetter(currentPlayer);
+
+								toThePot += minRoundBet - realPlayers[currentPlayer].getBet() - toThePot;
+
+								previousBet = realPlayers[currentPlayer].getBet() + toThePot;
+
+								realPlayers[currentPlayer].setBet(toThePot); //update the current player's bet
+								realPlayers[currentPlayer].subtractFromMoney(toThePot);
+
+								if(!sidePotInPlay)
+								{
+									dealer.updatePot(dealer.getPot() + toThePot);
+								}
+								else
+								{
+									dealer.updateSidePot(dealer.getSidePot() + toThePot);
+									gameBoard.updateSidePot();
+								}
+
+								logString(realPlayers[currentPlayer].getName() + " bet "+(realPlayers[currentPlayer].getBet()));
+
+								gameBoard.changePlayerPot(currentPlayer);
+								gameBoard.updatePot();
+								gameBoard.updateMinBet(minRoundBet);
+							}
+						}
 					}
 				}
 				currentPlayer = (currentPlayer+1) % numberOfPlayers;
@@ -720,7 +884,14 @@ class Game
 		}
 
 		for(int i = 0; i < realPlayers.length; i++)
+		{
 			realPlayers[i].resetBet();
+			if(sidePotInPlay && i == playerWhoMadeSidePotIndex)
+			{
+				realPlayers[i].setStatus(2);
+			}
+		}
+
 	}
 
 	public void runMe()
