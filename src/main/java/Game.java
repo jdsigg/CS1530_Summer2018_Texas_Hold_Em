@@ -232,15 +232,18 @@ class Game
 
 		for (int i=0; i<realPlayers.length; i++)
 		{
-			Player temp = realPlayers[i];
-			dealer.dealCard(temp);
-			dealer.dealCard(temp);
+			if(realPlayers[i].isIn())
+			{
+				Player temp = realPlayers[i];
+				dealer.dealCard(temp);
+				dealer.dealCard(temp);
 
-			logString(temp.getName()+" dealt: "+temp.getCurrentHand()[0].toString()+" and "
-														+temp.getCurrentHand()[1].toString());
+				logString(temp.getName()+" dealt: "+temp.getCurrentHand()[0].toString()+" and "
+															+temp.getCurrentHand()[1].toString());
 
-			if(i==0){
-				gameBoard.displayPlayerHand(i);
+				if(i==0){
+					gameBoard.displayPlayerHand(i);
+				}
 			}
 		}
 		dealer.dealCommCards();
@@ -564,6 +567,31 @@ class Game
 				playersStillInGame++;
 			}
 		}
+		
+		//check for one player left
+		int numberOfPlayersRemaining = 0;
+		int winningPlayerIndex = 0;
+		for(int i = 0; i < realPlayers.length; i++)
+		{
+			if(realPlayers[i].getMoney() > 0)
+			{
+				numberOfPlayersRemaining++;
+				winningPlayerIndex = i;
+				if(numberOfPlayersRemaining == 2)
+				{
+					break;
+				}
+			}
+		}
+		
+		if(numberOfPlayersRemaining == 1) //display game winner and exit
+		{
+			String[] buttons = {"Exit"};
+			
+			JOptionPane.showOptionDialog(null, realPlayers[winningPlayerIndex].getName()+" won the game!", "Game Over", JOptionPane.WARNING_MESSAGE, 0, null, buttons, null);
+				
+			exit();
+		}
 	}
 
 	public void betRound()
@@ -725,6 +753,19 @@ class Game
 			System.err.println("Failed logging message: "+message);
 			System.err.println("Error: "+e.toString());
 		}
+	}
+	
+	public void exit()
+	{
+		try
+		{
+			logger.closeLogger();
+		}
+		catch(Exception e)
+		{
+			System.out.println("Failed closing logger.");
+		}
+		System.exit(0);
 	}
 
 	/*public static void main(String[] args) {
