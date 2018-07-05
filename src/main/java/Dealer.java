@@ -7,9 +7,10 @@ class Dealer
 	Initialize Variables
 	*/
 	private int pot;
+	private int sidePot;
 	private Deck dealerDeck;
 	private Card [] commCards = new Card[5];
-	
+
 	/*
 	Initializing constructor
 	*/
@@ -18,7 +19,7 @@ class Dealer
 		this.pot = 0;
 		this.dealerDeck = deck;
 	}
-	
+
 	/*
 	Method to get pot
 	*/
@@ -26,7 +27,7 @@ class Dealer
 	{
 		return this.pot;
 	}
-	
+
 	/*
 	Method to update pot
 	*/
@@ -34,7 +35,23 @@ class Dealer
 	{
 		this.pot = pot;
 	}
-	
+
+	/*
+	Method to update side pot
+	*/
+	public void updateSidePot(int pot)
+	{
+		this.sidePot = pot;
+	}
+
+	/*
+	Method to get side pot
+	*/
+	public int getSidePot()
+	{
+		return this.sidePot;
+	}
+
 	/*
 	Method to deal an individual card to a given player
 	*/
@@ -42,7 +59,7 @@ class Dealer
 	{
 		p.addCard(dealerDeck.removeCard());
 	}
-	
+
 	/*
 	Method to deal the cards to the community "hand"
 	*/
@@ -53,7 +70,7 @@ class Dealer
 			commCards[i] = dealerDeck.removeCard();
 		}
 	}
-	
+
 	/*
 	Method to return the community cards
 	*/
@@ -61,7 +78,7 @@ class Dealer
 	{
 		return commCards;
 	}
-		
+
 	/*
 	Shuffle the deck
 	*/
@@ -69,7 +86,7 @@ class Dealer
 	{
 		dealerDeck.shuffle();
 	}
-	
+
 	/*
 	Give a card back to the dealer, and therefore
 	place it back in the deck
@@ -78,7 +95,7 @@ class Dealer
 	{
 		dealerDeck.addCard(card);
 	}
-	
+
 	/*
 	After a round is over, return all cards in the
 	community pile back into the deck
@@ -90,9 +107,9 @@ class Dealer
 			dealerDeck.addCard(commCards[i]);
 		}
 	}
-	
+
 	/*
-	Create a new instance of community cards, 
+	Create a new instance of community cards,
 	losing reference to any previous instance
 	*/
 	public void wipeCommCards()
