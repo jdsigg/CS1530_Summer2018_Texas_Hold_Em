@@ -156,7 +156,6 @@ class Player
 	public void setPlayerType(int newPlayerType)
 	{
 		this.playerType = newPlayerType;
-		if(newPlayerType == 0)this.money = 100;
 	}
 
 	/*
