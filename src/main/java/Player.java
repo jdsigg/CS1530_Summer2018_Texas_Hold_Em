@@ -183,6 +183,12 @@ class Player
 		{
 			case 0: //human player
 				String[] buttons = null;
+				System.out.println(this.getMoney());
+				if(this.getMoney() <= 0)
+				{
+					this.money = 0;
+					break;
+				}
 
 				if(previousBet == 0 && numberOfRaises < 3) //check case
 				{
@@ -249,7 +255,7 @@ class Player
 
 				try
 				{
-					TimeUnit.SECONDS.sleep(1);
+					TimeUnit.SECONDS.sleep(2);
 				}
 				catch (InterruptedException ex)
 				{
