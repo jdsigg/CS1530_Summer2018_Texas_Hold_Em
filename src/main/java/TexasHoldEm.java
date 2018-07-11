@@ -36,6 +36,7 @@ class TexasHoldEm
 
 		players[0] = new Player(playerName);
 		players[0].setPlayerType(0);
+		players[0].updateMoney(100); //For side pot testing
 		//set identifiers
 
 		for(int i = 1; i < numberOfPlayers; i++)
@@ -59,13 +60,13 @@ class TexasHoldEm
 		Game game = new Game(gameBoard, logger, players, zhlata);
 
 		for(int i = 0; i < numberOfPlayers; i++)
-		{ 
+		{
 			playerContainers[i] = new PlayerContainer(players[i], game);
 		}
-		
+
 		gameBoard.showPlayers();
 		game.initializeBlinds();
-		
+
 		Thread gameThread = new Thread(() -> {
 			game.runMe();
 		});

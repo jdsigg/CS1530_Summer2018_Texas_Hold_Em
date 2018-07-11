@@ -270,6 +270,7 @@ class Game
     */
     private void checkWinner(Player[] players)
     {
+		//players[0].setStatus(0);
 		/*Card[] hand = new Card[2];
 
 		//hand2 = players[1].getCurrentHand();
@@ -324,7 +325,11 @@ class Game
 		cardScores.put(13, "King");
 		cardScores.put(14, "Ace");
 
-		if(!sidePotInPlay)
+		if(!sidePotInPlay && playerWhoMadeSidePotIndex != -1)
+		{
+			players[playerWhoMadeSidePotIndex].setStatus(0);
+		}
+		if(sidePotInPlay)
 		{
 			players[playerWhoMadeSidePotIndex].setStatus(0);
 		}
@@ -482,6 +487,9 @@ class Game
 			}
 		}
 
+		gameBoard.updatePot();
+		gameBoard.updateSidePot();
+
 		if(!ties.containsValue(max))
 		{
 			//we found a max greater than the previously found tie (if applicable), so max wins
@@ -502,13 +510,14 @@ class Game
 			}
 			else
 			{
+				System.out.println("Winning players pot should now be: " + (dealer.getPot() + dealer.getSidePot() + winningPlayer.getMoney()));
 				pot = dealer.getPot() + dealer.getSidePot();
-				realPlayers[playerWhoMadeSidePotIndex].setStatus(2);
 			}
 
 			winningPlayer.updateMoney(winningPlayer.getMoney() + pot);
 			gameBoard.changePlayerPot(winningIndex);
 			dealer.updatePot(0);
+			dealer.updateSidePot(0);
 			//gameBoard.changePlayerPot(winningIndex);
 		}
 		else //playerIndex is an int array filled with indexes of winners
@@ -551,6 +560,7 @@ class Game
 			}
 
 			int pot = dealer.getPot();
+			int sidePot = dealer.getSidePot();
 			int moneyPerPlayer = pot/winnerCount;
 			int moneyBackToPot = pot%winnerCount;
 
@@ -582,7 +592,7 @@ class Game
 		}
 
 
-		if(playerWhoMadeSidePotIndex >= 0)
+		if(playerWhoMadeSidePotIndex >= 0 && sidePotInPlay)
 		{
 			if(realPlayers[playerWhoMadeSidePotIndex].getMoney() == 0)
 				realPlayers[playerWhoMadeSidePotIndex].setStatus(2);
@@ -591,9 +601,9 @@ class Game
 		playerWhoMadeSidePotIndex = -1;
 		sidePotInPlay = false;
 		playerWhoMadeSidePot = null;
-
+		dealer.updateSidePot(0);
 		gameBoard.resetSidePot();
-		
+
 		//check for one player left
 		int numberOfPlayersRemaining = 0;
 		int winningPlayerIndex = 0;
@@ -609,13 +619,13 @@ class Game
 				}
 			}
 		}
-		
+
 		if(numberOfPlayersRemaining == 1) //display game winner and exit
 		{
 			String[] buttons = {"Exit"};
-			
+
 			JOptionPane.showOptionDialog(null, realPlayers[winningPlayerIndex].getName()+" won the game!", "Game Over", JOptionPane.WARNING_MESSAGE, 0, null, buttons, null);
-				
+
 			exit();
 		}
 	}
@@ -672,7 +682,7 @@ class Game
 				}
 				else
 				{
-					if(realPlayers[currentPlayer].getMoney() >= minRoundBet)
+					if(realPlayers[currentPlayer].getMoney() > minRoundBet - realPlayers[currentPlayer].getBet())
 					{
 						gameBoard.clearCurrentBetter(currentPlayer);
 
@@ -714,12 +724,31 @@ class Game
 						//Set up side pot here
 						if(!sidePotInPlay)
 						{
-							int tempSidePot = realPlayers[currentPlayer].getMoney();
+							/*int tempSidePot = realPlayers[currentPlayer].getMoney();
 							tempSidePot = tempSidePot * numberOfRaises + tempSidePot;
-							realPlayers[currentPlayer].updateMoney(0);
 
-							dealer.updateSidePot(dealer.getPot() - tempSidePot);
-							dealer.updatePot(tempSidePot);
+							dealer.updatePot(dealer.getPot() - tempSidePot + realPlayers[currentPlayer].getMoney());
+							dealer.updateSidePot(tempSidePot);
+							realPlayers[currentPlayer].updateMoney(0);*/
+							if(toThePot < minRoundBet)
+							{
+								int difference = (minRoundBet-realPlayers[currentPlayer].getBet()
+												- realPlayers[currentPlayer].getMoney()) * (realPlayers.length - 1);
+
+								dealer.updateSidePot(dealer.getSidePot() + difference);
+								dealer.updatePot(dealer.getPot() - difference + realPlayers[currentPlayer].getMoney());
+								realPlayers[currentPlayer].updateMoney(0);
+								realPlayers[currentPlayer].setStatus(1);
+							}
+							else if(toThePot <= minRoundBet)
+							{
+								int difference = (minRoundBet - realPlayers[currentPlayer].getMoney()) * (realPlayers.length - 1);
+
+								dealer.updateSidePot(dealer.getSidePot() + difference);
+								dealer.updatePot(dealer.getPot() - difference + realPlayers[currentPlayer].getMoney());
+								realPlayers[currentPlayer].updateMoney(0);
+								realPlayers[currentPlayer].setStatus(1);
+							}
 
 							//dealer.updateSidePot(tempSidePot);
 							/*for(int i = 0; i < realPlayers.length; i++)
@@ -740,7 +769,7 @@ class Game
 						}
 						else
 						{
-							//Do nothing
+							//Side pot is in play
 							gameBoard.clearCurrentBetter(currentPlayer);
 
 							toThePot += minRoundBet - realPlayers[currentPlayer].getBet() - toThePot;
@@ -792,7 +821,7 @@ class Game
 					}
 					else //if they don't fold, force them to call
 					{
-						if(realPlayers[currentPlayer].getMoney() >= minRoundBet)
+						if(realPlayers[currentPlayer].getMoney() > minRoundBet - realPlayers[currentPlayer].getBet())
 						{
 							gameBoard.clearCurrentBetter(currentPlayer);
 
@@ -824,12 +853,32 @@ class Game
 							//Set up side pot here
 							if(!sidePotInPlay)
 							{
-								int tempSidePot = realPlayers[currentPlayer].getMoney();
+								/*int tempSidePot = realPlayers[currentPlayer].getMoney();
 								tempSidePot = tempSidePot * numberOfRaises + tempSidePot;
-								realPlayers[currentPlayer].updateMoney(0);
 
-								dealer.updateSidePot(dealer.getPot() - tempSidePot);
-								dealer.updatePot(tempSidePot);
+								dealer.updatePot(dealer.getPot() - tempSidePot + realPlayers[currentPlayer].getMoney());
+								dealer.updateSidePot(tempSidePot);
+								realPlayers[currentPlayer].updateMoney(0);*/
+
+								if(toThePot < minRoundBet)
+								{
+									int difference = (minRoundBet-realPlayers[currentPlayer].getBet()
+													- realPlayers[currentPlayer].getMoney()) * (realPlayers.length - 1);
+
+									dealer.updateSidePot(dealer.getSidePot() + difference);
+									dealer.updatePot(dealer.getPot() - difference + realPlayers[currentPlayer].getMoney());
+									realPlayers[currentPlayer].updateMoney(0);
+									realPlayers[currentPlayer].setStatus(1);
+								}
+								else
+								{
+									int difference = (minRoundBet - realPlayers[currentPlayer].getMoney()) * (realPlayers.length - 1);
+
+									dealer.updateSidePot(dealer.getSidePot() + difference);
+									dealer.updatePot(dealer.getPot() - difference + realPlayers[currentPlayer].getMoney());
+									realPlayers[currentPlayer].updateMoney(0);
+									realPlayers[currentPlayer].setStatus(1);
+								}
 
 								//dealer.updateSidePot(tempSidePot);
 								/*for(int i = 0; i < realPlayers.length; i++)
@@ -888,7 +937,7 @@ class Game
 			realPlayers[i].resetBet();
 			if(sidePotInPlay && i == playerWhoMadeSidePotIndex)
 			{
-				realPlayers[i].setStatus(2);
+				realPlayers[i].setStatus(1);
 			}
 		}
 
@@ -925,7 +974,7 @@ class Game
 			System.err.println("Error: "+e.toString());
 		}
 	}
-	
+
 	public void exit()
 	{
 		try
