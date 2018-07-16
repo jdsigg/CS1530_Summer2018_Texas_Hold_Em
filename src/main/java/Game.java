@@ -24,6 +24,7 @@ class Game
 	private Random gen;
 
 	private boolean sidePotInPlay;
+	private boolean checkWinnerCalledAgain;
 	private Player playerWhoMadeSidePot;
 	private int playerWhoMadeSidePotIndex;
 
@@ -333,6 +334,10 @@ class Game
 		{
 			players[playerWhoMadeSidePotIndex].setStatus(0);
 		}
+		if(!sidePotInPlay && checkWinnerCalledAgain)
+		{
+			players[playerWhoMadeSidePotIndex].setStatus(1);
+		}
 
 		for (int i =0; i<5; i++)
 		{
@@ -412,7 +417,7 @@ class Game
 
 		//DETERMINING WINNER AND ANY TIES...
 
-		int winningIndex = 0;
+		int winningIndex = -1;
 
 		for(int i = 0; i < players.length; i++)
 		{
@@ -425,6 +430,7 @@ class Game
 					max = scores.get(players[i].getName())[0];
 					winner = players[i].getName();
 					winningPlayer = players[i];
+					winningIndex = i;
 					playerIndex[maxSpot] = i;
 					maxSpot++;
 				}
@@ -470,6 +476,7 @@ class Game
 							//no changes needed, max stays. No ties here
 							addToTies = false;
 						}
+						winningIndex = i;
 					}
 
 					//If we have a true tie, add them to ties hashmap to print later
@@ -497,27 +504,52 @@ class Game
 			//logString();
 
 			String[] buttons = {"Continue"};
-			JOptionPane.showOptionDialog(null, winner + " wins with a " + handScores.get(max) + "!", "Winner!",
-				JOptionPane.WARNING_MESSAGE, 0, null, buttons, null);
-
-			logString(winner + " wins with a " + handScores.get(max) + "!");
-
-			int pot = 0;
-
-			if(sidePotInPlay && winningIndex == playerWhoMadeSidePotIndex)
+			if(!checkWinnerCalledAgain)
 			{
-				pot = dealer.getPot();
+				JOptionPane.showOptionDialog(null, winner + " wins with a " + handScores.get(max) + "!", "Winner!",
+					JOptionPane.WARNING_MESSAGE, 0, null, buttons, null);
+				logString(winner + " wins with a " + handScores.get(max) + "!");
 			}
 			else
 			{
-				System.out.println("Winning players pot should now be: " + (dealer.getPot() + dealer.getSidePot() + winningPlayer.getMoney()));
-				pot = dealer.getPot() + dealer.getSidePot();
+				JOptionPane.showOptionDialog(null, winner + " wins the side pot with a " + handScores.get(max) + "!", "Side Pot Winner!",
+					JOptionPane.WARNING_MESSAGE, 0, null, buttons, null);
+				logString(winner + " wins side pot with a " + handScores.get(max) + "!");
 			}
 
-			winningPlayer.updateMoney(winningPlayer.getMoney() + pot);
-			gameBoard.changePlayerPot(winningIndex);
-			dealer.updatePot(0);
-			dealer.updateSidePot(0);
+			int pot = 0;
+
+			System.out.println("winningIndex = " + winningIndex + " playerWhoMadeSidePotIndex = " + playerWhoMadeSidePotIndex);
+			if(sidePotInPlay && winningIndex == playerWhoMadeSidePotIndex)
+			{
+				pot = dealer.getPot();
+				winningPlayer.updateMoney(winningPlayer.getMoney() + pot);
+				gameBoard.changePlayerPot(winningIndex);
+				System.out.println("Winning players pot should now be: -------> ");
+
+				//Now call checkWinner again without side pot player to give "Second" place the side pot.
+				dealer.updatePot(0);
+				players[playerWhoMadeSidePotIndex].setStatus(1);//set them out temperarly for the round
+				sidePotInPlay = false;
+				checkWinnerCalledAgain = true;
+				int oldSidePotIndex = playerWhoMadeSidePotIndex;
+				checkWinner(players);
+				dealer.updateSidePot(0);
+				checkWinnerCalledAgain = false;
+				players[oldSidePotIndex].setStatus(0);
+				realPlayers[oldSidePotIndex].setStatus(0);
+
+			}
+			else
+			{
+				//System.out.println("Winning players pot should now be: " + (dealer.getPot() + dealer.getSidePot() + winningPlayer.getMoney()));
+				pot = dealer.getPot() + dealer.getSidePot();
+				winningPlayer.updateMoney(winningPlayer.getMoney() + pot);
+				gameBoard.changePlayerPot(winningIndex);
+				dealer.updatePot(0);
+				dealer.updateSidePot(0);
+			}
+
 			//gameBoard.changePlayerPot(winningIndex);
 		}
 		else //playerIndex is an int array filled with indexes of winners
@@ -562,14 +594,31 @@ class Game
 			int pot = dealer.getPot();
 			int sidePot = dealer.getSidePot();
 			int moneyPerPlayer = pot/winnerCount;
-			int moneyBackToPot = pot%winnerCount;
+			int moneyBackToPot = (pot + sidePot)%winnerCount;
+			int moneyBackToSidePotPlayers = pot/winnerCount;
+			int moneyBackToPlayersWhoNotSidePotPlayers = (sidePot/winnerCount-1) + moneyBackToSidePotPlayers;
 
 			for(int i = 0; i < playerIndex.length; i++)
 			{
-				if(playerIndex[i] != -1)
+				if(playerIndex[i] != -1 && !sidePotInPlay)
 				{
 					realPlayers[i].updateMoney(realPlayers[i].getMoney() + moneyPerPlayer);
 					gameBoard.changePlayerPot(i);
+				}
+				else if(playerIndex[i] != -1 && sidePotInPlay)
+				{
+					if(playerWhoMadeSidePotIndex != i)
+					{
+						realPlayers[i].updateMoney(realPlayers[i].getMoney() + moneyBackToPlayersWhoNotSidePotPlayers);
+						gameBoard.changePlayerPot(i);
+					}
+					else
+					{
+						realPlayers[i].updateMoney(realPlayers[i].getMoney() + moneyBackToSidePotPlayers);
+						players[playerWhoMadeSidePotIndex].setStatus(0);
+						realPlayers[playerWhoMadeSidePotIndex].setStatus(0);
+						gameBoard.changePlayerPot(i);
+					}
 				}
 			}
 
