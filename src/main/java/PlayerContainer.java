@@ -101,6 +101,23 @@ class PlayerContainer extends JPanel
 		cardTwoPanel.repaint();
 		cardTwoPanel.revalidate();
 	}
+	
+	public void setCardBacks()
+	{
+		cardOnePanel.removeAll();
+		cardTwoPanel.removeAll();
+		
+		Image cardBack = Card.getCardBack().getImage();
+		Image scaledCardBack = cardBack.getScaledInstance(120, 150, Image.SCALE_SMOOTH);
+		
+		cardOnePanel.add(new JLabel(new ImageIcon(scaledCardBack)));
+		cardOnePanel.repaint();
+		cardOnePanel.revalidate();
+		
+		cardTwoPanel.add(new JLabel(new ImageIcon(scaledCardBack)));
+		cardTwoPanel.repaint();
+		cardTwoPanel.revalidate();
+	}
 
 	/*
 	Method to show blanks for a new hand
