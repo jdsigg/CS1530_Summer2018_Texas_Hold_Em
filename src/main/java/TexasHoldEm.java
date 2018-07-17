@@ -17,7 +17,7 @@ class TexasHoldEm
 		InitialPlayerDialog dialog = new InitialPlayerDialog(this, "Game Set-Up");
 	}
 
-	public void gameSetup(String playerName, int numberOfOpponents)
+	public void gameSetup(String playerName, int numberOfOpponents, boolean timerMode, boolean hecklingMode)
 	{
 		int numberOfPlayers = numberOfOpponents+1;
 
@@ -36,6 +36,8 @@ class TexasHoldEm
 
 		players[0] = new Player(playerName);
 		players[0].setPlayerType(0);
+		players[0].setTimerMode(timerMode); //if the check box is clicked in the initial dialog, set the human player to be in timer mode
+		
 		players[0].updateMoney(100); //For side pot testing
 		//set identifiers
 

@@ -3,6 +3,14 @@ import java.util.concurrent.TimeUnit;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
+import java.awt.Container;
+import javax.swing.JLabel;
+import javax.swing.JDialog;
+import java.awt.FlowLayout;
+import java.awt.Color;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 class Player
 {
@@ -23,6 +31,11 @@ class Player
 	private boolean dealer;
 	private boolean smallBlind;
 	private boolean bigBlind;
+	
+	private boolean timerMode;
+	
+	private JDialog timerDialog;
+	private AtomicInteger timeRemaining;
 
 	public Player()
 	{
@@ -182,6 +195,20 @@ class Player
 		switch(this.playerType)
 		{
 			case 0: //human player
+			
+				Thread timerThread = new Thread();
+				
+				if(timerMode)
+				{
+					//spawn a new thread that shows some GUI count down
+					timerThread = new Thread(() -> {
+						startTimer();
+					});
+					
+					timerThread.start();
+				}
+				
+				
 				String[] buttons = null;
 				System.out.println(this.getMoney());
 				if(this.getMoney() <= 0)
@@ -216,20 +243,46 @@ class Player
 
 				int returnValue = JOptionPane.showOptionDialog(null, "It is your turn to bet!", "Player Turn",
 				JOptionPane.WARNING_MESSAGE, 0, null, buttons, null);
-
-
-				if(returnValue == 0)
+				
+				
+				if(timerMode)
+				{
+					try
+					{
+						timerThread.join();
+					}
+					catch(InterruptedException ex)
+					{
+						
+					}
+					
+				}
+				
+				
+				
+				//if timer is at or less than 0, fold
+				if(timerMode && timeRemaining.get() <= 0)
 				{
 					actualBet = -1;
+					timerDialog.setVisible(false);
 				}
-				else if(returnValue == 1)
+				else //otherwise, proceed normally
 				{
-					actualBet = previousBet - this.getBet();
-				}
-				else if(returnValue == 2)
-				{
-					actualBet = previousBet - this.getBet();
-					actualBet += 20;
+					if(returnValue == 0)
+					{
+						actualBet = -1;
+					}
+					else if(returnValue == 1)
+					{
+						actualBet = previousBet - this.getBet();
+					}
+					else if(returnValue == 2)
+					{
+						actualBet = previousBet - this.getBet();
+						actualBet += 20;
+					}
+					if(timerMode)
+						timerDialog.setVisible(false);
 				}
 
 				break;
@@ -305,5 +358,53 @@ class Player
 	public boolean isBigBlind()
 	{
 		return this.bigBlind;
+	}
+	
+	public void setTimerMode(boolean mode)
+	{
+		this.timerMode = mode;
+	}
+	
+	public void startTimer()
+	{
+		timerDialog = new JDialog();
+		timerDialog.setLocationRelativeTo(null);
+		timerDialog.setSize(340, 200);
+		timerDialog.setLayout(new FlowLayout());
+		
+		Container pane = timerDialog.getContentPane();
+		
+		timeRemaining = new AtomicInteger(10); //10 seconds for each timer
+		
+		JLabel timerTextLabel = new JLabel("Time Remaining: ");
+		timerTextLabel.setFont(timerTextLabel.getFont().deriveFont(32.0f));
+		pane.add(timerTextLabel);
+		
+		JLabel timerLabel = new JLabel(Integer.toString(timeRemaining.get()));
+		timerLabel.setFont(timerLabel.getFont().deriveFont(32.0f));
+		timerLabel.setForeground(Color.RED);
+		
+		pane.add(timerLabel);
+		
+		Timer timer = new Timer(1000, new ActionListener() {
+			public void actionPerformed(ActionEvent evt)
+			{
+				if(timeRemaining.get() > 0)
+					timeRemaining.getAndDecrement();
+				
+				if(timeRemaining.get() == 0)
+				{
+					timerLabel.setText("FOLD");
+				}
+				else
+				{
+					timerLabel.setText(Integer.toString(timeRemaining.get()));
+				}
+			}
+		});
+		
+		timer.start();
+		
+		timerDialog.setVisible(true);
 	}
 }
