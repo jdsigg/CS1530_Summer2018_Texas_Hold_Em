@@ -9,19 +9,22 @@ import java.awt.Dimension;
 import javax.swing.JComboBox;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.Checkbox;
 
 class InitialPlayerDialog extends JDialog
 {
 	private JTextField nameField;
 	private JComboBox<Integer> opponents;
 	private TexasHoldEm caller;
+	private Checkbox timerModeCheckBox;
+	private Checkbox hecklingModeCheckBox;
 	
 	public InitialPlayerDialog(TexasHoldEm caller, String title)
 	{
 		super(new JDialog(), title);
 		this.caller = caller;
 		
-		setSize(340, 160);
+		setSize(340, 200);
 		setLayout(new FlowLayout());
 		Container pane = this.getContentPane();
 		
@@ -43,6 +46,16 @@ class InitialPlayerDialog extends JDialog
 		
 		pane.add(opponentsLabel);
 		pane.add(opponents);
+		
+		///////
+		
+		timerModeCheckBox = new Checkbox("Timer Mode");
+		hecklingModeCheckBox = new Checkbox("Heckling Mode");
+		
+		pane.add(timerModeCheckBox);
+		pane.add(hecklingModeCheckBox);
+		
+		///////
 		
 		JButton startButton = new JButton("Start");
 		JButton cancelButton = new JButton("Cancel");
@@ -76,7 +89,7 @@ class InitialPlayerDialog extends JDialog
 		String playerName = nameField.getText();
 		
 		this.setVisible(false);
-		caller.gameSetup(playerName, opponentNumber);		
+		caller.gameSetup(playerName, opponentNumber, timerModeCheckBox.getState(), hecklingModeCheckBox.getState());		
 	}
 	
 	private void cancelButtonActionPerformed()

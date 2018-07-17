@@ -206,14 +206,17 @@ class Game
 	{
 		for (int i=0; i<realPlayers.length; i++)
 		{
-			Player temp = realPlayers[i];
-			Card[] tempCards = temp.getCurrentHand();
-			dealer.returnCard(tempCards[0]);
-			dealer.returnCard(tempCards[1]);
-			temp.wipeHand();
-			temp.setBet(0);
+			if(realPlayers[i].isIn())
+			{
+				Player temp = realPlayers[i];
+				Card[] tempCards = temp.getCurrentHand();
+				dealer.returnCard(tempCards[0]);
+				dealer.returnCard(tempCards[1]);
+				temp.wipeHand();
+				temp.setBet(0);
 
-			gameBoard.wipePlayer(i);
+				gameBoard.wipePlayer(i);
+			}
 		}
 		dealer.returnCommCards();
 		dealer.wipeCommCards();
