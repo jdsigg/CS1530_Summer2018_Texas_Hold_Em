@@ -47,4 +47,9 @@ public class Card
 	{
 		return this.rank.toString();
 	}
+	
+	public static ImageIcon getCardBack()
+	{
+		return new ImageIcon(IMAGE_LOC + "card_back.png");
+	}
 }

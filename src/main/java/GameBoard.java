@@ -92,6 +92,11 @@ class GameBoard extends JFrame
 		playerContainers[player].setCardOne();
 		playerContainers[player].setCardTwo();
 	}
+	
+	public void displayCardBacks(int player)
+	{
+		playerContainers[player].setCardBacks();
+	}
 
 	/*
 	Method to display blanks for the AI opponents.

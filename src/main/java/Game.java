@@ -246,8 +246,13 @@ class Game
 				logString(temp.getName()+" dealt: "+temp.getCurrentHand()[0].toString()+" and "
 															+temp.getCurrentHand()[1].toString());
 
-				if(i==0){
+				if(i==0)
+				{
 					gameBoard.displayPlayerHand(i);
+				}
+				else
+				{
+					gameBoard.displayCardBacks(i);
 				}
 			}
 		}
