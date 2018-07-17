@@ -36,6 +36,7 @@ class Player
 	
 	private JDialog timerDialog;
 	private AtomicInteger timeRemaining;
+	private Timer timer;
 
 	public Player()
 	{
@@ -265,6 +266,8 @@ class Player
 				{
 					actualBet = -1;
 					timerDialog.setVisible(false);
+					timer.stop();
+					timerThread.interrupt();
 				}
 				else //otherwise, proceed normally
 				{
@@ -282,7 +285,11 @@ class Player
 						actualBet += 20;
 					}
 					if(timerMode)
+					{
 						timerDialog.setVisible(false);
+						timer.stop();
+						timerThread.interrupt();
+					}
 				}
 
 				break;
@@ -386,7 +393,7 @@ class Player
 		
 		pane.add(timerLabel);
 		
-		Timer timer = new Timer(1000, new ActionListener() {
+		timer = new Timer(1000, new ActionListener() {
 			public void actionPerformed(ActionEvent evt)
 			{
 				if(timeRemaining.get() > 0)
@@ -402,7 +409,6 @@ class Player
 				}
 			}
 		});
-		
 		timer.start();
 		
 		timerDialog.setVisible(true);
