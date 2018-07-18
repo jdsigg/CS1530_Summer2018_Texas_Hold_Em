@@ -22,8 +22,10 @@ class PlayerContainer extends JPanel
 
 	private Player player;
 	private Game game;
+	
+	private JLabel heckleLabel;
 
-	public PlayerContainer(Player player, Game game)
+	public PlayerContainer(Player player, Game game, boolean heckleMode)
 	{
 		this.setLayout(new FlowLayout());
 		this.setPreferredSize(new Dimension(260,300));
@@ -60,6 +62,12 @@ class PlayerContainer extends JPanel
 
 		this.player = player;
 		this.game = game;
+		
+		if(heckleMode)
+		{
+			heckleLabel = new JLabel();
+			this.add(heckleLabel);
+		}
 	}
 
 	public void updateName()
@@ -195,5 +203,10 @@ class PlayerContainer extends JPanel
 		{
 			bigBlindLabel.setText("");
 		}
+	}
+	
+	public void setHeckle(String heckle)
+	{
+		heckleLabel.setText(heckle);
 	}
 }
