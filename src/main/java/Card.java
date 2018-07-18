@@ -50,6 +50,11 @@ public class Card
 	
 	public static ImageIcon getCardBack()
 	{
-		return new ImageIcon(IMAGE_LOC + "card_back.png");
+		return new ImageIcon(IMAGE_LOC + "UNO_back.png");
+	}
+	
+	public static ImageIcon getOutImage()
+	{
+		return new ImageIcon(IMAGE_LOC + "out_of_money.jpg");
 	}
 }

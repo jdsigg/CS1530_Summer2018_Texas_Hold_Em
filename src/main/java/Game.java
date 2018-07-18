@@ -217,6 +217,19 @@ class Game
 
 				gameBoard.wipePlayer(i);
 			}
+			else
+			{
+				Card[] tempCards = realPlayers[i].getCurrentHand();
+				
+				if(tempCards[0] != null && tempCards[1] != null)
+				{
+					Player temp = realPlayers[i];
+					dealer.returnCard(tempCards[0]);
+					dealer.returnCard(tempCards[1]);
+					temp.wipeHand();
+					gameBoard.wipePlayer(i);
+				}
+			}
 		}
 		dealer.returnCommCards();
 		dealer.wipeCommCards();
@@ -1035,7 +1048,15 @@ class Game
 			{
 				realPlayers[i].setStatus(1);
 			}
+			
+			/*
+			if(realPlayers[i].getStatus() == 2)
+			{
+				gameBoard.displayOutForGood(i);
+			}
+			*/
 		}
+		
 
 	}
 
