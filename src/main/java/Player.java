@@ -15,9 +15,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 class Player
 {
 
-	/*
-    Initialize Variables
-	*/
+	
+    // Initialize Variables
 	private String name;
 	private int money;
 	private Card [] currentHand = new Card[2];
@@ -40,7 +39,7 @@ class Player
 
 	public Player()
 	{
-		//Init Constructor for Player
+		// Init Constructor for Player
 		this.money = 1000;
 		currentHandIndex = 0;
 		this.bet = 0;
@@ -50,7 +49,7 @@ class Player
 
 	public Player(String name)
 	{
-		//Constructor for Player
+		// Constructor for Player
 		this.name = name;
 		this.money = 1000;
 		currentHandIndex = 0;
@@ -195,13 +194,13 @@ class Player
 
 		switch(this.playerType)
 		{
-			case 0: //human player
+			case 0: // Human player
 
 				Thread timerThread = new Thread();
 
 				if(timerMode)
 				{
-					//spawn a new thread that shows some GUI count down
+					// Spawn a new thread that shows some GUI count down
 					timerThread = new Thread(() -> {
 						startTimer();
 					});
@@ -211,14 +210,13 @@ class Player
 
 
 				String[] buttons = null;
-				System.out.println(this.getMoney());
 				if(this.getMoney() <= 0)
 				{
 					this.money = 0;
 					break;
 				}
 
-				if(previousBet == 0 && numberOfRaises < 3) //check case
+				if(previousBet == 0 && numberOfRaises < 3)
 				{
 					buttons = new String[3];
 					buttons[0] = "Fold";
@@ -226,7 +224,7 @@ class Player
 					buttons[2] = "Raise $20";
 				}
 
-				if(previousBet > 0 && numberOfRaises < 3) //check case
+				if(previousBet > 0 && numberOfRaises < 3)
 				{
 					buttons = new String[3];
 					buttons[0] = "Fold";
@@ -261,7 +259,7 @@ class Player
 
 
 
-				//if timer is at or less than 0, fold
+				// If timer is at or less than 0, fold
 				if(timerMode && timeRemaining.get() <= 0)
 				{
 					actualBet = -1;
@@ -269,7 +267,7 @@ class Player
 					timer.stop();
 					timerThread.interrupt();
 				}
-				else //otherwise, proceed normally
+				else // Otherwise, proceed normally
 				{
 					if(returnValue == 0)
 					{
@@ -293,11 +291,15 @@ class Player
 				}
 
 				break;
-			case 1: //AI player
+			case 1: // AI player
 
 
 				int foldOrBet = gen.nextInt(100);
-				if(foldOrBet <= 50 && numberOfRaises < 3 && state == 2 && playersStillInGame > 2)
+				if (this.money <= 0)
+				{
+					actualBet = 0;
+				}
+				else if(foldOrBet <= 50 && numberOfRaises < 3 && state == 2 && playersStillInGame > 2)
 				{
 					actualBet = -1;
 				}
@@ -305,9 +307,8 @@ class Player
 				{
 					if(numberOfRaises < 3)
 					{
-						betPercent = gen.nextInt(100) + 1; //forces computer to bet between 1 and 100 percent of their pot
-						actualBet = (this.money * betPercent) / 1000; //calculates bet off of betPercent
-						//actualBet = 20;
+						betPercent = gen.nextInt(100) + 1; // Forces computer to bet between 1 and 100 percent of their pot
+						actualBet = (this.money * betPercent) / 1000; // Calculates bet off of betPercent
 					}
 					else
 						actualBet = previousBet;
@@ -315,7 +316,7 @@ class Player
 
 				try
 				{
-					TimeUnit.SECONDS.sleep(2);
+					TimeUnit.MILLISECONDS.sleep(1500);
 				}
 				catch (InterruptedException ex)
 				{
@@ -381,7 +382,7 @@ class Player
 
 		Container pane = timerDialog.getContentPane();
 
-		timeRemaining = new AtomicInteger(10); //10 seconds for each timer
+		timeRemaining = new AtomicInteger(10); // 10 seconds for each timer
 
 		JLabel timerTextLabel = new JLabel("Time Remaining: ");
 		timerTextLabel.setFont(timerTextLabel.getFont().deriveFont(32.0f));

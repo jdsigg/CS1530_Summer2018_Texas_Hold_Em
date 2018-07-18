@@ -30,7 +30,7 @@ public class Card
 
 	public int compareTo(Card card2)
 	{
-		return this.rank.compareTo(card2.rank); //returns 0 if equal, pos if c1 > c2, neg if c1 < c2
+		return this.rank.compareTo(card2.rank); // Returns 0 if equal, pos if c1 > c2, neg if c1 < c2
 	}
 
 	public ImageIcon getImage()

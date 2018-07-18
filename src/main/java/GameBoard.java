@@ -59,20 +59,14 @@ class GameBoard extends JFrame
 			case 1:
 				break;
 			case 2:
-			/*
-				logString("Flop: "+dealer.getCommCards()[0].toString()+", "+dealer.getCommCards()[1].toString()+", "
-										+dealer.getCommCards()[2].toString(), logger);
-										*/
 				dealerContainer.setCardOne();
 				dealerContainer.setCardTwo();
 				dealerContainer.setCardThree();
 				break;
 			case 3:
-				//logString("Turn: "+dealer.getCommCards()[3].toString(), logger);
 				dealerContainer.setCardFour();
 				break;
 			case 4:
-				//logString("River: "+dealer.getCommCards()[4].toString(), logger);
 				dealerContainer.setCardFive();
 				break;
 			case 5:
@@ -163,7 +157,7 @@ class GameBoard extends JFrame
 
 	public void showPlayers()
 	{
-		//Iterate over players, showing their respective information
+		// Iterate over players, showing their respective information
 		for(int i = 0; i < playerContainers.length; i++)
 		{
 			PlayerContainer container = playerContainers[i];

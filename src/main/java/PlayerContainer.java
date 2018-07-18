@@ -85,14 +85,17 @@ class PlayerContainer extends JPanel
 	*/
 	public void setCardOne()
 	{
-		cardOnePanel.removeAll();
+		if (player.isIn())
+		{
+			cardOnePanel.removeAll();
 
-		Image cardOne = player.getCurrentHand()[0].getImage().getImage();
-		Image scaledCardOne = cardOne.getScaledInstance(120, 150, Image.SCALE_SMOOTH);
+			Image cardOne = player.getCurrentHand()[0].getImage().getImage();
+			Image scaledCardOne = cardOne.getScaledInstance(120, 150, Image.SCALE_SMOOTH);
 
-		cardOnePanel.add(new JLabel(new ImageIcon(scaledCardOne)));
-		cardOnePanel.repaint();
-		cardOnePanel.revalidate();
+			cardOnePanel.add(new JLabel(new ImageIcon(scaledCardOne)));
+			cardOnePanel.repaint();
+			cardOnePanel.revalidate();
+		}
 	}
 
 	/*
@@ -100,14 +103,17 @@ class PlayerContainer extends JPanel
 	*/
 	public void setCardTwo()
 	{
-		cardTwoPanel.removeAll();
+		if (player.isIn())
+		{
+			cardTwoPanel.removeAll();
 
-		Image cardTwo = player.getCurrentHand()[1].getImage().getImage();
-		Image scaledCardTwo = cardTwo.getScaledInstance(120, 150, Image.SCALE_SMOOTH);
+			Image cardTwo = player.getCurrentHand()[1].getImage().getImage();
+			Image scaledCardTwo = cardTwo.getScaledInstance(120, 150, Image.SCALE_SMOOTH);
 
-		cardTwoPanel.add(new JLabel(new ImageIcon(scaledCardTwo)));
-		cardTwoPanel.repaint();
-		cardTwoPanel.revalidate();
+			cardTwoPanel.add(new JLabel(new ImageIcon(scaledCardTwo)));
+			cardTwoPanel.repaint();
+			cardTwoPanel.revalidate();
+		}
 	}
 	
 	public void setCardBacks()
