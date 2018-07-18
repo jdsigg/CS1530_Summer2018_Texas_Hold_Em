@@ -41,17 +41,13 @@ class TexasHoldEm
 
 		players[0] = new Player(playerName);
 		players[0].setPlayerType(0);
-		players[0].setTimerMode(timerMode); //if the check box is clicked in the initial dialog, set the human player to be in timer mode
-
-		//players[0].updateMoney(100); //For side pot testing
-		//set identifiers
-
+		players[0].setTimerMode(timerMode); // If the check box is clicked in the initial dialog, set the human player to be in timer mode
+		
 		for(int i = 1; i < numberOfPlayers; i++)
 		{
 			players[i] = new Player(names.get(i));
 			players[i].setPlayerType(1);
 		}
-		//set identifiers
 
 		try
 		{
@@ -120,16 +116,22 @@ class TexasHoldEm
 		}
 		
 		Random gen = new Random();
-		
-		//make a timer
-		
+				
 		Timer timer = new Timer(10000, new ActionListener() {
 			public void actionPerformed(ActionEvent evt)
 			{
+				int playerIndex = 0;
 				for(int i = 1; i < containers.length; i++)
 					containers[i].setHeckle("");
 				
-				int playerIndex = gen.nextInt(containers.length - 2) + 1; //generate a number between the first index and the last index of containers
+				if(containers.length > 2)
+				{
+					playerIndex = gen.nextInt(containers.length - 2) + 1;
+				}
+				else
+				{
+					playerIndex = gen.nextInt(containers.length - 1) + 1;
+				}
 				Collections.shuffle(heckles);
 				containers[playerIndex].setHeckle(heckles.get(0));
 			}

@@ -146,7 +146,7 @@ public class Hands {
 		int temp[] = new int[7];
 		int count = 0;
 		
-		//sort all cards
+		// Sort all cards
 		for(int x = 0; x < cards.length; x++)
 		{
 			temp[x] = possCards.get(cards[x].getRank());
@@ -188,8 +188,8 @@ public class Hands {
 	}
 	
 	/*
-		Check if cards passed in yield a full house
-		One pair and one three of a kind in the same hand
+	Check if cards passed in yield a full house
+	One pair and one three of a kind in the same hand
 	*/
 	public static int[] fullHouse(Card[] cards) 
 	{
@@ -287,7 +287,8 @@ public class Hands {
 		for(int j = 0; j < cards.length; j++) 
 		{
 			count = 1;
-			sameSuit[count-1] = possCards.get(cards[j].getRank());
+			if(cards[j] != null)
+				sameSuit[count-1] = possCards.get(cards[j].getRank());
 			
 			for(int i = j+1; i < cards.length; i++) 
 			{
@@ -414,7 +415,7 @@ public class Hands {
 		boolean foundOne = false;
 		int count = 0;
 		
-		//sort all cards
+		// Sort all cards
 		for(int x = 0; x < cards.length; x++)
 		{
 			temp[x] = possCards.get(cards[x].getRank());
@@ -434,23 +435,6 @@ public class Hands {
 
 				if(count == 3) 
 				{
-					//FOR CASES WHERE THERE ARE TWO AND A HIGHER RANK NEEDED
-					/*if(!foundOne) 
-					{
-						holder = cards[j];	
-						foundOne = true;
-					}
-					else 
-					{
-						if(holder.compareTo(cards[j]) > 0) 
-						{
-							
-						}
-						else if(holder.compareTo(cards[j]) < 0) 
-						{
-							
-						}
-					}*/
 					int spot = 2;
 					for(int x = 0; x < 5; x++)
 					{
@@ -465,7 +449,6 @@ public class Hands {
 						}
 					}
 					
-					//But for now...
 					winningHand[1] = possCards.get(cards[j].getRank());
 					winningHand[0] = 4;
 					return winningHand;				
@@ -537,21 +520,21 @@ public class Hands {
 			{
 				if(winningHand[1] < winningHand[2])
 				{
-					//get the greater of the pairs first
+					// Get the greater of the pairs first
 					int t = winningHand[1];
 					winningHand[1] = winningHand[2];
 					winningHand[2] = t;
 				}
 				if(winningHand[2] < winningHand[3])
 				{
-					//get the greater of the pairs first
+					// Get the greater of the pairs first
 					int t = winningHand[2];
 					winningHand[2] = winningHand[3];
 					winningHand[3] = t;
 				}
 				if(winningHand[1] < winningHand[2])
 				{
-					//get the greater of the pairs first
+					// Get the greater of the pairs first
 					int t = winningHand[1];
 					winningHand[1] = winningHand[2];
 					winningHand[2] = t;
@@ -559,7 +542,7 @@ public class Hands {
 				
 				int temp[] = new int[7];
 		
-				//sort all cards
+				// Sort all cards
 				for(int x = 0; x < cards.length; x++)
 				{
 					temp[x] = possCards.get(cards[x].getRank());
@@ -571,7 +554,6 @@ public class Hands {
 					if(temp[temp.length - x] != winningHand[1] && temp[temp.length - x] != winningHand[2])
 					{
 						winningHand[3] = temp[temp.length-x];
-						System.out.println(winningHand[3]);
 						break;
 					}
 				}
@@ -621,29 +603,11 @@ public class Hands {
 
 				if(count == 2) 
 				{
-					//FOR CASES WHERE THERE ARE TWO AND A HIGHER RANK NEEDED
-					/*if(!foundOne) 
-					{
-						holder = cards[j];	
-						foundOne = true;
-					}
-					else 
-					{
-						if(holder.compareTo(cards[j]) > 0) 
-						{
-							
-						}
-						else if(holder.compareTo(cards[j]) < 0) 
-						{
-							
-						}
-					}*/
-					//But for now...
 					winningHand[1] = possCards.get(cards[j].getRank());
 					
 					int temp[] = new int[7];
 		
-					//sort all cards
+					// Sort all cards
 					for(int x = 0; x < cards.length; x++)
 					{
 						temp[x] = possCards.get(cards[x].getRank());
@@ -694,7 +658,7 @@ public class Hands {
 		
 		int temp[] = new int[7];
 		
-		//sort all cards
+		// Sort all cards
 		for(int x = 0; x < cards.length; x++)
 		{
 			temp[x] = possCards.get(cards[x].getRank());
