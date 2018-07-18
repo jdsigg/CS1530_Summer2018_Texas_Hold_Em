@@ -2,6 +2,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.io.*;
+import java.util.Random;
+import javax.swing.Timer;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 class TexasHoldEm
 {
@@ -63,7 +68,10 @@ class TexasHoldEm
 
 		for(int i = 0; i < numberOfPlayers; i++)
 		{
-			playerContainers[i] = new PlayerContainer(players[i], game);
+			if(i == 0)
+				playerContainers[i] = new PlayerContainer(players[i], game, false);
+			else
+				playerContainers[i] = new PlayerContainer(players[i], game, hecklingMode);
 		}
 
 		gameBoard.showPlayers();
@@ -73,6 +81,61 @@ class TexasHoldEm
 			game.runMe();
 		});
 		gameThread.start();
+		
+		if(hecklingMode)
+		{
+			Thread heckleThread = new Thread(() -> {
+				heckle(playerContainers);
+			});
+			
+			heckleThread.start();
+		}
+	}
+	
+	public void heckle(PlayerContainer[] containers)
+	{
+		BufferedReader inReader = null;
+		
+		try
+		{
+			inReader = new BufferedReader(new FileReader(new File("src/main/resources/heckles.txt")));
+		}
+		catch(IOException e)
+		{
+			
+		}
+		
+		ArrayList<String> heckles = new ArrayList<>();
+		
+		try
+		{
+			while(inReader.ready())
+			{
+				heckles.add(inReader.readLine());
+			}
+		}
+		catch(IOException e)
+		{
+			
+		}
+		
+		Random gen = new Random();
+		
+		//make a timer
+		
+		Timer timer = new Timer(10000, new ActionListener() {
+			public void actionPerformed(ActionEvent evt)
+			{
+				for(int i = 1; i < containers.length; i++)
+					containers[i].setHeckle("");
+				
+				int playerIndex = gen.nextInt(containers.length - 2) + 1; //generate a number between the first index and the last index of containers
+				Collections.shuffle(heckles);
+				containers[playerIndex].setHeckle(heckles.get(0));
+			}
+		});
+		
+		timer.start();		
 	}
 
 	public void exit()
