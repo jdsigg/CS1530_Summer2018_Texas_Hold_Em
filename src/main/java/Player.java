@@ -31,9 +31,9 @@ class Player
 	private boolean dealer;
 	private boolean smallBlind;
 	private boolean bigBlind;
-	
+
 	private boolean timerMode;
-	
+
 	private JDialog timerDialog;
 	private AtomicInteger timeRemaining;
 	private Timer timer;
@@ -188,7 +188,7 @@ class Player
 		return (this.status == 0);
 	}
 
-	public int bet(int previousBet, int numberOfRaises, int state)
+	public int bet(int previousBet, int numberOfRaises, int state, int playersStillInGame)
 	{
 		int betPercent = 1;
 		int actualBet = 0;
@@ -196,20 +196,20 @@ class Player
 		switch(this.playerType)
 		{
 			case 0: //human player
-			
+
 				Thread timerThread = new Thread();
-				
+
 				if(timerMode)
 				{
 					//spawn a new thread that shows some GUI count down
 					timerThread = new Thread(() -> {
 						startTimer();
 					});
-					
+
 					timerThread.start();
 				}
-				
-				
+
+
 				String[] buttons = null;
 				System.out.println(this.getMoney());
 				if(this.getMoney() <= 0)
@@ -244,8 +244,8 @@ class Player
 
 				int returnValue = JOptionPane.showOptionDialog(null, "It is your turn to bet!", "Player Turn",
 				JOptionPane.WARNING_MESSAGE, 0, null, buttons, null);
-				
-				
+
+
 				if(timerMode)
 				{
 					try
@@ -254,13 +254,13 @@ class Player
 					}
 					catch(InterruptedException ex)
 					{
-						
+
 					}
-					
+
 				}
-				
-				
-				
+
+
+
 				//if timer is at or less than 0, fold
 				if(timerMode && timeRemaining.get() <= 0)
 				{
@@ -297,7 +297,7 @@ class Player
 
 
 				int foldOrBet = gen.nextInt(100);
-				if(foldOrBet <= 50 && numberOfRaises < 3 && state == 2)
+				if(foldOrBet <= 50 && numberOfRaises < 3 && state == 2 && playersStillInGame > 2)
 				{
 					actualBet = -1;
 				}
@@ -366,39 +366,39 @@ class Player
 	{
 		return this.bigBlind;
 	}
-	
+
 	public void setTimerMode(boolean mode)
 	{
 		this.timerMode = mode;
 	}
-	
+
 	public void startTimer()
 	{
 		timerDialog = new JDialog();
 		timerDialog.setLocationRelativeTo(null);
 		timerDialog.setSize(340, 200);
 		timerDialog.setLayout(new FlowLayout());
-		
+
 		Container pane = timerDialog.getContentPane();
-		
+
 		timeRemaining = new AtomicInteger(10); //10 seconds for each timer
-		
+
 		JLabel timerTextLabel = new JLabel("Time Remaining: ");
 		timerTextLabel.setFont(timerTextLabel.getFont().deriveFont(32.0f));
 		pane.add(timerTextLabel);
-		
+
 		JLabel timerLabel = new JLabel(Integer.toString(timeRemaining.get()));
 		timerLabel.setFont(timerLabel.getFont().deriveFont(32.0f));
 		timerLabel.setForeground(Color.RED);
-		
+
 		pane.add(timerLabel);
-		
+
 		timer = new Timer(1000, new ActionListener() {
 			public void actionPerformed(ActionEvent evt)
 			{
 				if(timeRemaining.get() > 0)
 					timeRemaining.getAndDecrement();
-				
+
 				if(timeRemaining.get() == 0)
 				{
 					timerLabel.setText("FOLD");
@@ -410,7 +410,7 @@ class Player
 			}
 		});
 		timer.start();
-		
+
 		timerDialog.setVisible(true);
 	}
 }

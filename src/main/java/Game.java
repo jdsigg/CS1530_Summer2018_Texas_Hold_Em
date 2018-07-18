@@ -605,22 +605,22 @@ class Game
 			{
 				if(playerIndex[i] != -1 && !sidePotInPlay)
 				{
-					realPlayers[i].updateMoney(realPlayers[i].getMoney() + moneyPerPlayer);
-					gameBoard.changePlayerPot(i);
+					realPlayers[playerIndex[i]].updateMoney(realPlayers[i].getMoney() + moneyPerPlayer);
+					gameBoard.changePlayerPot(playerIndex[i]);
 				}
 				else if(playerIndex[i] != -1 && sidePotInPlay)
 				{
-					if(playerWhoMadeSidePotIndex != i)
+					if(playerWhoMadeSidePotIndex != playerIndex[i]) //Should be playerIndex[i]??? - issue #68 and issue #65
 					{
-						realPlayers[i].updateMoney(realPlayers[i].getMoney() + moneyBackToPlayersWhoNotSidePotPlayers);
-						gameBoard.changePlayerPot(i);
+						realPlayers[playerIndex[i]].updateMoney(realPlayers[i].getMoney() + moneyBackToPlayersWhoNotSidePotPlayers);
+						gameBoard.changePlayerPot(playerIndex[i]);
 					}
 					else
 					{
-						realPlayers[i].updateMoney(realPlayers[i].getMoney() + moneyBackToSidePotPlayers);
+						realPlayers[playerIndex[i]].updateMoney(realPlayers[i].getMoney() + moneyBackToSidePotPlayers);
 						players[playerWhoMadeSidePotIndex].setStatus(0);
 						realPlayers[playerWhoMadeSidePotIndex].setStatus(0);
-						gameBoard.changePlayerPot(i);
+						gameBoard.changePlayerPot(playerIndex[i]);
 					}
 				}
 			}
@@ -669,6 +669,10 @@ class Game
 				{
 					break;
 				}
+			}
+			else if(realPlayers[i].getMoney() <= 0) //Set them out of the game for good
+			{
+				realPlayers[i].setStatus(2);
 			}
 		}
 
@@ -723,7 +727,7 @@ class Game
 			{
 				gameBoard.highlightCurrentBetter(currentPlayer);
 
-				toThePot = realPlayers[currentPlayer].bet(previousBet, numberOfRaises,state);
+				toThePot = realPlayers[currentPlayer].bet(previousBet, numberOfRaises,state,playersStillInGame);
 
 				if(toThePot == -1)
 				{
@@ -789,6 +793,10 @@ class Game
 
 								dealer.updateSidePot(dealer.getSidePot() + difference);
 								dealer.updatePot(dealer.getPot() - difference + realPlayers[currentPlayer].getMoney());
+								if(dealer.getPot() < 0)
+								{
+									dealer.updatePot(dealer.getPot() * -1);
+								}
 								realPlayers[currentPlayer].updateMoney(0);
 								realPlayers[currentPlayer].setStatus(1);
 							}
@@ -798,6 +806,10 @@ class Game
 
 								dealer.updateSidePot(dealer.getSidePot() + difference);
 								dealer.updatePot(dealer.getPot() - difference + realPlayers[currentPlayer].getMoney());
+								if(dealer.getPot() < 0)
+								{
+									dealer.updatePot(dealer.getPot() * -1);
+								}
 								realPlayers[currentPlayer].updateMoney(0);
 								realPlayers[currentPlayer].setStatus(1);
 							}
@@ -829,7 +841,16 @@ class Game
 							previousBet = realPlayers[currentPlayer].getBet() + toThePot;
 
 							realPlayers[currentPlayer].setBet(toThePot); //update the current player's bet
-							realPlayers[currentPlayer].subtractFromMoney(toThePot);
+
+							//Update player's own pot.
+							if(realPlayers[currentPlayer].getMoney() >= toThePot)
+							{
+								realPlayers[currentPlayer].subtractFromMoney(toThePot);
+							}
+							else
+							{
+								realPlayers[currentPlayer].subtractFromMoney(realPlayers[currentPlayer].getMoney());
+							}
 
 							if(!sidePotInPlay)
 							{
@@ -846,6 +867,7 @@ class Game
 							gameBoard.changePlayerPot(currentPlayer);
 							gameBoard.updatePot();
 							gameBoard.updateMinBet(minRoundBet);
+
 						}
 					}
 				}
@@ -862,7 +884,7 @@ class Game
 				{
 					gameBoard.highlightCurrentBetter(currentPlayer);
 
-					toThePot = realPlayers[currentPlayer].bet(previousBet, numberOfRaises,state);
+					toThePot = realPlayers[currentPlayer].bet(previousBet, numberOfRaises,state, playersStillInGame);
 
 					if(toThePot == -1) //give players chance to fold
 					{
@@ -919,6 +941,10 @@ class Game
 
 									dealer.updateSidePot(dealer.getSidePot() + difference);
 									dealer.updatePot(dealer.getPot() - difference + realPlayers[currentPlayer].getMoney());
+									if(dealer.getPot() < 0)
+									{
+										dealer.updatePot(dealer.getPot() * -1);
+									}
 									realPlayers[currentPlayer].updateMoney(0);
 									realPlayers[currentPlayer].setStatus(1);
 								}
@@ -928,6 +954,10 @@ class Game
 
 									dealer.updateSidePot(dealer.getSidePot() + difference);
 									dealer.updatePot(dealer.getPot() - difference + realPlayers[currentPlayer].getMoney());
+									if(dealer.getPot() < 0)
+									{
+										dealer.updatePot(dealer.getPot() * -1);
+									}
 									realPlayers[currentPlayer].updateMoney(0);
 									realPlayers[currentPlayer].setStatus(1);
 								}
@@ -959,7 +989,16 @@ class Game
 								previousBet = realPlayers[currentPlayer].getBet() + toThePot;
 
 								realPlayers[currentPlayer].setBet(toThePot); //update the current player's bet
-								realPlayers[currentPlayer].subtractFromMoney(toThePot);
+
+								//Update player's own pot.
+								if(realPlayers[currentPlayer].getMoney() >= toThePot)
+								{
+									realPlayers[currentPlayer].subtractFromMoney(toThePot);
+								}
+								else
+								{
+									realPlayers[currentPlayer].subtractFromMoney(realPlayers[currentPlayer].getMoney());
+								}
 
 								if(!sidePotInPlay)
 								{
