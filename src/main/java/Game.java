@@ -175,20 +175,22 @@ class Game
 	public void resetGame()
 	{
 		playersStillInGame = 0;
-		
+
 		for (int i=0; i<realPlayers.length; i++)
 		{
 			if (realPlayers[i].getMoney() <= 0)
 			{
 				realPlayers[i].setStatus(2);
-			}	
+				gameBoard.playerOutForGood(i);
+				gameBoard.displayOutForGood(i);
+			}
 			else
 			{
 				realPlayers[i].setStatus(0);
 				playersStillInGame++;
 			}
 		}
-		
+
 		for (int i=0; i<realPlayers.length; i++)
 		{
 			if(realPlayers[i].isIn())
@@ -205,7 +207,7 @@ class Game
 			else
 			{
 				Card[] tempCards = realPlayers[i].getCurrentHand();
-				
+
 				if(tempCards[0] != null && tempCards[1] != null)
 				{
 					Player temp = realPlayers[i];
@@ -309,7 +311,7 @@ class Game
 				players[i].setStatus(0);
 			}
 		}
-		
+
 		if(!sidePotInPlay && playerWhoMadeSidePotIndex != -1)
 		{
 			players[playerWhoMadeSidePotIndex].setStatus(0);
@@ -643,6 +645,8 @@ class Game
 			else if(realPlayers[i].getMoney() <= 0) // Set them out of the game for good
 			{
 				realPlayers[i].setStatus(2);
+				gameBoard.playerOutForGood(i);
+				gameBoard.displayOutForGood(i);
 			}
 		}
 
@@ -776,13 +780,14 @@ class Game
 								realPlayers[currentPlayer].updateMoney(0);
 								realPlayers[currentPlayer].setStatus(1);
 							}
-							
+
 							sidePotInPlay = true;
 							playerWhoMadeSidePot = realPlayers[currentPlayer];
 							playerWhoMadeSidePotIndex = currentPlayer;
 							gameBoard.changePlayerPot(currentPlayer);
 							gameBoard.updatePot();
 							gameBoard.updateSidePot();
+							gameBoard.createSidePot(currentPlayer);
 						}
 						else
 						{
@@ -832,6 +837,10 @@ class Game
 						}
 					}
 				}
+			}
+			else
+			{
+				gameBoard.displayOutForGood(currentPlayer);
 			}
 			nextPlayer = (nextPlayer + 1) % numberOfPlayers;
 			currentPlayer = nextPlayer;
@@ -921,6 +930,7 @@ class Game
 								gameBoard.changePlayerPot(currentPlayer);
 								gameBoard.updatePot();
 								gameBoard.updateSidePot();
+								gameBoard.createSidePot(currentPlayer);
 							}
 							else
 							{
@@ -932,7 +942,7 @@ class Game
 									realPlayers[currentPlayer].setStatus(1);
 								}
 								else
-								{	
+								{
 									gameBoard.clearCurrentBetter(currentPlayer);
 
 									toThePot += minRoundBet - realPlayers[currentPlayer].getBet() - toThePot;
@@ -971,6 +981,10 @@ class Game
 						}
 					}
 				}
+				else
+				{
+					gameBoard.displayOutForGood(currentPlayer);
+				}
 				currentPlayer = (currentPlayer+1) % numberOfPlayers;
 			}
 		}
@@ -982,15 +996,9 @@ class Game
 			{
 				realPlayers[i].setStatus(1);
 			}
-			
-			
-			if(realPlayers[i].getStatus() == 2)
-			{
-				gameBoard.displayOutForGood(i);
-			}
-			
+
 		}
-		
+
 
 	}
 
