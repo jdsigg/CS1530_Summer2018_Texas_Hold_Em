@@ -7,6 +7,11 @@ import java.awt.Dimension;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionEvent;
+import java.awt.Graphics;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 
 class PlayerContainer extends JPanel
 {
@@ -24,6 +29,8 @@ class PlayerContainer extends JPanel
 	private Game game;
 
 	private JLabel heckleLabel;
+	
+	private JPanel avatar;
 
 	public PlayerContainer(Player player, Game game, boolean heckleMode)
 	{
@@ -41,6 +48,11 @@ class PlayerContainer extends JPanel
 		cardTwoPanel.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
 		cardTwoPanel.setPreferredSize(new Dimension (120, 160));
 		this.add(cardTwoPanel);
+		
+		avatar = new JPanel();
+		avatar.setPreferredSize(new Dimension(50,50));
+		//avatar.setBackground(Color.RED);
+		this.add(avatar);
 
 		playerName = new JLabel("Default Name");
 		this.add(playerName);
@@ -62,12 +74,15 @@ class PlayerContainer extends JPanel
 
 		this.player = player;
 		this.game = game;
-
+		
 		if(heckleMode)
 		{
 			heckleLabel = new JLabel();
 			this.add(heckleLabel);
 		}
+		
+		
+		
 	}
 
 	public void updateName()
@@ -242,5 +257,29 @@ class PlayerContainer extends JPanel
 	public void setHeckle(String heckle)
 	{
 		heckleLabel.setText(heckle);
+	}
+	
+	public void setAvatar(ImageIcon picture)
+	{		
+		JLabel toPanel = new JLabel(picture);
+		avatar.add(toPanel);
+	}
+	
+	/*
+	 * Inner class to paint a circular place holder for each player's avatar.
+	 *
+	 */
+	private class AvatarPanel extends JPanel
+	{
+		public AvatarPanel()
+		{
+			super();
+		}
+		
+		@Override
+		protected void paintComponent(Graphics g) 
+		{
+			g.drawOval(0, 0, g.getClipBounds().width, g.getClipBounds().height);
+		}
 	}
 }
