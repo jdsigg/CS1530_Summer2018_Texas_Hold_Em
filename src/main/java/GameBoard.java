@@ -86,12 +86,12 @@ class GameBoard extends JFrame
 		playerContainers[player].setCardOne();
 		playerContainers[player].setCardTwo();
 	}
-	
+
 	public void displayCardBacks(int player)
 	{
 		playerContainers[player].setCardBacks();
 	}
-	
+
 	public void displayOutForGood(int player)
 	{
 		playerContainers[player].displayOutForGood();
@@ -176,7 +176,7 @@ class GameBoard extends JFrame
 
 	public void highlightCurrentBetter(int currentBetter)
 	{
-		playerContainers[currentBetter].blackBorder();
+		playerContainers[currentBetter].greenBorder();
 	}
 
 	public void cancelCurrentBetter(int currentBetter)
@@ -187,6 +187,16 @@ class GameBoard extends JFrame
 	public void clearCurrentBetter(int currentBetter)
 	{
 		playerContainers[currentBetter].clearBorder();
+	}
+
+	public void createSidePot(int currentBetter)
+	{
+		playerContainers[currentBetter].blueBorder();
+	}
+
+	public void playerOutForGood(int currentBetter)
+	{
+		playerContainers[currentBetter].blackBorder();
 	}
 
 	public void changePlayerPot(int player)

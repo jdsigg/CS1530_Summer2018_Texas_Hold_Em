@@ -22,7 +22,7 @@ class PlayerContainer extends JPanel
 
 	private Player player;
 	private Game game;
-	
+
 	private JLabel heckleLabel;
 
 	public PlayerContainer(Player player, Game game, boolean heckleMode)
@@ -62,7 +62,7 @@ class PlayerContainer extends JPanel
 
 		this.player = player;
 		this.game = game;
-		
+
 		if(heckleMode)
 		{
 			heckleLabel = new JLabel();
@@ -115,36 +115,33 @@ class PlayerContainer extends JPanel
 			cardTwoPanel.revalidate();
 		}
 	}
-	
+
 	public void setCardBacks()
 	{
 		cardOnePanel.removeAll();
 		cardTwoPanel.removeAll();
-		
+
 		Image cardBack = Card.getCardBack().getImage();
 		Image scaledCardBack = cardBack.getScaledInstance(120, 150, Image.SCALE_SMOOTH);
-		
+
 		cardOnePanel.add(new JLabel(new ImageIcon(scaledCardBack)));
 		cardOnePanel.repaint();
 		cardOnePanel.revalidate();
-		
+
 		cardTwoPanel.add(new JLabel(new ImageIcon(scaledCardBack)));
 		cardTwoPanel.repaint();
 		cardTwoPanel.revalidate();
 	}
-	
+
 	public void displayOutForGood()
 	{
-		cardOnePanel.removeAll();
-		cardTwoPanel.removeAll();
-		
 		Image outImage = Card.getOutImage().getImage();
 		Image scaledOutImage = outImage.getScaledInstance(120, 150, Image.SCALE_SMOOTH);
-		
+
 		cardOnePanel.add(new JLabel(new ImageIcon(scaledOutImage)));
 		cardOnePanel.repaint();
 		cardOnePanel.revalidate();
-		
+
 		cardTwoPanel.add(new JLabel(new ImageIcon(scaledOutImage)));
 		cardTwoPanel.repaint();
 		cardTwoPanel.revalidate();
@@ -167,14 +164,28 @@ class PlayerContainer extends JPanel
 
 	public void blackBorder()
 	{
-		this.setBorder(BorderFactory.createLineBorder(Color.black));
+		this.setBorder(BorderFactory.createLineBorder(Color.black,5));
+		this.repaint();
+		this.revalidate();
+	}
+
+	public void blueBorder()
+	{
+		this.setBorder(BorderFactory.createLineBorder(Color.blue,5));
 		this.repaint();
 		this.revalidate();
 	}
 
 	public void redBorder()
 	{
-		this.setBorder(BorderFactory.createLineBorder(Color.red));
+		this.setBorder(BorderFactory.createLineBorder(Color.red,5));
+		this.repaint();
+		this.revalidate();
+	}
+
+	public void greenBorder()
+	{
+		this.setBorder(BorderFactory.createLineBorder(Color.decode("#017F2B"),5));
 		this.repaint();
 		this.revalidate();
 	}
@@ -227,7 +238,7 @@ class PlayerContainer extends JPanel
 			bigBlindLabel.setText("");
 		}
 	}
-	
+
 	public void setHeckle(String heckle)
 	{
 		heckleLabel.setText(heckle);
