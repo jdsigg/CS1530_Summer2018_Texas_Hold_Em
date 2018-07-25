@@ -42,6 +42,7 @@ class TexasHoldEm
 		players[0] = new Player(playerName);
 		players[0].setPlayerType(0);
 		players[0].setTimerMode(timerMode); // If the check box is clicked in the initial dialog, set the human player to be in timer mode
+		players[0].updateMoney(21); // Testing purposes
 		
 		for(int i = 1; i < numberOfPlayers; i++)
 		{

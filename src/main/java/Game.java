@@ -663,7 +663,7 @@ class Game
 		logString("Big Blind is : "+realPlayers[bigBlind].getName());
 
 		int numberOfRaises = 0;
-		int minRoundBet = 20;
+		int minRoundBet = 0;
 		int currentLead = bigBlind;
 		int nextPlayer = (bigBlind + 1) % numberOfPlayers;
 		int currentPlayer = nextPlayer;
@@ -672,6 +672,7 @@ class Game
 
 		if(state == 1)
 		{
+			minRoundBet = 20;
 			realPlayers[smallBlind].setBet(10);
 			realPlayers[smallBlind].subtractFromMoney(10);
 			realPlayers[bigBlind].setBet(20);
@@ -696,7 +697,7 @@ class Game
 			{
 				gameBoard.highlightCurrentBetter(currentPlayer);
 
-				toThePot = realPlayers[currentPlayer].bet(previousBet, numberOfRaises,state,playersStillInGame);
+				toThePot = realPlayers[currentPlayer].bet(minRoundBet, numberOfRaises,state,playersStillInGame);
 
 				if(toThePot == -1)
 				{
