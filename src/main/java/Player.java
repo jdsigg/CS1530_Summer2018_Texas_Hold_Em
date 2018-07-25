@@ -191,13 +191,14 @@ class Player
 	{
 		int betPercent = 1;
 		int actualBet = 0;
-
+		int buttonBet = 0;
+		
 		switch(this.playerType)
 		{
 			case 0: // Human player
 
 				Thread timerThread = new Thread();
-
+				
 				if(timerMode)
 				{
 					// Spawn a new thread that shows some GUI count down
@@ -226,17 +227,19 @@ class Player
 
 				if(previousBet > 0 && numberOfRaises < 3)
 				{
+					buttonBet = previousBet - this.bet;
 					buttons = new String[3];
 					buttons[0] = "Fold";
-					buttons[1] = "Call";
+					buttons[1] = "Call $" + buttonBet;
 					buttons[2] = "Raise $20";
 				}
 
 				if(numberOfRaises == 3)
 				{
+					buttonBet = previousBet - this.bet;
 					buttons = new String[2];
 					buttons[0] = "Fold";
-					buttons[1] = "Call";
+					buttons[1] = "Call $" + buttonBet;
 				}
 
 
@@ -316,7 +319,7 @@ class Player
 
 				try
 				{
-					TimeUnit.MILLISECONDS.sleep(1500);
+					TimeUnit.MILLISECONDS.sleep(1000);
 				}
 				catch (InterruptedException ex)
 				{
