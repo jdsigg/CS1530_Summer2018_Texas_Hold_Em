@@ -604,6 +604,7 @@ public class Hands {
 				if(count == 2) 
 				{
 					winningHand[1] = possCards.get(cards[j].getRank());
+					winningHand[2] = possCards.get(cards[j].getRank());
 					
 					int temp[] = new int[7];
 		
@@ -614,14 +615,14 @@ public class Hands {
 					}
 					Arrays.sort(temp);
 					
-					int index = 2;
-					for(int x = 0; x < 7; x++)
+					int index = 3;
+					for(int x = 1; x < 8; x++)
 					{
-						if(temp[x] != winningHand[1])
+						if(temp[temp.length - x] != winningHand[1])
 						{
-							winningHand[index] = temp[x];
+							winningHand[index] = temp[temp.length - x];
 							index++;
-							if(index == 5)
+							if(index == 6)
 							{
 								break;
 							}

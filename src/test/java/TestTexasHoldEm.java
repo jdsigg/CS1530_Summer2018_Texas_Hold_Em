@@ -155,26 +155,30 @@ public class TestTexasHoldEm
 		assert(Hands.straight(hand2)[0] > Hands.onePair(hand1)[0]);		
 	}
 	
-	//Tied pairs, 
+	//Tied pairs, second high card wins it
+	//Used to test all high card cases
 	@Test
 	public void testOnePairSecondHighCard()
 	{
 		Card [] hand1 = new Card[7];
         hand1[0] = new Card(Card.Suit.Clubs,Card.Rank.Ace);
         hand1[1] = new Card(Card.Suit.Hearts,Card.Rank.Two);
-        hand1[2] = new Card(Card.Suit.Diamonds,Card.Rank.Nine);
+        hand1[2] = new Card(Card.Suit.Diamonds,Card.Rank.Ten);
         hand1[3] = new Card(Card.Suit.Hearts,Card.Rank.King);
         hand1[4] = new Card(Card.Suit.Spades,Card.Rank.Ace);
-        hand1[4] = new Card(Card.Suit.Spades,Card.Rank.Four);
-        hand1[4] = new Card(Card.Suit.Spades,Card.Rank.Eight);
+        hand1[5] = new Card(Card.Suit.Spades,Card.Rank.Four);
+        hand1[6] = new Card(Card.Suit.Spades,Card.Rank.Eight);
 		
-		Card [] hand2 = new Card[5];
+		Card [] hand2 = new Card[7];
         hand2[0] = new Card(Card.Suit.Clubs,Card.Rank.Ace);
         hand2[1] = new Card(Card.Suit.Hearts,Card.Rank.King);
         hand2[2] = new Card(Card.Suit.Diamonds,Card.Rank.Ace);
         hand2[3] = new Card(Card.Suit.Hearts,Card.Rank.Four);
-        hand2[4] = new Card(Card.Suit.Spades,Card.Rank.Ten);
-		assert(Hands.onePair(hand2)[4] > Hands.onePair(hand1)[4]);		
+        hand2[4] = new Card(Card.Suit.Spades,Card.Rank.Nine);
+        hand2[5] = new Card(Card.Suit.Hearts,Card.Rank.Two);
+        hand2[6] = new Card(Card.Suit.Spades,Card.Rank.Three);
+
+		assert(Hands.onePair(hand2)[4] < Hands.onePair(hand1)[4]);		
 	}
 	
 	//NORMAL HANDS
