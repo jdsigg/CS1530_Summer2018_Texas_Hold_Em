@@ -8,6 +8,14 @@ import javax.swing.Timer;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.JOptionPane;
+import java.net.URL;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+
 class TexasHoldEm
 {
 	public static Logger logger = null;
@@ -70,6 +78,8 @@ class TexasHoldEm
 			else
 				playerContainers[i] = new PlayerContainer(players[i], game, hecklingMode);
 		}
+		
+		assignAvatars(playerContainers);
 
 		gameBoard.showPlayers();
 		game.initializeBlinds();
@@ -139,6 +149,67 @@ class TexasHoldEm
 		});
 		
 		timer.start();		
+	}
+	
+	public void assignAvatars(PlayerContainer[] playerContainers)
+	{
+		String[] buttons = {"Yes", "No"};
+		
+		int returnValue = JOptionPane.showOptionDialog(null, "Would you like to choose an avatar?", "Avatar Option",
+				JOptionPane.WARNING_MESSAGE, 0, null, buttons, null);
+				
+		if(returnValue == 0) //picked yes, display file chooser
+		{
+			JFileChooser popUp = new JFileChooser();
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG, PNG, & GIF Images", "jpg", "png", "gif");
+		
+			popUp.setFileFilter(filter);
+		
+			popUp.setCurrentDirectory(new File("./src/main/resources/img/avatars/"));
+		
+			int returnVal = popUp.showOpenDialog(null);
+			
+			if(returnVal == JFileChooser.APPROVE_OPTION)
+			{
+				File pic =  popUp.getSelectedFile();
+				
+				if(pic.getName().endsWith("gif"))
+				{
+					URL url = TexasHoldEm.class.getResource(pic.getName());
+					playerContainers[0].setAvatar(new ImageIcon(url));
+				}
+				else
+				{
+					BufferedImage img = null;
+					try
+					{
+						img = ImageIO.read(pic);
+					}
+					catch (IOException e)
+					{
+				
+					}
+					playerContainers[0].setAvatar(new ImageIcon(img));
+				}
+				
+			}
+			
+		}
+		//add in file chooser
+		//get photo from file chooser
+		//place it on player
+		
+		
+		String extension = "./src/main/resources/img/avatars/";
+		
+		ArrayList<String> avatars = new ArrayList<>(Arrays.asList("Bart_Simpson.png",
+		"Farnan.jpg", "Laboon.jpg", "Misurda.jpg", "Patrick_Star.png", "Ramirez.jpg", 
+		"spongebob.png", "ninja.png"));
+		
+		Collections.shuffle(avatars);
+		
+		for(int i = 1; i < playerContainers.length; i++)
+			playerContainers[i].setAvatar(new ImageIcon(extension + avatars.get(i)));
 	}
 
 	public void exit()
