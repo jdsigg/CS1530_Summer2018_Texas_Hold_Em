@@ -133,6 +133,26 @@ public class TestTexasHoldEm
     Tests for Hands class.
     */
 
+	//Test for a pair of Aces beating a straight bug
+	@Test
+	public void testPairAcesOverStraight()
+	{
+		Card [] hand1 = new Card[5];
+        hand1[0] = new Card(Card.Suit.Clubs,Card.Rank.Ace);
+        hand1[1] = new Card(Card.Suit.Hearts,Card.Rank.Two);
+        hand1[2] = new Card(Card.Suit.Diamonds,Card.Rank.Nine);
+        hand1[3] = new Card(Card.Suit.Hearts,Card.Rank.King);
+        hand1[4] = new Card(Card.Suit.Spades,Card.Rank.Ace);
+		
+		Card [] hand2 = new Card[5];
+        hand2[0] = new Card(Card.Suit.Clubs,Card.Rank.Two);
+        hand2[1] = new Card(Card.Suit.Hearts,Card.Rank.Six);
+        hand2[2] = new Card(Card.Suit.Diamonds,Card.Rank.Five);
+        hand2[3] = new Card(Card.Suit.Hearts,Card.Rank.Four);
+        hand2[4] = new Card(Card.Suit.Spades,Card.Rank.Three);
+		assert(Hands.straight(hand2)[0] > Hands.onePair(hand1)[0]);		
+	}
+	
     //Test for royal flush hand.
     @Test
     public void testForRoyalFlush()
