@@ -29,7 +29,7 @@ class PlayerContainer extends JPanel
 	private Game game;
 
 	private JLabel heckleLabel;
-	
+
 	private JPanel avatar;
 
 	public PlayerContainer(Player player, Game game, boolean heckleMode)
@@ -48,7 +48,7 @@ class PlayerContainer extends JPanel
 		cardTwoPanel.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
 		cardTwoPanel.setPreferredSize(new Dimension (120, 160));
 		this.add(cardTwoPanel);
-		
+
 		avatar = new JPanel();
 		avatar.setPreferredSize(new Dimension(50,50));
 		//avatar.setBackground(Color.RED);
@@ -74,15 +74,15 @@ class PlayerContainer extends JPanel
 
 		this.player = player;
 		this.game = game;
-		
+
 		if(heckleMode)
 		{
 			heckleLabel = new JLabel();
 			this.add(heckleLabel);
 		}
-		
-		
-		
+
+
+
 	}
 
 	public void updateName()
@@ -258,13 +258,13 @@ class PlayerContainer extends JPanel
 	{
 		heckleLabel.setText(heckle);
 	}
-	
+
 	public void setAvatar(ImageIcon picture)
-	{		
+	{
 		JLabel toPanel = new JLabel(picture);
 		avatar.add(toPanel);
 	}
-	
+
 	/*
 	 * Inner class to paint a circular place holder for each player's avatar.
 	 *
@@ -275,9 +275,9 @@ class PlayerContainer extends JPanel
 		{
 			super();
 		}
-		
+
 		@Override
-		protected void paintComponent(Graphics g) 
+		protected void paintComponent(Graphics g)
 		{
 			g.drawOval(0, 0, g.getClipBounds().width, g.getClipBounds().height);
 		}

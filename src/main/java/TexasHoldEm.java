@@ -14,7 +14,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JOptionPane;
 import java.net.URL;
 import javax.imageio.ImageIO;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
+import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamPanel;
+import com.github.sarxos.webcam.WebcamResolution;
 
 class TexasHoldEm
 {
@@ -51,7 +55,7 @@ class TexasHoldEm
 		players[0].setPlayerType(0);
 		players[0].setTimerMode(timerMode); // If the check box is clicked in the initial dialog, set the human player to be in timer mode
 		players[0].updateMoney(21); // Testing purposes
-		
+
 		for(int i = 1; i < numberOfPlayers; i++)
 		{
 			players[i] = new Player(names.get(i));
@@ -78,7 +82,7 @@ class TexasHoldEm
 			else
 				playerContainers[i] = new PlayerContainer(players[i], game, hecklingMode);
 		}
-		
+
 		assignAvatars(playerContainers);
 
 		gameBoard.showPlayers();
@@ -88,32 +92,32 @@ class TexasHoldEm
 			game.runMe();
 		});
 		gameThread.start();
-		
+
 		if(hecklingMode)
 		{
 			Thread heckleThread = new Thread(() -> {
 				heckle(playerContainers);
 			});
-			
+
 			heckleThread.start();
 		}
 	}
-	
+
 	public void heckle(PlayerContainer[] containers)
 	{
 		BufferedReader inReader = null;
-		
+
 		try
 		{
 			inReader = new BufferedReader(new FileReader(new File("src/main/resources/heckles.txt")));
 		}
 		catch(IOException e)
 		{
-			
+
 		}
-		
+
 		ArrayList<String> heckles = new ArrayList<>();
-		
+
 		try
 		{
 			while(inReader.ready())
@@ -123,18 +127,18 @@ class TexasHoldEm
 		}
 		catch(IOException e)
 		{
-			
+
 		}
-		
+
 		Random gen = new Random();
-				
+
 		Timer timer = new Timer(10000, new ActionListener() {
 			public void actionPerformed(ActionEvent evt)
 			{
 				int playerIndex = 0;
 				for(int i = 1; i < containers.length; i++)
 					containers[i].setHeckle("");
-				
+
 				if(containers.length > 2)
 				{
 					playerIndex = gen.nextInt(containers.length - 2) + 1;
@@ -147,32 +151,32 @@ class TexasHoldEm
 				containers[playerIndex].setHeckle(heckles.get(0));
 			}
 		});
-		
-		timer.start();		
+
+		timer.start();
 	}
-	
+
 	public void assignAvatars(PlayerContainer[] playerContainers)
 	{
-		String[] buttons = {"Yes", "No"};
-		
+		String[] buttons = {"Yes, choose from defaults", "Yes, take my own (webcam)", "No, I am boring"};
+
 		int returnValue = JOptionPane.showOptionDialog(null, "Would you like to choose an avatar?", "Avatar Option",
 				JOptionPane.WARNING_MESSAGE, 0, null, buttons, null);
-				
+
 		if(returnValue == 0) //picked yes, display file chooser
 		{
 			JFileChooser popUp = new JFileChooser();
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG, PNG, & GIF Images", "jpg", "png", "gif");
-		
+
 			popUp.setFileFilter(filter);
-		
+
 			popUp.setCurrentDirectory(new File("./src/main/resources/img/avatars/"));
-		
+
 			int returnVal = popUp.showOpenDialog(null);
-			
+
 			if(returnVal == JFileChooser.APPROVE_OPTION)
 			{
 				File pic =  popUp.getSelectedFile();
-				
+
 				if(pic.getName().endsWith("gif"))
 				{
 					URL url = TexasHoldEm.class.getResource(pic.getName());
@@ -187,27 +191,52 @@ class TexasHoldEm
 					}
 					catch (IOException e)
 					{
-				
+
 					}
 					playerContainers[0].setAvatar(new ImageIcon(img));
 				}
-				
+
 			}
-			
+
+		}
+		else if(returnValue == 1)
+		{
+			//Display webcam here
+			Webcam webcam = Webcam.getDefault();
+			webcam.open();
+			try
+			{
+				String[] takePhotoBtn = {"Take Photo!"};
+
+				int returnValue2 = JOptionPane.showOptionDialog(null, "Take the avatar photo when you are ready!", "Avatar Capture Option",
+						JOptionPane.WARNING_MESSAGE, 0, null, takePhotoBtn, null);
+				ImageIO.write(webcam.getImage(), "PNG", new File("avatarCapture.png"));
+
+				//Assign image to player avatar here
+				ImageIcon imageIcon = new ImageIcon("avatarCapture.png");
+				Image image = imageIcon.getImage(); // transform it
+				Image newimg = image.getScaledInstance(50, 50,Image.SCALE_SMOOTH);
+				imageIcon = new ImageIcon(newimg);
+				playerContainers[0].setAvatar(imageIcon);
+			}
+			catch(IOException e)
+			{
+				System.out.println("Error taking photo");
+			}
 		}
 		//add in file chooser
 		//get photo from file chooser
 		//place it on player
-		
-		
+
+
 		String extension = "./src/main/resources/img/avatars/";
-		
+
 		ArrayList<String> avatars = new ArrayList<>(Arrays.asList("Bart_Simpson.png",
-		"Farnan.jpg", "Laboon.jpg", "Misurda.jpg", "Patrick_Star.png", "Ramirez.jpg", 
+		"Farnan.jpg", "Laboon.jpg", "Misurda.jpg", "Patrick_Star.png", "Ramirez.jpg",
 		"spongebob.png", "ninja.png"));
-		
+
 		Collections.shuffle(avatars);
-		
+
 		for(int i = 1; i < playerContainers.length; i++)
 			playerContainers[i].setAvatar(new ImageIcon(extension + avatars.get(i)));
 	}
