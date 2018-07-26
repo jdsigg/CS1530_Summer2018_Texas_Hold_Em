@@ -180,8 +180,19 @@ class TexasHoldEm
 
 				if(pic.getName().endsWith("gif"))
 				{
-					URL url = TexasHoldEm.class.getResource(pic.getName());
-					playerContainers[0].setAvatar(new ImageIcon(url));
+					//URL url = TexasHoldEm.class.getResource(pic.getName());
+					//playerContainers[0].setAvatar(new ImageIcon("./src/main/resources/img/avatars/"+pic.getName()));
+					BufferedImage img = null;
+					try
+					{
+						File file = new File("./src/main/resources/img/avatars/"+pic.getName());
+						img = ImageIO.read(file);
+					}
+					catch (IOException e)
+					{
+
+					}
+					playerContainers[0].setAvatar(new ImageIcon(img));
 				}
 				else
 				{
@@ -205,11 +216,11 @@ class TexasHoldEm
 			//Display webcam here
 
 			Webcam webcam = Webcam.getDefault();
-			
+
 			webcam.setViewSize(WebcamResolution.VGA.getSize());
-			
+
 			webcam.open();
-			
+
 			WebcamPanel panel = new WebcamPanel(webcam);
 			panel.setFPSDisplayed(true);
 			panel.setDisplayDebugInfo(true);
@@ -222,7 +233,7 @@ class TexasHoldEm
 			window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			window.pack();
 			window.setVisible(true);
-			
+
 			try
 			{
 				String[] takePhotoBtn = {"Take Photo!"};
@@ -243,7 +254,7 @@ class TexasHoldEm
 			catch(IOException e)
 			{
 				System.out.println("Error taking photo");
-			}			
+			}
 		}
 		//add in file chooser
 		//get photo from file chooser
