@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.io.*;
 import java.util.Random;
 import javax.swing.Timer;
+import javax.swing.JFrame;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -203,7 +204,25 @@ class TexasHoldEm
 		{
 			//Display webcam here
 			Webcam webcam = Webcam.getDefault();
+			
+			
+			webcam.setViewSize(WebcamResolution.VGA.getSize());
+			
 			webcam.open();
+			
+			WebcamPanel panel = new WebcamPanel(webcam);
+			panel.setFPSDisplayed(true);
+			panel.setDisplayDebugInfo(true);
+			panel.setImageSizeDisplayed(true);
+			panel.setMirrored(true);
+
+			JFrame window = new JFrame("Test webcam panel");
+			window.add(panel);
+			window.setResizable(true);
+			window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			window.pack();
+			window.setVisible(true);
+			
 			try
 			{
 				String[] takePhotoBtn = {"Take Photo!"};
@@ -218,6 +237,8 @@ class TexasHoldEm
 				Image newimg = image.getScaledInstance(50, 50,Image.SCALE_SMOOTH);
 				imageIcon = new ImageIcon(newimg);
 				playerContainers[0].setAvatar(imageIcon);
+				window.setVisible(false);
+				webcam.close();
 			}
 			catch(IOException e)
 			{
