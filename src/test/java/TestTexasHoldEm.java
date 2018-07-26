@@ -181,6 +181,74 @@ public class TestTexasHoldEm
 		assert(Hands.onePair(hand2)[4] < Hands.onePair(hand1)[4]);		
 	}
 	
+	//Test two pair tie to high card
+	@Test
+	public void twoPairTie()
+	{
+		Card [] hand1 = new Card[7];
+        hand1[0] = new Card(Card.Suit.Clubs,Card.Rank.Ace);
+        hand1[1] = new Card(Card.Suit.Hearts,Card.Rank.Two);
+        hand1[2] = new Card(Card.Suit.Diamonds,Card.Rank.Nine);
+        hand1[3] = new Card(Card.Suit.Hearts,Card.Rank.King);
+        hand1[4] = new Card(Card.Suit.Spades,Card.Rank.Ace);
+        hand1[5] = new Card(Card.Suit.Clubs,Card.Rank.Three);
+        hand1[6] = new Card(Card.Suit.Spades,Card.Rank.Three);
+		
+		Card [] hand2 = new Card[7];
+        hand2[0] = new Card(Card.Suit.Clubs,Card.Rank.Ace);
+        hand2[1] = new Card(Card.Suit.Hearts,Card.Rank.Three);
+        hand2[2] = new Card(Card.Suit.Diamonds,Card.Rank.Two);
+        hand2[3] = new Card(Card.Suit.Hearts,Card.Rank.Four);
+        hand2[4] = new Card(Card.Suit.Spades,Card.Rank.Ace);
+        hand2[5] = new Card(Card.Suit.Diamonds,Card.Rank.Two);
+        hand2[6] = new Card(Card.Suit.Spades,Card.Rank.Three);
+		assert(Hands.twoPair(hand2)[5] < Hands.twoPair(hand1)[5]);		
+	}
+	
+	public void threeOfAKindTie()
+	{
+		Card [] hand1 = new Card[7];
+        hand1[0] = new Card(Card.Suit.Clubs,Card.Rank.Ace);
+        hand1[1] = new Card(Card.Suit.Hearts,Card.Rank.Five);
+        hand1[2] = new Card(Card.Suit.Diamonds,Card.Rank.Eight);
+        hand1[3] = new Card(Card.Suit.Hearts,Card.Rank.Ace);
+        hand1[4] = new Card(Card.Suit.Spades,Card.Rank.Ace);
+        hand1[5] = new Card(Card.Suit.Clubs,Card.Rank.Two);
+        hand1[6] = new Card(Card.Suit.Spades,Card.Rank.Five);
+		
+		Card [] hand2 = new Card[7];
+        hand2[0] = new Card(Card.Suit.Clubs,Card.Rank.Ace);
+        hand2[1] = new Card(Card.Suit.Hearts,Card.Rank.Six);
+        hand2[2] = new Card(Card.Suit.Diamonds,Card.Rank.Three);
+        hand2[3] = new Card(Card.Suit.Hearts,Card.Rank.Ace);
+        hand2[4] = new Card(Card.Suit.Spades,Card.Rank.Ace);
+        hand2[5] = new Card(Card.Suit.Diamonds,Card.Rank.Nine);
+        hand2[6] = new Card(Card.Suit.Spades,Card.Rank.Three);
+		assert(Hands.threeOfAKind(hand2)[4] > Hands.threeOfAKind(hand1)[4]);		
+	}
+	
+	public void fourOfAKindTie()
+	{
+		Card [] hand1 = new Card[7];
+        hand1[0] = new Card(Card.Suit.Clubs,Card.Rank.Ace);
+        hand1[1] = new Card(Card.Suit.Hearts,Card.Rank.Ace);
+        hand1[2] = new Card(Card.Suit.Diamonds,Card.Rank.Eight);
+        hand1[3] = new Card(Card.Suit.Hearts,Card.Rank.Ace);
+        hand1[4] = new Card(Card.Suit.Spades,Card.Rank.Ace);
+        hand1[5] = new Card(Card.Suit.Clubs,Card.Rank.Two);
+        hand1[6] = new Card(Card.Suit.Spades,Card.Rank.Five);
+		
+		Card [] hand2 = new Card[7];
+        hand2[0] = new Card(Card.Suit.Clubs,Card.Rank.Ace);
+        hand2[1] = new Card(Card.Suit.Hearts,Card.Rank.Six);
+        hand2[2] = new Card(Card.Suit.Diamonds,Card.Rank.Ace);
+        hand2[3] = new Card(Card.Suit.Hearts,Card.Rank.Ace);
+        hand2[4] = new Card(Card.Suit.Spades,Card.Rank.Ace);
+        hand2[5] = new Card(Card.Suit.Diamonds,Card.Rank.Nine);
+        hand2[6] = new Card(Card.Suit.Spades,Card.Rank.Three);
+		assert(Hands.fourOfAKind(hand2)[5] > Hands.fourOfAKind(hand1)[5]);		
+	}
+	
 	//NORMAL HANDS
 	
     //Test for royal flush hand.

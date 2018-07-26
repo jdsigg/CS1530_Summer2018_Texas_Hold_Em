@@ -170,11 +170,14 @@ public class Hands {
 				if(count == 4)
 				{
 					winningHand[1] = possCards.get(cards[j].getRank());	
+					winningHand[2] = possCards.get(cards[j].getRank());	
+					winningHand[3] = possCards.get(cards[j].getRank());	
+					winningHand[4] = possCards.get(cards[j].getRank());	
 					for(int x = 0; x < cards.length; x++)
 					{
-						if(temp[x] != winningHand[2])
+						if(temp[x] != winningHand[1])
 						{
-							winningHand[2] = temp[x];
+							winningHand[5] = temp[x];
 							break;
 						}
 					}
@@ -435,14 +438,14 @@ public class Hands {
 
 				if(count == 3) 
 				{
-					int spot = 2;
-					for(int x = 0; x < 5; x++)
+					int spot = 4;
+					for(int x = 0; x < 7; x++)
 					{
 						if(temp[x] != winningHand[2])
 						{
 							winningHand[spot] = temp[x];
 							spot++;
-							if (spot == 4)
+							if (spot == 6)
 							{
 								break;
 							}
@@ -450,6 +453,8 @@ public class Hands {
 					}
 					
 					winningHand[1] = possCards.get(cards[j].getRank());
+					winningHand[2] = possCards.get(cards[j].getRank());
+					winningHand[3] = possCards.get(cards[j].getRank());
 					winningHand[0] = 4;
 					return winningHand;				
 				}
@@ -540,6 +545,10 @@ public class Hands {
 					winningHand[2] = t;
 				}
 				
+				winningHand[3] = winningHand[2];
+				winningHand[4] = winningHand[2];
+				winningHand[2] = winningHand[1];
+				
 				int temp[] = new int[7];
 		
 				// Sort all cards
@@ -549,11 +558,11 @@ public class Hands {
 				}
 				Arrays.sort(temp);
 				
-				for(int x = 1; x < 7; x++)
+				for(int x = 1; x < 8; x++)
 				{
-					if(temp[temp.length - x] != winningHand[1] && temp[temp.length - x] != winningHand[2])
+					if(temp[temp.length - x] != winningHand[1] && temp[temp.length - x] != winningHand[3])
 					{
-						winningHand[3] = temp[temp.length-x];
+						winningHand[5] = temp[temp.length-x];
 						break;
 					}
 				}
