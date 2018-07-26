@@ -4,6 +4,7 @@
 #Ignore output.txt file created from program run
 output.txt
 test_output.txt
+avatarCapture.png
 
 #Ignore all class files
 *.class
