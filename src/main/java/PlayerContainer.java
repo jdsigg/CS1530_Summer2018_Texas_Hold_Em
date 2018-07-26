@@ -50,7 +50,7 @@ class PlayerContainer extends JPanel
 		this.add(cardTwoPanel);
 
 		avatar = new JPanel();
-		avatar.setPreferredSize(new Dimension(50,50));
+		avatar.setPreferredSize(new Dimension(55,55));
 		//avatar.setBackground(Color.RED);
 		this.add(avatar);
 
@@ -261,7 +261,8 @@ class PlayerContainer extends JPanel
 
 	public void setAvatar(ImageIcon picture)
 	{
-		JLabel toPanel = new JLabel(picture);
+		Image avatarPhoto = picture.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+		JLabel toPanel = new JLabel(new ImageIcon(avatarPhoto));
 		avatar.add(toPanel);
 	}
 

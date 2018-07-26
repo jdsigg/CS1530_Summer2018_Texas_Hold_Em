@@ -20,6 +20,7 @@ import java.awt.image.BufferedImage;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
+import java.awt.Dimension;
 
 class TexasHoldEm
 {
@@ -55,7 +56,7 @@ class TexasHoldEm
 		players[0] = new Player(playerName);
 		players[0].setPlayerType(0);
 		players[0].setTimerMode(timerMode); // If the check box is clicked in the initial dialog, set the human player to be in timer mode
-		players[0].updateMoney(21); // Testing purposes
+		//players[0].updateMoney(21); // Testing purposes
 
 		for(int i = 1; i < numberOfPlayers; i++)
 		{
@@ -166,7 +167,7 @@ class TexasHoldEm
 		if(returnValue == 0) //picked yes, display file chooser
 		{
 			JFileChooser popUp = new JFileChooser();
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG, PNG, & GIF Images", "jpg", "png", "gif");
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & GIF Images", "jpg", "png");
 
 			popUp.setFileFilter(filter);
 
@@ -177,37 +178,18 @@ class TexasHoldEm
 			if(returnVal == JFileChooser.APPROVE_OPTION)
 			{
 				File pic =  popUp.getSelectedFile();
-
-				if(pic.getName().endsWith("gif"))
+				
+				BufferedImage img = null;
+				try
 				{
-					//URL url = TexasHoldEm.class.getResource(pic.getName());
-					//playerContainers[0].setAvatar(new ImageIcon("./src/main/resources/img/avatars/"+pic.getName()));
-					BufferedImage img = null;
-					try
-					{
-						File file = new File("./src/main/resources/img/avatars/"+pic.getName());
-						img = ImageIO.read(file);
-					}
-					catch (IOException e)
-					{
-
-					}
-					playerContainers[0].setAvatar(new ImageIcon(img));
+					img = ImageIO.read(pic);
 				}
-				else
+				catch (IOException e)
 				{
-					BufferedImage img = null;
-					try
-					{
-						img = ImageIO.read(pic);
-					}
-					catch (IOException e)
-					{
-
-					}
-					playerContainers[0].setAvatar(new ImageIcon(img));
+					System.err.println("Issue opening photo");
 				}
-
+				
+				playerContainers[0].setAvatar(new ImageIcon(img));
 			}
 
 		}
@@ -216,6 +198,8 @@ class TexasHoldEm
 			//Display webcam here
 
 			Webcam webcam = Webcam.getDefault();
+			
+			//webcam.setViewSize(new Dimension(176, 144));
 
 			webcam.setViewSize(WebcamResolution.VGA.getSize());
 
@@ -227,7 +211,7 @@ class TexasHoldEm
 			panel.setImageSizeDisplayed(true);
 			panel.setMirrored(true);
 
-			JFrame window = new JFrame("Test webcam panel");
+			JFrame window = new JFrame("Webcam");
 			window.add(panel);
 			window.setResizable(true);
 			window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -244,9 +228,11 @@ class TexasHoldEm
 
 				//Assign image to player avatar here
 				ImageIcon imageIcon = new ImageIcon("avatarCapture.png");
+				/*
 				Image image = imageIcon.getImage(); // transform it
 				Image newimg = image.getScaledInstance(50, 50,Image.SCALE_SMOOTH);
 				imageIcon = new ImageIcon(newimg);
+				*/
 				playerContainers[0].setAvatar(imageIcon);
 				window.setVisible(false);
 				webcam.close();
@@ -256,15 +242,11 @@ class TexasHoldEm
 				System.out.println("Error taking photo");
 			}
 		}
-		//add in file chooser
-		//get photo from file chooser
-		//place it on player
-
-
+		
 		String extension = "./src/main/resources/img/avatars/";
 
-		ArrayList<String> avatars = new ArrayList<>(Arrays.asList("Bart_Simpson.png",
-		"Farnan.jpg", "Laboon.jpg", "Misurda.jpg", "Patrick_Star.png", "Ramirez.jpg",
+		ArrayList<String> avatars = new ArrayList<>(Arrays.asList("Bart_Simpson.jpg",
+		"Farnan.jpg", "Laboon.jpg", "Misurda.jpg", "Patrick_Star.jpg", "Ramirez.jpg",
 		"spongebob.png", "ninja.png"));
 
 		Collections.shuffle(avatars);
