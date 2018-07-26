@@ -203,8 +203,8 @@ class TexasHoldEm
 		else if(returnValue == 1)
 		{
 			//Display webcam here
+
 			Webcam webcam = Webcam.getDefault();
-			
 			
 			webcam.setViewSize(WebcamResolution.VGA.getSize());
 			
@@ -243,7 +243,7 @@ class TexasHoldEm
 			catch(IOException e)
 			{
 				System.out.println("Error taking photo");
-			}
+			}			
 		}
 		//add in file chooser
 		//get photo from file chooser
