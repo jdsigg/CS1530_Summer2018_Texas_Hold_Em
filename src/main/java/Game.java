@@ -82,10 +82,31 @@ class Game
 
 		while(count < numberOfPlayers) // Go over every player, assigning new dealer and breaking when found
 		{
-			if(realPlayers[dealerChip].isIn())
+			if(realPlayers[dealerChip].isIn() && realPlayers[dealerChip].getMoney() > 0)
 			{
 				realPlayers[dealerChip].setDealerStatus(true);
 				break;
+			}
+			if(realPlayers[dealerChip].isIn() && realPlayers[dealerChip].getMoney() <= 0)
+			{
+				realPlayers[dealerChip].setStatus(2);
+				gameBoard.playerOutForGood(dealerChip);
+				playersStillInGame--;
+				if(playersStillInGame == 1)
+				{
+					for(int x = 0; x<realPlayers.length;x++)
+					{
+						if(realPlayers[x].isIn())
+						{
+							String[] buttons = {"Exit"};
+
+							JOptionPane.showOptionDialog(null, realPlayers[x].getName()+" won the game!", "Game Over", JOptionPane.WARNING_MESSAGE, 0, null, buttons, null);
+
+							exit();
+						}
+					}
+				}
+
 			}
 			dealerChip = (dealerChip + 1) % numberOfPlayers;
 			count++;
@@ -113,10 +134,31 @@ class Game
 
 			while(count < numberOfPlayers)
 			{
-				if(realPlayers[smallBlind].isIn())
+				if(realPlayers[smallBlind].isIn() && realPlayers[smallBlind].getMoney() >= 10)
 				{
 					realPlayers[smallBlind].setSmallBlindStatus(true);
 					break;
+				}
+				else if(realPlayers[smallBlind].isIn() && realPlayers[smallBlind].getMoney() < 10)
+				{
+					logString("Player " + realPlayers[smallBlind].getName() + " cannot make small blind, so they are out of the game.");
+					realPlayers[smallBlind].setStatus(2);
+					gameBoard.playerOutForGood(smallBlind);
+					playersStillInGame--;
+					if(playersStillInGame == 1)
+					{
+						for(int x = 0; x<realPlayers.length;x++)
+						{
+							if(realPlayers[x].isIn())
+							{
+								String[] buttons = {"Exit"};
+
+								JOptionPane.showOptionDialog(null, realPlayers[x].getName()+" won the game!", "Game Over", JOptionPane.WARNING_MESSAGE, 0, null, buttons, null);
+
+								exit();
+							}
+						}
+					}
 				}
 				smallBlind = (smallBlind + 1) % numberOfPlayers;
 				count++;
@@ -129,10 +171,31 @@ class Game
 
 			while(count < numberOfPlayers)
 			{
-				if(realPlayers[bigBlind].isIn())
+				if(realPlayers[bigBlind].isIn() && realPlayers[bigBlind].getMoney() >= 20)
 				{
 					realPlayers[bigBlind].setBigBlindStatus(true);
 					break;
+				}
+				else if(realPlayers[bigBlind].isIn() && realPlayers[bigBlind].getMoney() < 20)
+				{
+					logString("Player " + realPlayers[bigBlind].getName() + " cannot make big blind, so they are out of the game.");
+					realPlayers[bigBlind].setStatus(2);
+					gameBoard.playerOutForGood(bigBlind);
+					playersStillInGame--;
+					if(playersStillInGame == 1)
+					{
+						for(int x = 0; x<realPlayers.length;x++)
+						{
+							if(realPlayers[x].isIn())
+							{
+								String[] buttons = {"Exit"};
+
+								JOptionPane.showOptionDialog(null, realPlayers[x].getName()+" won the game!", "Game Over", JOptionPane.WARNING_MESSAGE, 0, null, buttons, null);
+
+								exit();
+							}
+						}
+					}
 				}
 				bigBlind = (bigBlind + 1) % numberOfPlayers;
 				count++;
@@ -184,7 +247,7 @@ class Game
 				gameBoard.playerOutForGood(i);
 				gameBoard.displayOutForGood(i);
 			}
-			else
+			else if(realPlayers[i].getStatus() == 1)
 			{
 				realPlayers[i].setStatus(0);
 				playersStillInGame++;
@@ -561,9 +624,8 @@ class Game
 
 			for(int i = 0; i < playerIndex.length; i++)
 			{
-				if(playerIndex[i] == -1)
-					break;
-				winnerCount++;
+				if(playerIndex[i] != -1)
+					winnerCount++;
 			}
 
 			int pot = dealer.getPot();
@@ -754,20 +816,26 @@ class Game
 						// Set up side pot here
 						if(!sidePotInPlay)
 						{
-							if(toThePot < minRoundBet)
+							int counter = 0;
+							for(int x = 0;x < realPlayers.length;x++)
 							{
-								int difference = (minRoundBet-toThePot
-												- realPlayers[currentPlayer].getMoney()) * (realPlayers.length - 1);
-								dealer.updateSidePot(dealer.getSidePot() + difference);
-								dealer.updatePot(dealer.getPot() - difference + realPlayers[currentPlayer].getMoney());
-								if(dealer.getPot() < 0)
+								if(realPlayers[x].getBet() == minRoundBet)
 								{
-									dealer.updatePot(realPlayers[currentPlayer].getMoney());
+									counter++;
 								}
-								realPlayers[currentPlayer].updateMoney(0);
-								realPlayers[currentPlayer].setStatus(1);
 							}
-							else if(toThePot <= minRoundBet)
+							int difference = (minRoundBet-realPlayers[currentPlayer].getBet()
+											- realPlayers[currentPlayer].getMoney()) * counter;
+							dealer.updateSidePot(dealer.getSidePot() + difference);
+							dealer.updatePot(dealer.getPot() - difference + realPlayers[currentPlayer].getMoney());
+							if(dealer.getPot() < 0)
+							{
+								dealer.updatePot(realPlayers[currentPlayer].getMoney());
+							}
+							realPlayers[currentPlayer].updateMoney(0);
+							realPlayers[currentPlayer].setStatus(1);
+
+							/*else if(toThePot <= minRoundBet)
 							{
 								int difference = (minRoundBet - realPlayers[currentPlayer].getMoney()) * (realPlayers.length - 1);
 
@@ -779,7 +847,7 @@ class Game
 								}
 								realPlayers[currentPlayer].updateMoney(0);
 								realPlayers[currentPlayer].setStatus(1);
-							}
+							}*/
 
 							sidePotInPlay = true;
 							playerWhoMadeSidePot = realPlayers[currentPlayer];
@@ -793,9 +861,12 @@ class Game
 						{
 							if (realPlayers[currentPlayer].getMoney() <= minRoundBet)
 							{
-								realPlayers[currentPlayer].setBet(realPlayers[currentPlayer].getMoney());
-								dealer.updateSidePot(dealer.getSidePot()+realPlayers[currentPlayer].getMoney());
-								realPlayers[currentPlayer].subtractFromMoney(realPlayers[currentPlayer].getMoney());
+								if(realPlayers[currentPlayer].getMoney() > 0)
+								{
+									realPlayers[currentPlayer].setBet(realPlayers[currentPlayer].getMoney());
+									dealer.updateSidePot(dealer.getSidePot()+realPlayers[currentPlayer].getMoney());
+									realPlayers[currentPlayer].subtractFromMoney(realPlayers[currentPlayer].getMoney());
+								}
 							}
 							else
 							{
@@ -897,32 +968,25 @@ class Game
 							// Set up side pot here
 							if(!sidePotInPlay)
 							{
-								if(toThePot < minRoundBet)
+								int counter = 0;
+								for(int x = 0;x < realPlayers.length;x++)
 								{
-									int difference = (minRoundBet-toThePot
-													- realPlayers[currentPlayer].getMoney()) * (realPlayers.length - 1);
-									dealer.updateSidePot(dealer.getSidePot() + difference);
-									dealer.updatePot(dealer.getPot() - difference + realPlayers[currentPlayer].getMoney());
-									if(dealer.getPot() < 0)
+									if(realPlayers[x].getBet() == minRoundBet)
 									{
-										dealer.updatePot(realPlayers[currentPlayer].getMoney());
+										counter++;
 									}
-									realPlayers[currentPlayer].updateMoney(0);
-									realPlayers[currentPlayer].setStatus(1);
 								}
-								else
+								int difference = (minRoundBet-realPlayers[currentPlayer].getBet()
+												- realPlayers[currentPlayer].getMoney()) * counter;
+								dealer.updateSidePot(dealer.getSidePot() + difference);
+								dealer.updatePot(dealer.getPot() - difference + realPlayers[currentPlayer].getMoney());
+								if(dealer.getPot() < 0)
 								{
-									int difference = (minRoundBet - realPlayers[currentPlayer].getMoney()) * (realPlayers.length - 1);
+									dealer.updatePot(realPlayers[currentPlayer].getMoney());
+								}
+								realPlayers[currentPlayer].updateMoney(0);
+								realPlayers[currentPlayer].setStatus(1);
 
-									dealer.updateSidePot(dealer.getSidePot() + difference);
-									dealer.updatePot(dealer.getPot() - difference + realPlayers[currentPlayer].getMoney());
-									if(dealer.getPot() < 0)
-									{
-										dealer.updatePot(realPlayers[currentPlayer].getMoney());
-									}
-									realPlayers[currentPlayer].updateMoney(0);
-									realPlayers[currentPlayer].setStatus(1);
-								}
 
 								sidePotInPlay = true;
 								playerWhoMadeSidePot = realPlayers[currentPlayer];
@@ -936,10 +1000,12 @@ class Game
 							{
 								if (realPlayers[currentPlayer].getMoney() <= minRoundBet)
 								{
-									realPlayers[currentPlayer].setBet(realPlayers[currentPlayer].getMoney());
-									dealer.updateSidePot(dealer.getSidePot()+realPlayers[currentPlayer].getMoney());
-									realPlayers[currentPlayer].subtractFromMoney(realPlayers[currentPlayer].getMoney());
-									realPlayers[currentPlayer].setStatus(1);
+									if(realPlayers[currentPlayer].getMoney() > 0)
+									{
+										realPlayers[currentPlayer].setBet(realPlayers[currentPlayer].getMoney());
+										dealer.updateSidePot(dealer.getSidePot()+realPlayers[currentPlayer].getMoney());
+										realPlayers[currentPlayer].subtractFromMoney(realPlayers[currentPlayer].getMoney());
+									}
 								}
 								else
 								{
