@@ -245,8 +245,8 @@ class TexasHoldEm
 
 		String extension = "./src/main/resources/img/avatars/";
 
-		ArrayList<String> avatars = new ArrayList<>(Arrays.asList("Bart_Simpson.png",
-		"Farnan.jpg", "Laboon.jpg", "Misurda.jpg", "Patrick_Star.png", "Ramirez.jpg",
+		ArrayList<String> avatars = new ArrayList<>(Arrays.asList("Bart_Simpson.jpg",
+		"Farnan.jpg", "Laboon.jpg", "Misurda.jpg", "Patrick_Star.jpg", "Ramirez.jpg",
 		"spongebob.png", "ninja.png", "Alan.jpg", "Bee.jpeg", "Bob_Ross.jpeg", "Brian_Griffin.jpeg", "Dan_Budny.jpg", "Doug_Hangover.jpg", "Homer_Simpson.jpg", "Leslie_Chow.jpg", "Lois_Griffin.jpg", "Lord_F.jpg", "Luigi.png", "Marge_Simpson.png", "Mario.png", "Meg_Griffin.png", "Peter_Griffin.jpg", "Phil_Hangover.jpg", "Stu_Hangover.jpg", "Waluigi.png", "Wario.jpg"));
 
 		Collections.shuffle(avatars);
