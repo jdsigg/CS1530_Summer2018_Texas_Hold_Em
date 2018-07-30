@@ -56,7 +56,7 @@ class TexasHoldEm
 		players[0] = new Player(playerName);
 		players[0].setPlayerType(0);
 		players[0].setTimerMode(timerMode); // If the check box is clicked in the initial dialog, set the human player to be in timer mode
-		//players[0].updateMoney(21); // Testing purposes
+		players[0].updateMoney(25); // Testing purposes
 
 		for(int i = 1; i < numberOfPlayers; i++)
 		{
@@ -178,7 +178,7 @@ class TexasHoldEm
 			if(returnVal == JFileChooser.APPROVE_OPTION)
 			{
 				File pic =  popUp.getSelectedFile();
-				
+
 				BufferedImage img = null;
 				try
 				{
@@ -188,7 +188,7 @@ class TexasHoldEm
 				{
 					System.err.println("Issue opening photo");
 				}
-				
+
 				playerContainers[0].setAvatar(new ImageIcon(img));
 			}
 
@@ -198,7 +198,7 @@ class TexasHoldEm
 			//Display webcam here
 
 			Webcam webcam = Webcam.getDefault();
-			
+
 			//webcam.setViewSize(new Dimension(176, 144));
 
 			webcam.setViewSize(WebcamResolution.VGA.getSize());
@@ -242,7 +242,7 @@ class TexasHoldEm
 				System.out.println("Error taking photo");
 			}
 		}
-		
+
 		String extension = "./src/main/resources/img/avatars/";
 
 		ArrayList<String> avatars = new ArrayList<>(Arrays.asList("Bart_Simpson.jpg",
