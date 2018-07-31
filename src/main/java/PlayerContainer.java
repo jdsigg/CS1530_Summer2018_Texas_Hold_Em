@@ -259,10 +259,19 @@ class PlayerContainer extends JPanel
 		heckleLabel.setText(heckle);
 	}
 
-	public void setAvatar(ImageIcon picture)
+	public void setAvatar(ImageIcon picture, int status)
 	{
 		Image avatarPhoto = picture.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
 		JLabel toPanel = new JLabel(new ImageIcon(avatarPhoto));
+		//System.out.println(this.getClass().getClassLoader().getResource("."));
+		if (status == 0)
+		{
+			toPanel.setToolTipText("<html><img src=\""+this.getClass().getResource(picture.toString().replace("//", "/").substring(20))+"\">");
+		}
+		else if (status == 1)
+		{
+			toPanel.setToolTipText("<html><img src=\""+this.getClass().getResource(picture.toString().substring(20))+"\">");
+		}
 		avatar.add(toPanel);
 	}
 

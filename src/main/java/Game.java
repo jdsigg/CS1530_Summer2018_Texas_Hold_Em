@@ -624,13 +624,14 @@ class Game
 
 			for(int i = 0; i < playerIndex.length; i++)
 			{
-				if(playerIndex[i] != -1)
-					winnerCount++;
+				if(playerIndex[i] == -1)
+					break;
+				winnerCount++;	
 			}
 
 			int pot = dealer.getPot();
 			int sidePot = dealer.getSidePot();
-			int moneyPerPlayer = pot/winnerCount;
+			int moneyPerPlayer = (pot + sidePot)/winnerCount;
 			int moneyBackToPot = (pot + sidePot)%winnerCount;
 			int moneyBackToSidePotPlayers = pot/winnerCount;
 			int moneyBackToPlayersWhoNotSidePotPlayers = (sidePot/winnerCount-1) + moneyBackToSidePotPlayers;
