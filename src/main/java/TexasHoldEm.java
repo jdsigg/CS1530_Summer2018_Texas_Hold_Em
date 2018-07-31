@@ -189,7 +189,7 @@ class TexasHoldEm
 					System.err.println("Issue opening photo");
 				}
 
-				playerContainers[0].setAvatar(new ImageIcon(img));
+				playerContainers[0].setAvatar(new ImageIcon(img), 1);
 			}
 
 		}
@@ -224,16 +224,12 @@ class TexasHoldEm
 
 				int returnValue2 = JOptionPane.showOptionDialog(null, "Take the avatar photo when you are ready!", "Avatar Capture Option",
 						JOptionPane.WARNING_MESSAGE, 0, null, takePhotoBtn, null);
-				ImageIO.write(webcam.getImage(), "PNG", new File("avatarCapture.png"));
+				ImageIO.write(webcam.getImage(), "PNG", new File(".//src//main//resources//img//avatars//avatarCapture.png"));
 
 				//Assign image to player avatar here
-				ImageIcon imageIcon = new ImageIcon("avatarCapture.png");
-				/*
-				Image image = imageIcon.getImage(); // transform it
-				Image newimg = image.getScaledInstance(50, 50,Image.SCALE_SMOOTH);
-				imageIcon = new ImageIcon(newimg);
-				*/
-				playerContainers[0].setAvatar(imageIcon);
+				ImageIcon imageIcon = new ImageIcon(".//src//main//resources//img//avatars//avatarCapture.png");
+
+				playerContainers[0].setAvatar(imageIcon, 0);
 				window.setVisible(false);
 				webcam.close();
 			}
@@ -252,7 +248,7 @@ class TexasHoldEm
 		Collections.shuffle(avatars);
 
 		for(int i = 1; i < playerContainers.length; i++)
-			playerContainers[i].setAvatar(new ImageIcon(extension + avatars.get(i)));
+			playerContainers[i].setAvatar(new ImageIcon(extension + avatars.get(i)), 1);
 	}
 
 	public void exit()
