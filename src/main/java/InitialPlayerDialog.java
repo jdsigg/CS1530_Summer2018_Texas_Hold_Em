@@ -46,17 +46,13 @@ class InitialPlayerDialog extends JDialog
 		
 		pane.add(opponentsLabel);
 		pane.add(opponents);
-		
-		///////
-		
+				
 		timerModeCheckBox = new Checkbox("Timer Mode");
 		hecklingModeCheckBox = new Checkbox("Heckling Mode");
 		
 		pane.add(timerModeCheckBox);
 		pane.add(hecklingModeCheckBox);
-		
-		///////
-		
+				
 		JButton startButton = new JButton("Start");
 		JButton cancelButton = new JButton("Cancel");
 		
