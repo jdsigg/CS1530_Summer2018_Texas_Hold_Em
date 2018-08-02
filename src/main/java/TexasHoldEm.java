@@ -5,7 +5,7 @@ import java.io.*;
 import java.util.Random;
 import javax.swing.Timer;
 import javax.swing.JFrame;
-
+import java.awt.image.RenderedImage;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -56,7 +56,6 @@ class TexasHoldEm
 		players[0] = new Player(playerName);
 		players[0].setPlayerType(0);
 		players[0].setTimerMode(timerMode); // If the check box is clicked in the initial dialog, set the human player to be in timer mode
-		//players[0].updateMoney(25); // Testing purposes
 
 		for(int i = 1; i < numberOfPlayers; i++)
 		{
@@ -134,7 +133,7 @@ class TexasHoldEm
 
 		Random gen = new Random();
 
-		Timer timer = new Timer(10000, new ActionListener() {
+		Timer timer = new Timer(3000, new ActionListener() {
 			public void actionPerformed(ActionEvent evt)
 			{
 				int playerIndex = 0;
@@ -199,8 +198,6 @@ class TexasHoldEm
 
 			Webcam webcam = Webcam.getDefault();
 
-			//webcam.setViewSize(new Dimension(176, 144));
-
 			webcam.setViewSize(WebcamResolution.VGA.getSize());
 
 			webcam.open();
@@ -224,9 +221,9 @@ class TexasHoldEm
 
 				int returnValue2 = JOptionPane.showOptionDialog(null, "Take the avatar photo when you are ready!", "Avatar Capture Option",
 						JOptionPane.WARNING_MESSAGE, 0, null, takePhotoBtn, null);
-				ImageIO.write(webcam.getImage(), "PNG", new File(".//src//main//resources//img//avatars//avatarCapture.png"));
-
-				//Assign image to player avatar here
+				RenderedImage capture = webcam.getImage();
+				File capure_file = new File(".//src//main//resources//img//avatars//avatarCapture.png");
+				ImageIO.write(capture, "PNG", capure_file);
 				ImageIcon imageIcon = new ImageIcon(".//src//main//resources//img//avatars//avatarCapture.png");
 
 				playerContainers[0].setAvatar(imageIcon, 0);
@@ -235,13 +232,13 @@ class TexasHoldEm
 			}
 			catch(IOException e)
 			{
-				System.out.println("Error taking photo");
+				System.out.println("Error taking photo.");
 			}
 		}
 
 		String extension = "./src/main/resources/img/avatars/";
 
-		ArrayList<String> avatars = new ArrayList<>(Arrays.asList("Bart_Simpson.png",
+		ArrayList<String> avatars = new ArrayList<>(Arrays.asList("Bart_Simpson.jpg",
 		"Farnan.jpg", "Laboon.jpg", "Misurda.jpg", "Patrick_Star.png", "Ramirez.jpg",
 		"spongebob.png", "ninja.png", "Alan.jpg", "Bee.jpeg", "Bob_Ross.jpeg", "Brian_Griffin.jpeg", "Dan_Budny.jpg", "Doug_Hangover.jpg", "Homer_Simpson.jpg", "Leslie_Chow.jpg", "Lois_Griffin.jpg", "Lord_F.jpg", "Luigi.png", "Marge_Simpson.png", "Mario.png", "Meg_Griffin.png", "Peter_Griffin.jpg", "Phil_Hangover.jpg", "Stu_Hangover.jpg", "Waluigi.png", "Wario.jpg"));
 

@@ -836,20 +836,6 @@ class Game
 							realPlayers[currentPlayer].updateMoney(0);
 							realPlayers[currentPlayer].setStatus(1);
 
-							/*else if(toThePot <= minRoundBet)
-							{
-								int difference = (minRoundBet - realPlayers[currentPlayer].getMoney()) * (realPlayers.length - 1);
-
-								dealer.updateSidePot(dealer.getSidePot() + difference);
-								dealer.updatePot(dealer.getPot() - difference + realPlayers[currentPlayer].getMoney());
-								if(dealer.getPot() < 0)
-								{
-									dealer.updatePot(realPlayers[currentPlayer].getMoney());
-								}
-								realPlayers[currentPlayer].updateMoney(0);
-								realPlayers[currentPlayer].setStatus(1);
-							}*/
-
 							sidePotInPlay = true;
 							playerWhoMadeSidePot = realPlayers[currentPlayer];
 							playerWhoMadeSidePotIndex = currentPlayer;

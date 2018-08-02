@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 class PlayerContainer extends JPanel
 {
@@ -263,12 +264,8 @@ class PlayerContainer extends JPanel
 	{
 		Image avatarPhoto = picture.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
 		JLabel toPanel = new JLabel(new ImageIcon(avatarPhoto));
-		//System.out.println(this.getClass().getClassLoader().getResource("."));
-		if (status == 0)
-		{
-			toPanel.setToolTipText("<html><img src=\""+this.getClass().getResource(picture.toString().replace("//", "/").substring(20))+"\">");
-		}
-		else if (status == 1)
+
+		if (status == 1)
 		{
 			toPanel.setToolTipText("<html><img src=\""+this.getClass().getResource(picture.toString().substring(20))+"\">");
 		}

@@ -53,7 +53,6 @@ class GameBoard extends JFrame
 					displayBlanks(i);
 				}
 				displayDealerBlanks();
-				//updateBet();
 				updatePot();
 				break;
 			case 1:

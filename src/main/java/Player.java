@@ -261,7 +261,6 @@ class Player
 				}
 
 
-
 				// If timer is at or less than 0, fold
 				if(timerMode && timeRemaining.get() <= 0)
 				{
